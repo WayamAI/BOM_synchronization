@@ -1,17 +1,16 @@
 const STORAGE_KEY = "wayam_auth";
 
-// Demo-only credentials for the login gate. Not a real account —
-// intentionally shown on the login screen. See docs/superpowers/specs/
+// Demo-only gate: no real accounts, no backend. Any syntactically valid
+// email and any non-empty password logs in. See docs/superpowers/specs/
 // 2026-08-11-login-gate-and-repo-migration-design.md for scope.
-export const DEMO_EMAIL = "omar.tessa55@gmail.com";
-export const DEMO_PASSWORD = "pzS5iPXZYSi!W";
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function isAuthenticated(): boolean {
   return window.localStorage.getItem(STORAGE_KEY) === "1";
 }
 
 export function login(email: string, password: string): boolean {
-  if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+  if (EMAIL_PATTERN.test(email.trim()) && password.length > 0) {
     window.localStorage.setItem(STORAGE_KEY, "1");
     return true;
   }

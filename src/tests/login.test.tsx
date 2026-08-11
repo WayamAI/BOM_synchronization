@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "@/pages/Login";
-import { DEMO_EMAIL, DEMO_PASSWORD, isAuthenticated } from "@/lib/auth";
+import { isAuthenticated } from "@/lib/auth";
 
 const Protected = () => (isAuthenticated() ? <div>Protected content</div> : <Navigate to="/login" replace />);
 
@@ -26,18 +26,18 @@ describe("login flow", () => {
     expect(screen.getByRole("heading", { name: "Sign in" })).toBeInTheDocument();
   });
 
-  it("shows an error on invalid credentials and stays on /login", () => {
+  it("shows an error on an invalid email and stays on /login", () => {
     renderApp("/login");
-    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "wrong@gmail.com" } });
-    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "wrong" } });
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "not-an-email" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "whatever" } });
     fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
-    expect(screen.getByText("Invalid email or password.")).toBeInTheDocument();
+    expect(screen.getByText("Enter a valid email and a password to continue.")).toBeInTheDocument();
   });
 
-  it("navigates past the gate on valid demo credentials", () => {
+  it("navigates past the gate on any valid email and non-empty password", () => {
     renderApp("/login");
-    fireEvent.change(screen.getByLabelText("Email"), { target: { value: DEMO_EMAIL } });
-    fireEvent.change(screen.getByLabelText("Password"), { target: { value: DEMO_PASSWORD } });
+    fireEvent.change(screen.getByLabelText("Email"), { target: { value: "random.person@example.org" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "any-random-password" } });
     fireEvent.click(screen.getByRole("button", { name: "Sign in" }));
     expect(screen.getByText("Protected content")).toBeInTheDocument();
   });

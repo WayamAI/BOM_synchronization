@@ -22,9 +22,9 @@ The app runs at `http://localhost:8080` (or the next free port).
 ## Login
 
 The app sits behind a login screen. This is a **demo gate, not real
-authentication** — there's no backend or user database. A single fixed
-credential pair is hardcoded in `src/lib/auth.ts` and shown directly on
-the login page itself, so anyone opening the app can sign in.
+authentication** — there's no backend or user database. Any syntactically
+valid email address and any non-empty password will sign you in (see
+`src/lib/auth.ts`).
 
 ## Scripts
 

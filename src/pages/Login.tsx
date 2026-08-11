@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { DEMO_EMAIL, DEMO_PASSWORD, login } from "@/lib/auth";
+import { login } from "@/lib/auth";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Login = () => {
     if (login(email, password)) {
       navigate("/", { replace: true });
     } else {
-      setError("Invalid email or password.");
+      setError("Enter a valid email and a password to continue.");
     }
   };
 
@@ -42,7 +42,7 @@ const Login = () => {
                 autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={DEMO_EMAIL}
+                placeholder="you@example.com"
               />
             </div>
             <div className="space-y-2">
@@ -60,9 +60,8 @@ const Login = () => {
             <Button type="submit" className="w-full">Sign in</Button>
           </form>
           <div className="mt-6 rounded-md border bg-muted/40 p-3 text-xs text-muted-foreground">
-            <p className="font-medium text-foreground">Demo credentials</p>
-            <p>Email: {DEMO_EMAIL}</p>
-            <p>Password: {DEMO_PASSWORD}</p>
+            <p className="font-medium text-foreground">Demo access</p>
+            <p>Any email address and any password will sign you in — this is a demo gate, not a real account system.</p>
           </div>
         </CardContent>
       </Card>
