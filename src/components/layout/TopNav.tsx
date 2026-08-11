@@ -1,5 +1,5 @@
 import { Bell, ChevronDown, Download, Search, Command, MapPin } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
 import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { products, notifications } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
+import { logout } from "@/lib/auth";
 
 const routeLabels: Record<string, string> = {
   "": "Command Center",
@@ -32,6 +33,7 @@ const routeLabels: Record<string, string> = {
 export const TopNav = () => {
   const { activeProgram, setActiveProgramId } = useProgramContext();
   const location = useLocation();
+  const navigate = useNavigate();
   const segments = location.pathname.split("/").filter(Boolean);
   const crumbs = segments.length === 0
     ? [{ label: "Command Center", path: "/" }]
@@ -175,7 +177,14 @@ export const TopNav = () => {
               <DropdownMenuItem>Profile settings</DropdownMenuItem>
               <DropdownMenuItem>Switch organization</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  logout();
+                  navigate("/login", { replace: true });
+                }}
+              >
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

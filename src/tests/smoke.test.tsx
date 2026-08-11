@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -47,6 +47,10 @@ const renderAt = (path: string) => {
 };
 
 describe("smoke", () => {
+  beforeEach(() => {
+    window.localStorage.setItem("wayam_auth", "1");
+  });
+
   const pages: [string, React.ReactElement][] = [
     ["/",                    <Dashboard />],
     ["/variants",            <Variants />],

@@ -1,10 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { AppShell } from "@/components/layout/AppShell";
+import { isAuthenticated } from "@/lib/auth";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Variants from "./pages/Variants";
 import EbomManager from "./pages/EbomManager";
@@ -21,6 +23,13 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
+const RequireAuth = ({ children }: { children: JSX.Element }) => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
@@ -29,7 +38,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route element={<AppShell />}>
+            <Route path="/login" element={<Login />} />
+            <Route
+              element={
+                <RequireAuth>
+                  <AppShell />
+                </RequireAuth>
+              }
+            >
               <Route path="/"             element={<Dashboard />} />
               <Route path="/variants"     element={<Variants />} />
               <Route path="/ebom"         element={<EbomManager />} />
