@@ -11,11 +11,20 @@ End-to-end BOM (Bill of Materials) synchronization for automotive programs — E
 ## Getting started
 
 ```sh
+git clone https://github.com/WayamAI/BOM_synchronization.git
+cd BOM_synchronization
 bun install    # or npm install
 bun run dev    # or npm run dev
 ```
 
 The app runs at `http://localhost:8080` (or the next free port).
+
+## Login
+
+The app sits behind a login screen. This is a **demo gate, not real
+authentication** — there's no backend or user database. A single fixed
+credential pair is hardcoded in `src/lib/auth.ts` and shown directly on
+the login page itself, so anyone opening the app can sign in.
 
 ## Scripts
 
