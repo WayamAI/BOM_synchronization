@@ -1,29 +1,27 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import {
   parts, mbomOps, suppliers, softwareComponents, getChildren, ecns,
 } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
 import { cn } from "@/lib/utils";
-import {
-  Zap, Battery, CircleDot, Box, Armchair, Cpu,
-  TrendingUp, Factory, Truck, ShieldAlert, FileEdit,
-} from "lucide-react";
+import { AppIcon } from "@/components/ui/app-icon";
+import type { IconName } from "@/lib/icons";
 
-const SYSTEM_VISUAL: Record<string, { icon: typeof Zap; color: string; short: string }> = {
-  PWT: { icon: Zap,       color: "hsl(239 84% 60%)", short: "PWT" },
-  BAT: { icon: Battery,   color: "hsl(172 76% 38%)", short: "BAT" },
-  CHS: { icon: CircleDot, color: "hsl(32 95% 50%)",  short: "CHS" },
-  BDY: { icon: Box,       color: "hsl(199 89% 48%)", short: "BDY" },
-  INT: { icon: Armchair,  color: "hsl(280 75% 60%)", short: "INT" },
-  ELE: { icon: Cpu,       color: "hsl(350 89% 60%)", short: "ELE" },
+const SYSTEM_VISUAL: Record<string, { icon: IconName; short: string }> = {
+  PWT: { icon: "activity", short: "PWT" },
+  BAT: { icon: "package",  short: "BAT" },
+  CHS: { icon: "settings", short: "CHS" },
+  BDY: { icon: "parts",    short: "BDY" },
+  INT: { icon: "variants", short: "INT" },
+  ELE: { icon: "cpu",      short: "ELE" },
 };
 
-const getSystemVisual = (pn: string) => {
+const getSystemVisual = (pn: string): { icon: IconName; short: string } => {
   for (const [key, val] of Object.entries(SYSTEM_VISUAL)) {
     if (pn.toUpperCase().includes(key)) return val;
   }
-  return { icon: Box, color: "hsl(200 70% 50%)", short: pn.slice(0, 3) };
+  return { icon: "parts", short: pn.slice(0, 3) };
 };
 
 // BFS over the BOM graph starting from a system root
@@ -48,15 +46,15 @@ const cellStyle = (s: Score) => {
   return { fg: "text-critical", bar: "bg-critical" };
 };
 
-const scoreTone = (value: number | null) => {
-  if (value === null) return "border-border/60 bg-muted/35 text-muted-foreground";
-  if (value >= 85) return "border-success/20 bg-success/10 text-success";
-  if (value >= 65) return "border-warning/20 bg-warning/10 text-warning";
-  return "border-critical/20 bg-critical/10 text-critical";
+const cellBorderTone = (value: number | null) => {
+  if (value === null) return "border-border/60 bg-surface-secondary/20";
+  if (value < 65) return "border-critical/30 bg-critical/5";
+  if (value < 85) return "border-warning/20 bg-warning/5";
+  return "border-border/60 bg-surface-secondary/30";
 };
 
 export const SystemHealthMatrix = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { activeProgram } = useProgramContext();
 
   const systemsMeta = useMemo(() => {
@@ -67,7 +65,7 @@ export const SystemHealthMatrix = () => {
         const sysPart = parts.find(p => p.partNumber === edge.childPN);
         if (!sysPart) return null;
         const vis = getSystemVisual(sysPart.partNumber);
-        return { pn: sysPart.partNumber, name: sysPart.name, short: vis.short, icon: vis.icon, color: vis.color };
+        return { pn: sysPart.partNumber, name: sysPart.name, short: vis.short, icon: vis.icon };
       })
       .filter((s): s is NonNullable<typeof s> => s !== null);
   }, [activeProgram]);
@@ -120,10 +118,10 @@ export const SystemHealthMatrix = () => {
   }, [systemsMeta]);
 
   const dims = [
-    { key: "design", label: "Design",        icon: TrendingUp,  to: "/ebom" },
-    { key: "mfg",    label: "Manufacturing", icon: Factory,     to: "/mbom" },
-    { key: "supply", label: "Supply",        icon: Truck,       to: "/suppliers" },
-    { key: "cyber",  label: "Cyber",         icon: ShieldAlert, to: "/software" },
+    { key: "design", label: "Design",        icon: "trendingUp" as const, to: "/ebom" },
+    { key: "mfg",    label: "Manufacturing", icon: "factory" as const,    to: "/mbom" },
+    { key: "supply", label: "Supply",        icon: "suppliers" as const,  to: "/suppliers" },
+    { key: "cyber",  label: "Cyber",         icon: "software" as const,   to: "/software" },
   ] as const;
 
   const totals = useMemo(() => {
@@ -144,50 +142,52 @@ export const SystemHealthMatrix = () => {
   }, [rows]);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-card h-full">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
+    <div className="rounded-lg border border-border bg-card p-4 shadow-none flex flex-col gap-3">
+      {/* Header with Title & Governed Status Legend */}
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border/50 pb-3">
         <div>
-          <h3 className="text-sm font-semibold">System Health Matrix</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Readiness by system across design, manufacturing, supply and cyber.
+          <h3 className="text-sm font-semibold text-foreground tracking-tight">System Health Matrix</h3>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Cross-discipline readiness across design, manufacturing, supply, and cybersecurity.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-success/20 bg-success/10 px-2 py-1 text-success">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" />
-            Healthy 85+
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#275a3b] px-2.5 py-0.5 text-white font-medium border-transparent">
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            Healthy ≥85
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-warning/20 bg-warning/10 px-2 py-1 text-warning">
-            <span className="h-1.5 w-1.5 rounded-full bg-warning" />
-            Watch 65-84
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#8a430f] px-2.5 py-0.5 text-white font-medium border-transparent">
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            Watch 65–84
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-critical/20 bg-critical/10 px-2 py-1 text-critical">
-            <span className="h-1.5 w-1.5 rounded-full bg-critical" />
-            Risk below 65
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#891f24] px-2.5 py-0.5 text-white font-medium border-transparent">
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            Risk &lt;65
           </span>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-2 md:grid-cols-6">
-        <div className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-          <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Systems</div>
-          <div className="mt-1 text-lg font-semibold tabular-nums">{rows.length}</div>
+      {/* Headline Rollup Strip */}
+      <div className="grid grid-cols-3 gap-2 md:grid-cols-6">
+        <div className="rounded-md border border-border/50 bg-surface-secondary/40 px-2.5 py-2">
+          <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Systems</div>
+          <div className="mt-1 text-base font-bold tabular-nums text-foreground">{rows.length}</div>
         </div>
-        <div className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-          <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Parts</div>
-          <div className="mt-1 text-lg font-semibold tabular-nums">{totals.totalParts}</div>
+        <div className="rounded-md border border-border/50 bg-surface-secondary/40 px-2.5 py-2">
+          <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-medium">Parts</div>
+          <div className="mt-1 text-base font-bold tabular-nums text-foreground">{totals.totalParts}</div>
         </div>
         {dims.map(d => {
           const v = totals[d.key as "design" | "mfg" | "supply" | "cyber"];
           return (
-            <div key={d.key} className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-              <div className="flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                <d.icon className="h-3 w-3" />
+            <div key={d.key} className="rounded-md border border-border/50 bg-surface-secondary/40 px-2.5 py-2">
+              <div className="flex items-center gap-1 text-[10px] uppercase tracking-wide text-muted-foreground font-medium">
+                <AppIcon name={d.icon} size="xs" className="text-muted-foreground" />
                 {d.label}
               </div>
               <div className={cn(
-                "mt-1 text-lg font-semibold tabular-nums",
+                "mt-1 text-base font-bold tabular-nums",
                 v >= 85 ? "text-success" : v >= 65 ? "text-warning" : "text-critical"
               )}>
                 {v}%
@@ -197,108 +197,117 @@ export const SystemHealthMatrix = () => {
         })}
       </div>
 
-      <div className="mt-4 hidden grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] gap-3 px-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground lg:grid">
-        <div>System</div>
-        <div className="text-center">Parts</div>
-        {dims.map(d => (
-          <div key={d.key} className="text-center">{d.label}</div>
-        ))}
-        <div className="text-center">Open ECN</div>
-      </div>
+      {/* Table Section: Header + Rows */}
+      <div className="flex flex-col gap-1.5">
+        {/* Table Column Headers (Desktop) */}
+        <div className="hidden grid-cols-[minmax(180px,1.6fr)_55px_repeat(4,minmax(90px,1fr))_75px] gap-2 px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-muted-foreground lg:grid">
+          <div>System</div>
+          <div className="text-center">Parts</div>
+          {dims.map(d => (
+            <div key={d.key} className="text-center">{d.label}</div>
+          ))}
+          <div className="text-center">Open ECN</div>
+        </div>
 
-      <div className="mt-2 space-y-2">
-        {rows.map(row => {
-          const Icon = row.icon;
-          return (
-            <div
-              key={row.pn}
-              className="rounded-xl border border-border bg-background px-4 py-3 transition-colors hover:bg-muted/20"
-            >
-              <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] lg:items-center lg:gap-3">
-                <button onClick={() => navigate(`/parts/${row.pn}`)} className="min-w-0 text-left">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl ring-1 ring-inset"
-                      style={{ background: `${row.color}12`, color: row.color, boxShadow: `inset 0 0 0 1px ${row.color}25` }}
-                    >
-                      <Icon className="h-4 w-4" strokeWidth={2.1} />
+        {/* Diagnostic Rows — Single structured panel with hairline dividers to eliminate card fatigue */}
+        <div className="divide-y divide-border/40 rounded-lg border border-border bg-surface-secondary/15 overflow-hidden">
+        {rows.map(row => (
+          <div
+            key={row.pn}
+            className="px-3 py-2.5 transition-colors hover:bg-surface-secondary/50 focus-within:bg-surface-secondary/50"
+          >
+            <div className="flex flex-col gap-2.5 lg:grid lg:grid-cols-[minmax(180px,1.6fr)_55px_repeat(4,minmax(90px,1fr))_75px] lg:items-center lg:gap-2">
+              {/* System Identifier & Metadata */}
+              <button
+                onClick={() => router.push(`/parts/${row.pn}`)}
+                aria-label={`View ${row.name} system part master (${row.pn})`}
+                className="group min-w-0 text-left rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="grid h-7 w-7 shrink-0 place-items-center rounded-md border border-border/60 bg-surface-secondary text-foreground group-hover:border-primary/40 transition-colors">
+                    <AppIcon name={row.icon} size="xs" aria-hidden />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="truncate text-xs font-semibold text-foreground group-hover:text-primary transition-colors">{row.name}</span>
+                      <span className="rounded-full border border-border/60 bg-surface-secondary px-2 py-0.2 text-[10px] text-muted-foreground tabular-nums">
+                        {row.short}
+                      </span>
                     </div>
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-semibold">{row.name}</span>
-                        <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
-                          {row.short}
-                        </span>
-                      </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                        <span className={cn(
-                          "rounded-full border px-2 py-0.5",
-                          row.inReview > 0
-                            ? "border-warning/20 bg-warning/10 text-warning"
-                            : "border-success/20 bg-success/10 text-success"
-                        )}>
-                          {row.inReview > 0 ? `${row.inReview} in review` : "All released"}
-                        </span>
-                      </div>
+                    <div className="mt-0.5 flex flex-wrap items-center gap-1 text-[10px] text-muted-foreground">
+                      <span className={cn(
+                        "rounded-full px-2 py-0 text-[10px] font-medium text-white border-transparent",
+                        row.inReview > 0
+                          ? "bg-[#8a430f]"
+                          : "bg-[#275a3b]"
+                      )}>
+                        {row.inReview > 0 ? `${row.inReview} in review` : "All released"}
+                      </span>
                     </div>
                   </div>
-                </button>
-
-                <div className="text-left lg:text-center">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground lg:hidden">Parts</div>
-                  <div className="text-2xl font-semibold tabular-nums lg:text-lg">{row.total}</div>
                 </div>
+              </button>
 
-                {dims.map(d => {
-                  const s = row[d.key as keyof typeof row] as Score;
-                  const style = cellStyle(s);
-                  return (
-                    <button
-                      key={d.key}
-                      onClick={() => navigate(d.to)}
-                      title={s.raw}
-                      className={cn(
-                        "rounded-lg border px-3 py-2 text-left transition-colors",
-                        "hover:border-primary/20 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
-                        scoreTone(s.value)
-                      )}
-                    >
-                      <div className="flex items-baseline justify-between gap-2">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground lg:hidden">
-                          {d.label}
-                        </div>
-                        <div className={cn("text-xl font-semibold tabular-nums leading-none", style.fg)}>
-                          {s.value === null ? "N/A" : `${s.value}%`}
-                        </div>
-                      </div>
-                      <div className="mt-2 h-1 rounded-full bg-muted/80">
-                        <div
-                          className={cn("h-full rounded-full", style.bar)}
-                          style={{ width: `${s.value ?? 0}%` }}
-                        />
-                      </div>
-                      <div className="mt-2 text-[11px] text-muted-foreground">{s.raw}</div>
-                    </button>
-                  );
-                })}
+              {/* Total Parts Count */}
+              <div className="text-left lg:text-center">
+                <div className="text-[10px] uppercase tracking-wide text-muted-foreground lg:hidden">Parts</div>
+                <div className="text-xs sm:text-sm font-semibold tabular-nums text-foreground">{row.total}</div>
+              </div>
 
-                <div className="flex items-center lg:justify-center">
-                  {row.openEcns > 0 ? (
-                    <button
-                      onClick={() => navigate("/changes")}
-                      className="inline-flex items-center gap-1 rounded-full border border-warning/25 bg-warning/10 px-2.5 py-1 text-[10px] font-semibold text-warning hover:bg-warning/15"
-                    >
-                      <FileEdit className="h-3 w-3" />
-                      {row.openEcns} open
-                    </button>
-                  ) : (
-                    <span className="text-[11px] text-muted-foreground">-</span>
-                  )}
-                </div>
+              {/* Dimension Metric Cells */}
+              {dims.map(d => {
+                const s = row[d.key as keyof typeof row] as Score;
+                const style = cellStyle(s);
+                return (
+                  <button
+                    key={d.key}
+                    onClick={() => router.push(d.to)}
+                    title={s.raw}
+                    aria-label={`${row.name} ${d.label} readiness: ${s.value === null ? "N/A" : `${s.value}%`}. ${s.raw ?? ""}`}
+                    className={cn(
+                      "rounded-md border px-2 py-1.5 text-left transition-colors",
+                      "hover:border-primary/40 hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1",
+                      cellBorderTone(s.value)
+                    )}
+                  >
+                    <div className="flex items-baseline justify-between gap-1">
+                      <div className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground lg:hidden">
+                        {d.label}
+                      </div>
+                      <div className={cn("text-xs font-bold tabular-nums leading-none", style.fg)}>
+                        {s.value === null ? "N/A" : `${s.value}%`}
+                      </div>
+                    </div>
+                    <div className="mt-1.5 h-1 rounded-full bg-surface-secondary overflow-hidden">
+                      <div
+                        className={cn("h-full transition-all duration-300", style.bar)}
+                        style={{ width: `${s.value ?? 0}%` }}
+                      />
+                    </div>
+                    <div className="mt-1 text-[10px] text-muted-foreground truncate">{s.raw}</div>
+                  </button>
+                );
+              })}
+
+              {/* Open ECN Action Pill */}
+              <div className="flex items-center lg:justify-center">
+                {row.openEcns > 0 ? (
+                  <button
+                    onClick={() => router.push("/changes")}
+                    aria-label={`View ${row.openEcns} open ECNs affecting ${row.name}`}
+                    className="inline-flex items-center gap-1 rounded-full bg-[#8a430f] px-2.5 py-0.5 text-[10px] font-medium text-white hover:bg-[#a65315] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                  >
+                    <AppIcon name="changes" size="xs" className="text-white" />
+                    {row.openEcns} open
+                  </button>
+                ) : (
+                  <span className="text-xs text-muted-foreground/60 tabular-nums">—</span>
+                )}
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
+        </div>
       </div>
     </div>
   );

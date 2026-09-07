@@ -1,46 +1,26 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/AppShell";
-import Dashboard from "@/pages/Dashboard";
-import EbomManager from "@/pages/EbomManager";
-import MbomManager from "@/pages/MbomManager";
-import ServiceBom from "@/pages/ServiceBom";
-import SoftwareBom from "@/pages/SoftwareBom";
-import Variants from "@/pages/Variants";
-import Changes from "@/pages/Changes";
-import BomCompare from "@/pages/BomCompare";
-import PartMaster from "@/pages/PartMaster";
-import SupplierIntel from "@/pages/SupplierIntel";
-import FieldQuality from "@/pages/FieldQuality";
-import Reports from "@/pages/Reports";
+import Dashboard from "../../app/(app)/page";
+import Variants from "../../app/(app)/variants/page";
+import EbomManager from "../../app/(app)/ebom/page";
+import MbomManager from "../../app/(app)/mbom/page";
+import ServiceBom from "../../app/(app)/service/page";
+import SoftwareBom from "../../app/(app)/software/page";
+import Changes from "../../app/(app)/changes/page";
+import BomCompare from "../../app/(app)/compare/page";
+import PartMaster from "../../app/(app)/parts/page";
+import SupplierIntel from "../../app/(app)/suppliers/page";
+import FieldQuality from "../../app/(app)/field/page";
+import Reports from "../../app/(app)/reports/page";
 
-const renderAt = (path: string) => {
+const renderPage = (comp: React.ReactElement) => {
   return render(
     <ThemeProvider>
       <TooltipProvider>
-        <MemoryRouter initialEntries={[path]}>
-          <Routes>
-            <Route element={<AppShell />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/variants" element={<Variants />} />
-              <Route path="/ebom" element={<EbomManager />} />
-              <Route path="/mbom" element={<MbomManager />} />
-              <Route path="/service" element={<ServiceBom />} />
-              <Route path="/software" element={<SoftwareBom />} />
-              <Route path="/changes" element={<Changes />} />
-              <Route path="/changes/:id" element={<Changes />} />
-              <Route path="/compare" element={<BomCompare />} />
-              <Route path="/parts" element={<PartMaster />} />
-              <Route path="/parts/:pn" element={<PartMaster />} />
-              <Route path="/suppliers" element={<SupplierIntel />} />
-              <Route path="/field" element={<FieldQuality />} />
-              <Route path="/reports" element={<Reports />} />
-            </Route>
-          </Routes>
-        </MemoryRouter>
+        <AppShell>{comp}</AppShell>
       </TooltipProvider>
     </ThemeProvider>
   );
@@ -67,9 +47,10 @@ describe("smoke", () => {
     ["/field",               <FieldQuality />],
     ["/reports",             <Reports />],
   ];
-  for (const [path] of pages) {
+
+  for (const [path, comp] of pages) {
     it(`renders ${path}`, () => {
-      expect(() => renderAt(path)).not.toThrow();
+      expect(() => renderPage(comp)).not.toThrow();
     });
   }
 });

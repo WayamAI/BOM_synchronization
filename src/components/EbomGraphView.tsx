@@ -44,22 +44,22 @@ const NODE_H = 100;
 
 // ─── Type colours per BOM type ────────────────────────────────────────────────
 const TYPE_CFG: Record<string, { ring: string; bg: string; badge: string; dot: string }> = {
-  Vehicle:       { ring: 'border-violet-400', bg: 'from-violet-500/10 to-purple-500/5',   badge: 'bg-violet-100 text-violet-700',  dot: 'bg-violet-500' },
-  System:        { ring: 'border-blue-400',   bg: 'from-blue-500/10 to-indigo-500/5',     badge: 'bg-blue-100 text-blue-700',      dot: 'bg-blue-500' },
-  Assembly:      { ring: 'border-cyan-400',   bg: 'from-cyan-500/10 to-sky-500/5',        badge: 'bg-cyan-100 text-cyan-700',      dot: 'bg-cyan-500' },
-  'Sub-Assembly':{ ring: 'border-teal-400',   bg: 'from-teal-500/10 to-emerald-500/5',    badge: 'bg-teal-100 text-teal-700',      dot: 'bg-teal-500' },
-  ECU:           { ring: 'border-amber-400',  bg: 'from-amber-500/10 to-orange-500/5',    badge: 'bg-amber-100 text-amber-700',    dot: 'bg-amber-500' },
-  Harness:       { ring: 'border-lime-400',   bg: 'from-lime-500/10 to-green-500/5',      badge: 'bg-lime-100 text-lime-700',      dot: 'bg-lime-500' },
-  Part:          { ring: 'border-slate-300',  bg: 'from-slate-500/5 to-gray-500/3',       badge: 'bg-slate-100 text-slate-600',    dot: 'bg-slate-400' },
-  Fastener:      { ring: 'border-stone-300',  bg: 'from-stone-500/5 to-neutral-500/3',    badge: 'bg-stone-100 text-stone-600',    dot: 'bg-stone-400' },
-  Consumable:    { ring: 'border-orange-300', bg: 'from-orange-500/8 to-yellow-500/5',    badge: 'bg-orange-100 text-orange-700',  dot: 'bg-orange-400' },
-  Software:      { ring: 'border-pink-400',   bg: 'from-pink-500/10 to-rose-500/5',       badge: 'bg-pink-100 text-pink-700',      dot: 'bg-pink-500' },
+  Vehicle:       { ring: 'border-violet-500/40', bg: 'bg-card',   badge: 'bg-violet-950/40 text-violet-300 border-violet-700/30',  dot: 'bg-violet-400' },
+  System:        { ring: 'border-blue-500/40',   bg: 'bg-card',   badge: 'bg-blue-950/40 text-blue-300 border-blue-700/30',      dot: 'bg-blue-400' },
+  Assembly:      { ring: 'border-cyan-500/40',   bg: 'bg-card',   badge: 'bg-cyan-950/40 text-cyan-300 border-cyan-700/30',      dot: 'bg-cyan-400' },
+  'Sub-Assembly':{ ring: 'border-teal-500/40',   bg: 'bg-card',   badge: 'bg-teal-950/40 text-teal-300 border-teal-700/30',      dot: 'bg-teal-400' },
+  ECU:           { ring: 'border-amber-500/40',  bg: 'bg-card',   badge: 'bg-amber-950/40 text-amber-300 border-amber-700/30',    dot: 'bg-amber-400' },
+  Harness:       { ring: 'border-lime-500/40',   bg: 'bg-card',   badge: 'bg-lime-950/40 text-lime-300 border-lime-700/30',      dot: 'bg-lime-400' },
+  Part:          { ring: 'border-border',        bg: 'bg-card',   badge: 'bg-muted/40 text-muted-foreground border-border',    dot: 'bg-muted-foreground' },
+  Fastener:      { ring: 'border-border',        bg: 'bg-card',   badge: 'bg-muted/40 text-muted-foreground border-border',    dot: 'bg-muted-foreground' },
+  Consumable:    { ring: 'border-orange-500/40', bg: 'bg-card',   badge: 'bg-orange-950/40 text-orange-300 border-orange-700/30',  dot: 'bg-orange-400' },
+  Software:      { ring: 'border-pink-500/40',   bg: 'bg-card',   badge: 'bg-pink-950/40 text-pink-300 border-pink-700/30',      dot: 'bg-pink-400' },
 };
 const tc = (type: string) => TYPE_CFG[type] ?? TYPE_CFG['Part'];
 
 const healthDot = (h?: string) =>
-  h === 'critical' ? 'bg-red-500 shadow-[0_0_6px_2px_rgba(239,68,68,0.5)] animate-pulse' :
-  h === 'warning'  ? 'bg-amber-400' : 'bg-emerald-500';
+  h === 'critical' ? 'bg-critical' :
+  h === 'warning'  ? 'bg-warning' : 'bg-success';
 
 // ─── Dagre auto-layout ────────────────────────────────────────────────────────
 function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
@@ -105,53 +105,50 @@ const BomNode = ({ data }: { data: any }) => {
     <div
       onClick={() => onNodeClick(node)}
       className={cn(
-        'relative rounded-xl border-2 bg-white cursor-pointer select-none',
-        `bg-gradient-to-br ${cfg.bg}`,
+        'relative rounded-sm border bg-card cursor-pointer select-none',
         cfg.ring,
-        isSelected  && 'ring-2 ring-primary ring-offset-2 border-primary/60 shadow-[0_0_16px_2px_hsl(239_84%_60%/0.3)]',
-        isHighlighted && !isSelected && 'border-primary/40 shadow-md',
+        isSelected  && 'ring-1 ring-primary border-primary bg-primary/5',
+        isHighlighted && !isSelected && 'border-primary/40',
         isDimmed    && 'opacity-25 grayscale pointer-events-none',
-        'transition-all duration-200 hover:shadow-lg hover:scale-[1.02]',
+        'transition-colors hover:border-primary/50',
       )}
       style={{ width: NODE_W, minHeight: NODE_H }}
     >
       <Handle type="target" position={Position.Left} className="!opacity-0 !w-2 !h-2" />
 
       {/* Type bar + health dot */}
-      <div className="px-4 pt-3 flex items-center gap-2">
-        <span className={cn('h-2.5 w-2.5 rounded-full shrink-0', healthDot(node.health))} />
-        <span className={cn('text-[11px] font-bold uppercase tracking-widest', cfg.badge.replace('bg-', 'text-').replace(/text-\w+-\d+/, m => m))}>
-          <span className={cn('inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider', cfg.badge)}>
-            {node.type}
-          </span>
+      <div className="px-3 pt-2.5 flex items-center gap-1.5">
+        <span className={cn('h-1.5 w-1.5 rounded-full shrink-0', healthDot(node.health))} />
+        <span className={cn('inline-flex items-center rounded-sm px-1.5 py-0 text-[9px] font-bold uppercase tracking-wider border', cfg.badge)}>
+          {node.type}
         </span>
         {!!node.cves && (
-          <span className="ml-auto text-[10px] bg-red-100 text-red-700 border border-red-200 rounded px-1.5 py-0.5 font-bold">{node.cves} CVE</span>
+          <span className="ml-auto text-[9px] bg-[#891f24] text-white border-transparent rounded-full px-2 py-0.5 font-medium">{node.cves} CVE</span>
         )}
         {!!node.warnings && !node.cves && (
-          <span className="ml-auto text-[10px] bg-amber-100 text-amber-700 border border-amber-200 rounded px-1.5 py-0.5 font-bold">{node.warnings}⚠</span>
+          <span className="ml-auto text-[9px] bg-[#8a430f] text-white border-transparent rounded-full px-2 py-0.5 font-medium">{node.warnings} warn</span>
         )}
       </div>
 
       {/* Name + PN */}
-      <div className="px-4 pt-1.5 pb-2">
-        <div className="text-[14px] font-bold text-gray-900 leading-snug line-clamp-1">{node.name}</div>
-        <div className="text-[11px] font-mono text-gray-500 mt-0.5">{node.partNumber}</div>
+      <div className="px-3 pt-1 pb-1.5">
+        <div className="text-xs font-semibold text-foreground leading-snug line-clamp-1">{node.name}</div>
+        <div className="text-[10px] text-muted-foreground mt-0.5">{node.partNumber}</div>
       </div>
 
       {/* Footer */}
-      <div className="px-4 pb-2 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="px-3 pb-2 flex items-center justify-between gap-1.5">
+        <div className="flex items-center gap-1 flex-wrap">
           {node.revision && (
-            <span className="text-[10px] font-mono bg-gray-100 text-gray-500 rounded px-1.5 border border-gray-200">{node.revision}</span>
+            <span className="text-[9px] bg-muted/40 text-muted-foreground rounded-sm px-1 border border-border">{node.revision}</span>
           )}
           {node.status && (
             <span className={cn(
-              'text-[10px] px-1.5 rounded border font-medium',
-              node.status === 'Released'  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-              node.status === 'In Review' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-              node.status === 'Obsolete'  ? 'bg-gray-100 text-gray-500 border-gray-200' :
-                                            'bg-blue-50 text-blue-700 border-blue-200'
+              'text-[9px] px-1 rounded-sm border',
+              node.status === 'Released'  ? 'bg-[#275a3b] text-white border-transparent font-medium' :
+              node.status === 'In Review' ? 'bg-[#8a430f] text-white border-transparent font-medium' :
+              node.status === 'Obsolete'  ? 'bg-[#3f3f46] text-white border-transparent' :
+                                            'bg-[#175c6d] text-white border-transparent font-medium'
             )}>{node.status}</span>
           )}
         </div>
@@ -159,15 +156,15 @@ const BomNode = ({ data }: { data: any }) => {
         {/* Expand / collapse badge */}
         {hasChildren && (
           <div className={cn(
-            'flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.5 rounded-full border',
+            'flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded-sm border',
             isExpanded
-              ? 'bg-primary/10 text-primary border-primary/30'
-              : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-primary/10 hover:text-primary hover:border-primary/30',
+              ? 'bg-[#175c6d] text-white border-transparent font-medium'
+              : 'bg-muted/20 text-muted-foreground border-border hover:bg-muted/40',
             'transition-colors',
           )}>
             {isExpanded
-              ? <><ChevronDown className="h-3 w-3" />{visibleChildCount}</>
-              : <><ChevronRight className="h-3 w-3" />{totalChildCount}</>
+              ? <><ChevronDown className="h-2.5 w-2.5" />{visibleChildCount}</>
+              : <><ChevronRight className="h-2.5 w-2.5" />{totalChildCount}</>
             }
           </div>
         )}
@@ -357,15 +354,15 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
     <div className="flex flex-col h-full rounded-xl overflow-hidden border border-border bg-card shadow-card">
 
       {/* ── Toolbar ── */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-card/95 flex-wrap">
+      <div className="flex items-center gap-2 px-3 py-1.5 border-b border-border bg-card flex-wrap">
         {/* Search */}
         <div className="relative flex-1 min-w-44 max-w-60">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground pointer-events-none" />
           <Input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search nodes…"
-            className="h-7 pl-8 pr-7 text-xs bg-muted/30"
+            className="h-7 pl-7 pr-6 text-xs bg-muted/20 rounded-sm border-border"
           />
           {search && (
             <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
@@ -376,48 +373,48 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
 
         {/* Zoom controls */}
         <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => zoomIn({ duration: 200 })} title="Zoom in">
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0 rounded-sm border-border bg-card hover:bg-muted/30" onClick={() => zoomIn({ duration: 200 })} title="Zoom in">
             <ZoomIn className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => zoomOut({ duration: 200 })} title="Zoom out">
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0 rounded-sm border-border bg-card hover:bg-muted/30" onClick={() => zoomOut({ duration: 200 })} title="Zoom out">
             <ZoomOut className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => fitView({ duration: 300, padding: 0.2, maxZoom: 1.2 })} title="Fit to screen">
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0 rounded-sm border-border bg-card hover:bg-muted/30" onClick={() => fitView({ duration: 300, padding: 0.2, maxZoom: 1.2 })} title="Fit to screen">
             <Maximize2 className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={handleReset} title="Reset — collapse all">
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0 rounded-sm border-border bg-card hover:bg-muted/30" onClick={handleReset} title="Reset — collapse all">
             <RotateCcw className="h-3.5 w-3.5" />
           </Button>
         </div>
 
         {/* Instruction hint */}
-        <span className="text-[10px] text-muted-foreground hidden md:block">
-          Click a node to expand its children · Click again to collapse
+        <span className="text-[9px] text-muted-foreground hidden md:block">
+          Click node to expand/collapse · Select to inspect
         </span>
 
         {/* Clear selection */}
         {selected && (
-          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs gap-1 text-primary ml-auto" onClick={() => onSelect(null)}>
+          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs gap-1 text-primary ml-auto rounded-sm hover:bg-muted/30" onClick={() => onSelect(null)}>
             <X className="h-3 w-3" /> Clear
           </Button>
         )}
       </div>
 
       {/* ── Legend ── */}
-      <div className="flex items-center gap-3 px-3 py-1.5 border-b border-border bg-muted/20 flex-wrap">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Types:</span>
+      <div className="flex items-center gap-3 px-3 py-1 border-b border-border bg-muted/10 flex-wrap">
+        <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">Types:</span>
         {(['Vehicle','System','Assembly','ECU','Part','Harness'] as const).map(t => (
-          <span key={t} className="flex items-center gap-1 text-[10px] text-muted-foreground">
-            <span className={cn('h-2 w-2 rounded-full', tc(t).dot)} />{t}
+          <span key={t} className="flex items-center gap-1 text-[9px] text-muted-foreground">
+            <span className={cn('h-1.5 w-1.5 rounded-full', tc(t).dot)} />{t}
           </span>
         ))}
-        <span className="flex items-center gap-1 text-[10px] text-muted-foreground ml-2">
-          <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />Critical
+        <span className="flex items-center gap-1 text-[9px] text-muted-foreground ml-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-critical" />Critical
         </span>
-        <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <span className="h-2 w-2 rounded-full bg-amber-400" />Warning
+        <span className="flex items-center gap-1 text-[9px] text-muted-foreground">
+          <span className="h-1.5 w-1.5 rounded-full bg-warning" />Warning
         </span>
-        <span className="ml-auto text-[10px] text-muted-foreground font-medium">
+        <span className="ml-auto text-[9px] text-muted-foreground">
           {nodes.length} visible · {lookup.size > 0 ? lookup.size : '?'} total
         </span>
       </div>
@@ -443,13 +440,13 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           zoomOnPinch
           defaultEdgeOptions={{ type: 'smoothstep' }}
         >
-          <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="hsl(220 13% 88%)" />
+          <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="hsl(var(--border))" />
           <Controls position="bottom-right" showZoom={false} showFitView={false}
-            className="!border-border !bg-card !shadow-card !rounded-lg !overflow-hidden" />
+            className="!border-border !bg-card !shadow-none !rounded-sm !overflow-hidden" />
 
           {/* Status bar */}
           <Panel position="bottom-left">
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-card/90 border border-border shadow-card text-[10px] backdrop-blur">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-card border border-border shadow-none text-[10px]">
               {selected ? (
                 <>
                   <GitBranch className="h-3 w-3 text-primary" />
@@ -458,7 +455,7 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
                   <span className="text-muted-foreground">{selected.type}</span>
                 </>
               ) : (
-                <span className="text-muted-foreground">Click a node to explore its dependencies</span>
+                <span className="text-muted-foreground">Click a node to inspect dependencies</span>
               )}
             </div>
           </Panel>
@@ -466,10 +463,10 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           {/* Empty filter state */}
           {nodes.length === 0 && (
             <Panel position="top-center">
-              <div className="flex flex-col items-center gap-2 mt-20 p-5 rounded-xl bg-card border border-border shadow-card">
-                <AlertTriangle className="h-7 w-7 text-warning" />
-                <p className="text-sm font-semibold">No matching nodes</p>
-                <Button variant="outline" size="sm" onClick={() => setSearch('')}>Clear search</Button>
+              <div className="flex flex-col items-center gap-2 mt-16 p-4 rounded-sm bg-card border border-border shadow-none">
+                <AlertTriangle className="h-5 w-5 text-warning" />
+                <p className="text-xs font-semibold text-foreground">No matching nodes</p>
+                <Button variant="outline" size="sm" className="h-7 text-xs rounded-sm" onClick={() => setSearch('')}>Clear search</Button>
               </div>
             </Panel>
           )}

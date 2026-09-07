@@ -3,150 +3,286 @@
 @tailwind utilities;
 
 /* =============================================================================
-   Wayam AI — BOM Synchronization Design System v2  (Meridian Program)
-   Palette: Wayam Orange primary/accent · Neutral slate canvas
-   Typography: Google Sans / Google Sans Text
-   All colors defined as HSL triplets so Tailwind can alpha-mix them.
+   Chronos-Inspired Industrial Command Center Design System
+   Palette: True Neutral Dark Charcoal (#000000, #101010, #191919, #232323)
+   Accent: BOM Industrial Orange (#f05d1a / hsl(20 85% 50%))
+   Hairline borders: Subtle White-Alpha (0.08 / 0.14 / 0.24)
+   Typography: Geist universal functional UI + Michroma display telemetry
    ============================================================================= */
 
 @layer base {
   :root {
+    /* =========================================================================
+       TIER 1: REFERENCE TOKENS (LIGHT PALETTE)
+       ========================================================================= */
+    --ref-bom-gray-0: #ffffff;
+    --ref-bom-gray-50: #fafafa;
+    --ref-bom-gray-100: #f2f2f2;
+    --ref-bom-gray-200: #e5e5e5;
+    --ref-bom-gray-300: #d4d4d4;
+    --ref-bom-gray-400: #afafaf;
+    --ref-bom-gray-500: #8a8a8a;
+    --ref-bom-gray-600: #626262;
+    --ref-bom-gray-700: #464646;
+    --ref-bom-gray-800: #323232;
+    --ref-bom-gray-900: #191919;
+    --ref-bom-gray-950: #101010;
+    --ref-bom-gray-1000: #000000;
+
+    --ref-bom-orange-400: #fb713b;
+    --ref-bom-orange-500: #f05d1a;
+    --ref-bom-orange-600: #d64808;
+
+    /* =========================================================================
+       TIER 2: SEMANTIC TOKENS (LIGHT)
+       ========================================================================= */
+    --page-background: var(--ref-bom-gray-100);
+    --page-background-subtle: var(--ref-bom-gray-50);
+    --surface-primary: #ffffff;
+    --surface-secondary: var(--ref-bom-gray-50);
+    --surface-elevated: var(--ref-bom-gray-100);
+    --surface-scroll-bar: var(--ref-bom-gray-300);
+    --stroke-subtle: rgba(0, 0, 0, 0.08);
+    --stroke-default: rgba(0, 0, 0, 0.14);
+    --stroke-strong: rgba(0, 0, 0, 0.24);
+
+    --action-primary: #101010;
+    --action-primary-hover: #191919;
+    --action-primary-text: #ffffff;
+    --action-accent: var(--ref-bom-orange-500);
+
     /* Canvas / surfaces */
-    --background: 220 23% 97%;
-    --foreground: 224 71% 8%;
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 224 71% 8%;
+    --card-foreground: 0 0% 10%;
+    --card-hover: 0 0% 96%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 8%;
+    --popover-foreground: 0 0% 10%;
 
-    /* Primary — Wayam Orange (brand core) */
-    --primary: 20 90% 50%;
+    /* Primary — Restrained Industrial Orange */
+    --primary: 20 85% 48%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 33 100% 62%;
+    --primary-glow: 20 85% 48%;
 
-    /* Secondary (subtle neutral chips / fills) */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 224 60% 18%;
+    /* Secondary */
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 20%;
 
-    /* Muted (subdued text + subtle backgrounds) */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 42%;
+    /* Muted */
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Accent — Wayam Burnt Orange (darker brand tone, complements primary) */
-    --accent: 16 75% 45%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent */
+    --accent: 0 0% 92%;
+    --accent-foreground: 0 0% 10%;
 
-    /* Semantic */
-    --destructive: 0 72% 51%;
+    /* Semantic Feedback */
+    --destructive: 0 70% 48%;
     --destructive-foreground: 0 0% 100%;
-    --success: 158 64% 40%;
+    --success: 145 60% 36%;
     --success-foreground: 0 0% 100%;
-    --warning: 32 95% 50%;
-    --warning-foreground: 30 60% 10%;
-    --critical: 0 72% 51%;
+    --warning: 36 90% 44%;
+    --warning-foreground: 0 0% 100%;
+    --critical: 0 70% 48%;
     --critical-foreground: 0 0% 100%;
 
-    /* Lines */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 20 90% 50%;
+    /* High-contrast solid dark badges (white text) */
+    --feedback-success-badge: #275a3b;
+    --feedback-warning-badge: #8a430f;
+    --feedback-error-badge: #a62329;
+    --feedback-critical-badge: #a62329;
+    --feedback-info-badge: #1c5083;
+    --feedback-neutral-badge: #464646;
+    --feedback-badge-content: #ffffff;
 
-    --radius: 0.625rem;
+    /* Lines */
+    --border: 0 0% 86%;
+    --input: 0 0% 86%;
+    --ring: 20 85% 48%;
+
+    --radius: 0.5rem;
 
     /* Stacked surfaces */
     --surface-1: 0 0% 100%;
-    --surface-2: 220 20% 98%;
-    --surface-3: 220 16% 95%;
+    --surface-2: 0 0% 96%;
+    --surface-3: 0 0% 92%;
 
-    /* Gradients — Wayam Orange, restrained */
-    --gradient-primary: linear-gradient(135deg, hsl(33 100% 58%), hsl(16 75% 45%));
-    --gradient-accent:  linear-gradient(135deg, hsl(30 96% 56%), hsl(20 90% 50%));
-    --gradient-danger:  linear-gradient(135deg, hsl(0 72% 51%), hsl(12 82% 55%));
-    --gradient-success: linear-gradient(135deg, hsl(158 64% 40%), hsl(172 76% 38%));
-    --gradient-mesh: radial-gradient(at 12% 0%,  hsl(33 100% 58% / 0.10), transparent 50%),
-                     radial-gradient(at 90% 100%, hsl(16 75% 45% / 0.08), transparent 50%),
-                     radial-gradient(at 0% 100%,  hsl(20 90% 50% / 0.06), transparent 50%);
-
-    /* Shadows — softer, more premium */
-    --shadow-card:      0 2px 8px -1px hsl(224 71% 8% / 0.08), 0 1px 4px -2px hsl(224 71% 8% / 0.06);
-    --shadow-elevated:  0 20px 25px -5px hsl(224 71% 8% / 0.1), 0 10px 10px -5px hsl(224 71% 8% / 0.04);
-    --shadow-glow:         0 0 15px -3px hsl(20 90% 50% / 0.3), 0 0 6px -2px hsl(20 90% 50% / 0.2);
-    --shadow-glow-danger:  0 0 15px -3px hsl(0 72% 51% / 0.3), 0 0 6px -2px hsl(0 72% 51% / 0.2);
-    --shadow-glow-success: 0 0 15px -3px hsl(158 64% 40% / 0.3), 0 0 6px -2px hsl(158 64% 40% / 0.2);
+    /* Shadows — flat, minimal */
+    --shadow-card: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-elevated: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+    --shadow-glow: none;
+    --shadow-glow-danger: none;
+    --shadow-glow-success: none;
 
     /* Sidebar */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 224 60% 18%;
-    --sidebar-primary: 20 90% 50%;
+    --sidebar-background: #ffffff;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 20 85% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 96%;
-    --sidebar-accent-foreground: 224 71% 10%;
-    --sidebar-border: 220 13% 92%;
-    --sidebar-ring: 20 90% 50%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 20 85% 48%;
   }
 
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 210 20% 98%;
-    --card: 224 71% 7%;
-    --card-foreground: 210 20% 98%;
-    --card-hover: 224 71% 10%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 24 95% 58%;
-    --primary-glow: 33 100% 66%;
-    --secondary: 222.2 47.4% 11.2%;
-    --muted: 223 47% 11%;
-    --accent: 18 80% 50%;
-    --border: 217.2 32.6% 17.5%;
-    --secondary-foreground: 220 20% 96%;
+    /* =========================================================================
+       TIER 1: REFERENCE TOKENS (CHRONOS-ALIGNED NEUTRAL DARK PALETTE)
+       ========================================================================= */
+    --ref-bom-gray-0: #ffffff;
+    --ref-bom-gray-50: #fafafa;
+    --ref-bom-gray-100: #f2f2f2;
+    --ref-bom-gray-200: #e5e5e5;
+    --ref-bom-gray-300: #d4d4d4;
+    --ref-bom-gray-400: #afafaf;
+    --ref-bom-gray-500: #8a8a8a;
+    --ref-bom-gray-600: #626262;
+    --ref-bom-gray-700: #464646;
+    --ref-bom-gray-750: #3b3b3b;
+    --ref-bom-gray-800: #323232;
+    --ref-bom-gray-825: #2a2a2a;
+    --ref-bom-gray-850: #232323;
+    --ref-bom-gray-900: #191919;
+    --ref-bom-gray-950: #101010;
+    --ref-bom-gray-1000: #000000;
 
-    --muted: 224 24% 14%;
-    --muted-foreground: 220 10% 66%;
+    --ref-bom-orange-400: #fb713b;
+    --ref-bom-orange-500: #f05d1a;
+    --ref-bom-orange-600: #d64808;
 
-    --accent-foreground: 224 71% 8%;
+    --ref-bom-red-400: #f87171;
+    --ref-bom-red-500: #ef4444;
+    --ref-bom-amber-400: #fbbf24;
+    --ref-bom-amber-500: #f59e0b;
+    --ref-bom-green-400: #4ade80;
+    --ref-bom-green-500: #22c55e;
+    --ref-bom-blue-400: #60a5fa;
+    --ref-bom-blue-500: #3b82f6;
 
-    --destructive: 0 72% 60%;
+    /* =========================================================================
+       TIER 2: SEMANTIC TOKENS (TRUE NEUTRAL DARK)
+       ========================================================================= */
+    --page-background: var(--ref-bom-gray-1000); /* #000000 pitch black */
+    --page-background-subtle: var(--ref-bom-gray-950); /* #101010 */
+
+    --surface-primary: var(--ref-bom-gray-950);   /* #101010 container */
+    --surface-secondary: var(--ref-bom-gray-900); /* #191919 raised */
+    --surface-elevated: var(--ref-bom-gray-850);  /* #232323 raised x2 */
+    --surface-hover: rgba(255, 255, 255, 0.05);
+    --surface-active: rgba(255, 255, 255, 0.08);
+    --surface-scroll-bar: var(--ref-bom-gray-750); /* #3b3b3b */
+
+    --text-primary: var(--ref-bom-gray-50);    /* #fafafa */
+    --text-secondary: var(--ref-bom-gray-300); /* #d4d4d4 */
+    --text-tertiary: var(--ref-bom-gray-500);  /* #8a8a8a */
+    --text-muted: var(--ref-bom-gray-600);     /* #626262 */
+    --text-disabled: var(--ref-bom-gray-700);  /* #464646 */
+    --text-on-color: var(--ref-bom-gray-1000);
+    --text-on-light: var(--ref-bom-gray-1000);
+
+    /* Subtle white-alpha borders matching Chronos */
+    --stroke-subtle: rgba(255, 255, 255, 0.08);
+    --stroke-default: rgba(255, 255, 255, 0.14);
+    --stroke-strong: rgba(255, 255, 255, 0.24);
+
+    /* Primary CTA: High-contrast crisp white button with dark text */
+    --action-primary: var(--ref-bom-gray-50);
+    --action-primary-hover: var(--ref-bom-gray-200);
+    --action-primary-text: var(--ref-bom-gray-1000);
+
+    /* BOM Industrial Orange Accent CTA */
+    --action-accent: var(--ref-bom-orange-500);
+    --action-accent-hover: var(--ref-bom-orange-400);
+    --action-accent-text: #ffffff;
+
+    --feedback-critical: #ef4444;
+    --feedback-critical-subtle: rgba(239, 68, 68, 0.12);
+    --feedback-warning: #f59e0b;
+    --feedback-warning-subtle: rgba(245, 158, 11, 0.12);
+    --feedback-success: #22c55e;
+    --feedback-success-subtle: rgba(34, 197, 94, 0.12);
+    --feedback-info: #3b82f6;
+    --feedback-info-subtle: rgba(59, 130, 246, 0.12);
+
+    /* Solid dark feedback badges with crisp white text */
+    --feedback-success-badge: #275a3b;
+    --feedback-warning-badge: #8a430f;
+    --feedback-error-badge: #a62329;
+    --feedback-critical-badge: #a62329;
+    --feedback-info-badge: #1c5083;
+    --feedback-neutral-badge: #464646;
+    --feedback-badge-content: #ffffff;
+
+    /* Foundation: True Neutral Pitch Black & Dark Charcoal */
+    --background: 0 0% 0%;           /* #000000 */
+    --foreground: 0 0% 96%;          /* #fafafa */
+
+    /* Container surfaces */
+    --card: 0 0% 6.3%;               /* #101010 */
+    --card-foreground: 0 0% 96%;
+    --card-hover: 0 0% 9.8%;          /* #191919 */
+
+    --popover: 0 0% 6.3%;            /* #101010 */
+    --popover-foreground: 0 0% 96%;
+
+    /* Primary: Restrained Industrial Orange */
+    --primary: 20 85% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 20 85% 50%;
+
+    /* Secondary */
+    --secondary: 0 0% 9.8%;          /* #191919 */
+    --secondary-foreground: 0 0% 86%;
+
+    /* Muted */
+    --muted: 0 0% 12%;               /* #1f1f1f */
+    --muted-foreground: 0 0% 55%;
+
+    /* Accent */
+    --accent: 0 0% 13.7%;            /* #232323 */
+    --accent-foreground: 0 0% 96%;
+
+    /* Semantic indicators */
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
-    --success: 158 64% 52%;
-    --success-foreground: 224 71% 8%;
-    --warning: 32 95% 58%;
-    --warning-foreground: 30 60% 10%;
-    --critical: 0 72% 60%;
+    --success: 145 60% 42%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 90% 48%;
+    --warning-foreground: 0 0% 100%;
+    --critical: 0 70% 50%;
     --critical-foreground: 0 0% 100%;
 
-    --border: 224 22% 18%;
-    --input: 224 22% 18%;
-    --ring: 24 95% 58%;
+    /* Subtle borders */
+    --border: 0 0% 14%;              /* rgba(255,255,255,0.14) */
+    --input: 0 0% 14%;
+    --ring: 20 85% 50%;
 
-    --surface-1: 224 32% 10%;
-    --surface-2: 224 30% 12%;
-    --surface-3: 224 28% 14%;
+    --radius: 0.5rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(36 100% 64%), hsl(18 80% 50%));
-    --gradient-accent:  linear-gradient(135deg, hsl(30 96% 60%), hsl(24 95% 58%));
-    --gradient-danger:  linear-gradient(135deg, hsl(0 72% 60%), hsl(12 82% 65%));
-    --gradient-success: linear-gradient(135deg, hsl(158 64% 52%), hsl(172 76% 48%));
-    --gradient-mesh: radial-gradient(at 12% 0%,  hsl(36 100% 64% / 0.16), transparent 60%),
-                     radial-gradient(at 90% 100%, hsl(18 80% 50% / 0.13), transparent 60%),
-                     radial-gradient(at 50% 50%,  hsl(24 95% 58% / 0.06), transparent 80%);
+    /* Stacked surfaces */
+    --surface-1: 0 0% 6.3%;          /* #101010 */
+    --surface-2: 0 0% 9.8%;          /* #191919 */
+    --surface-3: 0 0% 13.7%;         /* #232323 */
 
-    --shadow-card:      0 8px 16px -4px hsl(0 0% 0% / 0.5), 0 4px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-elevated:  0 20px 40px -10px hsl(0 0% 0% / 0.7);
-    --shadow-glow:         0 0 20px -5px hsl(24 95% 58% / 0.4), 0 0 10px -2px hsl(24 95% 58% / 0.3);
-    --shadow-glow-danger:  0 0 20px -5px hsl(0 72% 60% / 0.4), 0 0 10px -2px hsl(0 72% 60% / 0.3);
-    --shadow-glow-success: 0 0 20px -5px hsl(158 64% 52% / 0.4), 0 0 10px -2px hsl(158 64% 52% / 0.3);
+    /* Shadows — flat, zero glow */
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+    --shadow-elevated: 0 6px 16px 0 rgba(0, 0, 0, 0.6);
+    --shadow-glow: none;
+    --shadow-glow-danger: none;
+    --shadow-glow-success: none;
 
-    --sidebar-background: 224 36% 8%;
-    --sidebar-foreground: 220 20% 92%;
-    --sidebar-primary: 24 95% 58%;
-    --sidebar-primary-foreground: 224 71% 8%;
-    --sidebar-accent: 224 28% 14%;
-    --sidebar-accent-foreground: 220 20% 96%;
-    --sidebar-border: 224 22% 16%;
-    --sidebar-ring: 24 95% 58%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 6.3%; /* #101010 */
+    --sidebar-foreground: 0 0% 86%;
+    --sidebar-primary: 20 85% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 9.8%;     /* #191919 */
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 10%;
+    --sidebar-ring: 20 85% 50%;
   }
 }
 
@@ -154,143 +290,194 @@
   * {
     @apply border-border;
   }
-  html, body, #root { height: 100%; }
-  html { -webkit-text-size-adjust: 100%; }
+  html, body {
+    height: 100%;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: "Google Sans", "Google Sans Text", "Product Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: -0.01em;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
-    font-variant-ligatures: contextual common-ligatures;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.005em;
   }
 
-  /* Cleaner default typography scale */
   h1, h2, h3, h4, h5, h6 {
-    font-family: "Google Sans", "Product Sans", "Google Sans Text", Inter, system-ui, sans-serif;
     letter-spacing: -0.02em;
-    font-feature-settings: "cv02", "cv03";
   }
 
-  /* Monospace should feel deliberate — for PN, CVE, rev */
-  code, kbd, pre, .font-mono {
-    font-feature-settings: "calt", "ss01", "zero";
+  .font-display {
+    font-family: var(--font-michroma), sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* Universal Geist font enforcement — Monospace removed from UI */
+  code, kbd, pre {
+    font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
   }
 
-  /* Native form defaults */
-  ::placeholder { color: hsl(var(--muted-foreground) / 0.7); }
-  :focus-visible { outline: 2px solid hsl(var(--ring) / 0.5); outline-offset: 2px; }
-  ::selection { background: hsl(var(--primary) / 0.20); }
+  ::placeholder {
+    color: hsl(var(--muted-foreground) / 0.6);
+  }
+  :focus-visible {
+    outline: 1px solid hsl(var(--primary));
+    outline-offset: 1px;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.25);
+  }
+
+  /* ===========================================================================
+     CHRONOS 8PX PILL SCROLLBAR (GLOBAL)
+     =========================================================================== */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface-scroll-bar) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-scroll-bar);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
 @layer utilities {
-  /* Background helpers */
-  .bg-mesh { background-image: var(--gradient-mesh); background-attachment: fixed; }
-  .bg-gradient-primary { background-image: var(--gradient-primary); }
-  .bg-gradient-accent  { background-image: var(--gradient-accent); }
-  .bg-gradient-danger  { background-image: var(--gradient-danger); }
-  .bg-gradient-success { background-image: var(--gradient-success); }
-
-  /* Shadows */
-  .shadow-card          { box-shadow: var(--shadow-card); }
-  .shadow-elevated      { box-shadow: var(--shadow-elevated); }
-  .shadow-glow          { box-shadow: var(--shadow-glow); }
-  .shadow-glow-danger   { box-shadow: var(--shadow-glow-danger); }
-  .shadow-glow-success  { box-shadow: var(--shadow-glow-success); }
-
-  /* Text gradients */
-  .text-gradient-primary {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .text-gradient-accent {
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  /* Surface utilities */
+  /* Surfaces */
   .surface-1 { background-color: hsl(var(--surface-1)); }
   .surface-2 { background-color: hsl(var(--surface-2)); }
   .surface-3 { background-color: hsl(var(--surface-3)); }
 
-  /* Subtle card used for hover elevation */
+  /* Shadows */
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-elevated { box-shadow: var(--shadow-elevated); }
+
+  /* Neutralized gradients and glows — redirects to solid primary/accent */
+  .bg-gradient-primary { background-color: hsl(var(--primary)); }
+  .bg-gradient-accent  { background-color: hsl(var(--secondary)); }
+  .bg-gradient-danger  { background-color: hsl(var(--critical)); }
+  .bg-gradient-success { background-color: hsl(var(--success)); }
+  .text-gradient-primary { color: hsl(var(--primary)); }
+  .text-gradient-accent  { color: hsl(var(--foreground)); }
+  .shadow-glow          { box-shadow: none; }
+  .shadow-glow-danger   { box-shadow: none; }
+  .shadow-glow-success  { box-shadow: none; }
+  .bg-mesh              { background: none; }
+
+  /* Clean enterprise hover */
   .card-hover {
-    transition: box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
+    transition: background-color 120ms ease, border-color 120ms ease;
   }
   .card-hover:hover {
-    box-shadow: var(--shadow-elevated);
-    transform: translateY(-1px);
-    border-color: hsl(var(--primary) / 0.3);
+    border-color: hsl(var(--border) / 0.9);
+    background-color: hsl(var(--card-hover));
   }
 
-  /* Premium glass surface */
-  .glass {
-    background: hsl(var(--card) / 0.72);
-    backdrop-filter: saturate(180%) blur(12px);
-    -webkit-backdrop-filter: saturate(180%) blur(12px);
-    border: 1px solid hsl(var(--border));
+  /* Surfaces & Semantic Canvas */
+  .bg-page { background-color: var(--page-background); }
+  .bg-page-subtle { background-color: var(--page-background-subtle); }
+  .bg-surface-primary { background-color: var(--surface-primary); }
+  .bg-surface-secondary { background-color: var(--surface-secondary); }
+  .bg-surface-elevated { background-color: var(--surface-elevated); }
+
+  /* Hairline borders */
+  .border-stroke-subtle { border-color: var(--stroke-subtle); }
+  .border-stroke-default { border-color: var(--stroke-default); }
+
+  /* High-contrast Chronos-style primary white action button */
+  .btn-primary-white {
+    background-color: var(--action-primary);
+    color: var(--action-primary-text);
+    font-weight: 600;
+    transition: background-color 150ms ease, opacity 150ms ease;
+  }
+  .btn-primary-white:hover {
+    background-color: var(--action-primary-hover);
   }
 
-  /* Scrollbars */
-  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 999px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
+  /* BOM Industrial Orange accent button */
+  .btn-accent-orange {
+    background-color: var(--action-accent);
+    color: var(--action-accent-text);
+    font-weight: 600;
+    transition: background-color 150ms ease, opacity 150ms ease;
   }
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.4); background-clip: padding-box; }
-  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-
-  /* Dotted pattern for empty canvases */
-  .pattern-dots {
-    background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
-    background-size: 16px 16px;
+  .btn-accent-orange:hover {
+    background-color: var(--action-accent-hover);
   }
 
+  /* Compact Enterprise Table Row (~36px) with subtle divider */
+  .table-row-dense {
+    height: 36px;
+    border-bottom: 1px solid var(--stroke-subtle);
+    transition: background-color 120ms ease;
+  }
+  .table-row-dense:hover {
+    background-color: var(--surface-hover);
+  }
+
+  /* Tracked technical table header */
+  .th-dense {
+    font-size: 10px;
+    font-family: var(--font-geist-sans), sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: hsl(var(--muted-foreground));
+    padding: 6px 12px;
+  }
+
+  /* Grid lines for subtle technical backgrounds */
   .pattern-grid {
-    background-image: 
-      linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.2) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.2) 1px, transparent 1px);
+    background-size: 32px 32px;
   }
 }
 
-/* ---------------------- Animations ---------------------- */
-
-@keyframes pulse-dot {
-  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
-  50% { box-shadow: 0 0 0 6px transparent; opacity: 0.75; }
-}
-@keyframes flow {
-  0% { stroke-dashoffset: 40; }
-  100% { stroke-dashoffset: 0; }
-}
-@keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes draw {
-  from { stroke-dashoffset: var(--len, 1000); }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes slide-in-right {
-  from { transform: translateX(12px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+/* =========================================================================
+   CHRONOS 8PX THIN PILL SCROLLBAR SPECIFICATION
+   ========================================================================= */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border) / 0.8) transparent;
 }
 
-.animate-pulse-dot      { animation: pulse-dot 2s ease-in-out infinite; }
-.animate-flow           { stroke-dasharray: 8 6; animation: flow 1.4s linear infinite; }
-.animate-fade-in-up     { animation: fade-in-up 0.4s ease-out both; }
-.animate-slide-in-right { animation: slide-in-right 0.28s ease-out both; }
-.animate-draw           { animation: draw 1.4s ease-out forwards; }
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.8);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--border));
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

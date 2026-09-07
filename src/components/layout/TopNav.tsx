@@ -1,14 +1,19 @@
-import { Bell, ChevronDown, Download, Search, Command, MapPin } from "lucide-react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
-import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { AppIcon } from "@/components/ui/app-icon";
+import { IconButton } from "@/components/ui/icon-button";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { BrandLogo } from "@/components/layout/BrandLogo";
 import {
-  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuLabel, DropdownMenuSeparator,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { products, notifications } from "@/lib/mockData";
@@ -30,160 +35,264 @@ const routeLabels: Record<string, string> = {
   reports: "Reports & Exports",
 };
 
-export const TopNav = () => {
+export interface TopNavProps {
+  onOpenMobileNav?: () => void;
+}
+
+/**
+ * Chronos-Adapted TopBar Component.
+ * - Solid opaque page background (no transparency or blur)
+ * - Exact 56px height
+ * - Rounded pill controls and search
+ * - Single BrandLogo on desktop, preserved mobile navigation trigger
+ * - Preserved Program Context selector and Scope filter
+ */
+export const TopNav = ({ onOpenMobileNav }: TopNavProps) => {
   const { activeProgram, setActiveProgramId } = useProgramContext();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const segments = location.pathname.split("/").filter(Boolean);
-  const crumbs = segments.length === 0
-    ? [{ label: "Command Center", path: "/" }]
-    : [{ label: "Command Center", path: "/" }, ...segments.map((s, i) => ({
-        label: routeLabels[s] || s, path: "/" + segments.slice(0, i + 1).join("/")
-      }))];
+  const pathname = usePathname();
+  const router = useRouter();
+  const segments = (pathname || "").split("/").filter(Boolean);
+  const crumbs =
+    segments.length === 0
+      ? [{ label: "Command Center", path: "/" }]
+      : [
+          { label: "Command Center", path: "/" },
+          ...segments.map((s, i) => ({
+            label: routeLabels[s] || s,
+            path: "/" + segments.slice(0, i + 1).join("/"),
+          })),
+        ];
 
   return (
-    <header className="sticky top-0 z-40 h-16 border-b border-border bg-background/85 backdrop-blur-xl">
-      <div className="flex h-full items-center gap-3 px-5">
-        {/* Logo mark */}
-        <Link to="/" className="flex items-center gap-2.5 pr-3 border-r border-border mr-1">
-          <img src={wayamLogoLight} alt="Wayam AI" className="h-8 w-auto dark:hidden" />
-          <img src={wayamLogoDark} alt="Wayam AI" className="hidden h-8 w-auto dark:block" />
-          <div className="leading-tight border-l border-border pl-2.5 ml-0.5">
-            <div className="font-semibold text-base tracking-tight text-gradient-primary">Wayam AI</div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">BOM Synchronization</div>
-          </div>
-        </Link>
-
-        {/* Program switcher */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2 h-9 rounded-lg">
-              <span className="text-xs font-medium">{activeProgram.name}</span>
-              <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-mono">{activeProgram.modelYear}</Badge>
-              <ChevronDown className="h-3 w-3 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-72">
-            <DropdownMenuLabel>Switch vehicle program</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {products.map(p => (
-              <DropdownMenuItem key={p.id} onClick={() => setActiveProgramId(p.id)} className="flex items-center justify-between cursor-pointer">
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-medium">{p.name}</span>
-                  <span className="text-[10px] text-muted-foreground">{p.category} · {p.stage}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-muted-foreground">{p.modelYear}</span>
-                  {activeProgram.id === p.id && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* Scope chip */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5 h-9 rounded-lg text-xs">
-              <MapPin className="h-3.5 w-3.5 text-primary" />
-              <span className="hidden lg:inline">Program scope</span>
-              <ChevronDown className="h-3 w-3 opacity-60" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-72" align="start">
-            <p className="text-xs font-semibold mb-2">VIN scope</p>
-            <p className="text-[11px] text-muted-foreground mb-2">Default: aggregate across all produced VINs.</p>
-            <div className="space-y-1.5 text-xs">
-              <div className="flex justify-between"><span className="text-muted-foreground">Plant</span><span>All (2)</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Market</span><span>All (5)</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Variant</span><span>All trims</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">VIN range</span><span>—</span></div>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        {/* Breadcrumbs */}
-        <nav className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground ml-1">
-          {crumbs.map((c, i) => (
-            <span key={c.path} className="flex items-center gap-1.5">
-              {i > 0 && <span className="opacity-50">/</span>}
-              <Link to={c.path} className="hover:text-foreground transition-colors">{c.label}</Link>
-            </span>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-2">
-          {/* Universal search */}
-          <div className="relative hidden lg:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search parts, ECNs, suppliers…"
-              className="h-9 w-80 pl-9 pr-16 text-xs rounded-lg bg-muted/50 border-border focus-visible:ring-primary/30"
+    <header className="h-14 shrink-0 border-b border-stroke-subtle bg-page z-30 select-none">
+      <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-5">
+        {/* Left Section: Mobile Menu Trigger + Brand Logo + Program Selector + Scope */}
+        <div className="flex min-w-0 items-center gap-2.5">
+          {/* Mobile Menu Trigger */}
+          {onOpenMobileNav && (
+            <IconButton
+              icon="menu"
+              label="Open navigation menu"
+              size="sm"
+              onClick={onOpenMobileNav}
+              className="lg:hidden"
             />
-            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 hidden xl:inline-flex h-5 items-center gap-1 rounded border border-border bg-background px-1.5 text-[10px] font-mono text-muted-foreground">
-              <Command className="h-3 w-3" />K
+          )}
+
+          {/* SAMA Product Identity */}
+          <div className="flex items-center gap-2 pr-3 border-r border-stroke-subtle shrink-0">
+            <span className="font-display text-sm font-bold tracking-tight text-foreground">
+              SAMA
+            </span>
+            <span className="text-[10px] text-muted-foreground font-sans">
+              Enterprise 2.4
+            </span>
+          </div>
+
+          {/* Vehicle Program Selector Pill */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 h-8 rounded-full border border-stroke-default bg-surface-primary px-3 text-xs font-medium text-foreground hover:bg-surface-secondary transition-colors outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
+              >
+                <span className="truncate max-w-[130px] sm:max-w-[180px]">{activeProgram.name}</span>
+                <StatusBadge tone="neutral" size="xs">
+                  {activeProgram.modelYear}
+                </StatusBadge>
+                <AppIcon name="chevronDown" size="xs" className="opacity-60 shrink-0" aria-hidden />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-80 rounded-lg border-stroke-subtle bg-popover p-1 shadow-xl">
+              <DropdownMenuLabel className="text-[10px] uppercase font-sans font-medium tracking-[0.08em] text-muted-foreground px-2 py-1.5">
+                Switch Vehicle Program
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-border/60" />
+              {products.map((program) => (
+                <DropdownMenuItem
+                  key={program.id}
+                  onClick={() => setActiveProgramId(program.id)}
+                  className="flex items-center justify-between cursor-pointer rounded-md px-2 py-1.5 text-xs transition-colors"
+                >
+                  <div className="flex flex-col gap-0.5 min-w-0 pr-2">
+                    <span className="font-medium text-foreground truncate">{program.name}</span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {program.category} · {program.stage}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs tabular-nums text-muted-foreground">{program.modelYear}</span>
+                    {activeProgram.id === program.id && (
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    )}
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Operational Scope Popover Pill */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="hidden sm:inline-flex items-center gap-1.5 h-8 rounded-full border border-stroke-default bg-surface-primary px-3 text-xs font-medium text-foreground hover:bg-surface-secondary transition-colors outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
+              >
+                <AppIcon name="mapPin" size="xs" className="text-primary" aria-hidden />
+                <span className="text-xs font-medium">Scope</span>
+                <AppIcon name="chevronDown" size="xs" className="opacity-60" aria-hidden />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 rounded-lg border-stroke-subtle bg-popover p-3 shadow-xl" align="start">
+              <div className="flex items-center justify-between pb-2 border-b border-stroke-subtle">
+                <span className="text-xs font-semibold text-foreground">VIN Scope Filter</span>
+                <span className="text-[10px] text-muted-foreground">Default: Global</span>
+              </div>
+              <div className="space-y-2 pt-2.5 text-xs">
+                <div className="flex justify-between items-center text-muted-foreground">
+                  <span>Assembly Plant</span>
+                  <span className="text-foreground font-medium">All Plants (2)</span>
+                </div>
+                <div className="flex justify-between items-center text-muted-foreground">
+                  <span>Target Market</span>
+                  <span className="text-foreground font-medium">Global (5 Regions)</span>
+                </div>
+                <div className="flex justify-between items-center text-muted-foreground">
+                  <span>Variant Scope</span>
+                  <span className="text-foreground font-medium">All Trims (Base, Premium, Sig)</span>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          {/* Breadcrumb Trail */}
+          <nav
+            aria-label="Breadcrumb"
+            className="hidden xl:flex items-center gap-1.5 text-xs text-muted-foreground ml-2"
+          >
+            {crumbs.map((crumb, idx) => {
+              const isLast = idx === crumbs.length - 1;
+              return (
+                <span key={crumb.path} className="flex items-center gap-1.5">
+                  {idx > 0 && (
+                    <AppIcon
+                      name="chevronRight"
+                      size="xs"
+                      className="text-muted-foreground/40 shrink-0"
+                      aria-hidden
+                    />
+                  )}
+                  <Link
+                    href={crumb.path}
+                    className={`transition-colors truncate max-w-[160px] ${
+                      isLast ? "text-foreground font-medium" : "hover:text-foreground"
+                    }`}
+                  >
+                    {crumb.label}
+                  </Link>
+                </span>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Right Section: Universal Search, Notifications, Profile */}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Universal Search (Chronos Pill Input) */}
+          <div className="relative hidden md:block">
+            <AppIcon
+              name="search"
+              size="xs"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+              aria-hidden
+            />
+            <input
+              type="search"
+              placeholder="Search parts, ECNs, suppliers…"
+              className="h-8 w-56 lg:w-64 pl-8 pr-12 text-xs rounded-full bg-surface-secondary/70 border border-stroke-subtle text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:border-stroke-default transition-all"
+            />
+            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 hidden lg:inline-flex h-4 items-center rounded border border-stroke-subtle px-1 text-[9px] font-sans text-muted-foreground">
+              Ctrl K
             </kbd>
           </div>
 
-          {/* Notifications */}
+          {/* Notifications Popover */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
-                <Bell className="h-4 w-4" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-critical ring-2 ring-background" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0">
-              <div className="p-3 border-b border-border flex items-center justify-between">
-                <span className="text-sm font-semibold">Notifications</span>
-                <Badge variant="secondary" className="text-[10px]">{notifications.length} new</Badge>
+              <div className="relative">
+                <IconButton icon="bell" label="Notifications" size="sm" variant="subtle" className="rounded-full" />
+                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-critical pointer-events-none ring-2 ring-page" />
               </div>
-              <div className="max-h-80 overflow-y-auto scrollbar-thin">
-                {notifications.map(n => (
-                  <div key={n.id} className="p-3 border-b border-border/50 last:border-0 hover:bg-muted/40 cursor-pointer">
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-84 p-0 rounded-lg border-stroke-subtle bg-popover shadow-2xl">
+              <div className="p-3 border-b border-stroke-subtle flex items-center justify-between">
+                <span className="text-xs font-semibold text-foreground">Program Alerts</span>
+                <StatusBadge tone="warning" size="xs">
+                  {notifications.length} unread
+                </StatusBadge>
+              </div>
+              <div className="max-h-80 overflow-y-auto divide-y divide-stroke-subtle">
+                {notifications.map((n) => (
+                  <div
+                    key={n.id}
+                    className="p-3 hover:bg-surface-hover cursor-pointer transition-colors text-xs"
+                  >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-semibold">{n.title}</span>
-                      <span className="text-[10px] text-muted-foreground shrink-0">{n.time}</span>
+                      <span className="font-semibold text-foreground">{n.title}</span>
+                      <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
+                        {n.time}
+                      </span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">{n.desc}</p>
+                    <p className="text-muted-foreground mt-1 text-[11px] leading-relaxed">
+                      {n.desc}
+                    </p>
                   </div>
                 ))}
               </div>
             </PopoverContent>
           </Popover>
 
-          <ThemeToggle />
+          {/* Export Action Button */}
+          <IconButton icon="download" label="Export data and audits" size="sm" variant="subtle" className="rounded-full" />
 
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg" aria-label="Export">
-            <Download className="h-4 w-4" />
-          </Button>
-
-          {/* User */}
+          {/* User Account Profile */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full pl-1 pr-2.5 py-1 hover:bg-secondary transition-colors">
-                <div className="h-8 w-8 rounded-full bg-gradient-accent grid place-items-center text-xs font-semibold text-accent-foreground ring-2 ring-background">
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-full p-1 hover:bg-surface-hover transition-colors border border-transparent hover:border-stroke-subtle outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
+              >
+                <div className="h-7 w-7 rounded-full bg-surface-elevated border border-stroke-default flex items-center justify-center text-xs font-semibold text-foreground">
                   RK
                 </div>
-                <div className="hidden sm:flex flex-col items-start leading-tight">
-                  <span className="text-xs font-medium">Ravi Kumar</span>
-                  <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Program Manager</span>
+                <div className="hidden sm:flex flex-col items-start leading-tight pr-1">
+                  <span className="text-xs font-medium text-foreground">Ravi Kumar</span>
+                  <span className="text-[10px] uppercase font-sans tracking-wider text-muted-foreground">
+                    Program Mgr
+                  </span>
                 </div>
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile settings</DropdownMenuItem>
-              <DropdownMenuItem>Switch organization</DropdownMenuItem>
-              <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="w-56 rounded-lg border-stroke-subtle bg-popover p-1 shadow-xl">
+              <DropdownMenuLabel className="text-xs font-medium text-foreground px-2 py-1.5">
+                Ravi Kumar (Chief Engineer)
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-border/60" />
+              <DropdownMenuItem className="text-xs rounded-md cursor-pointer">
+                Profile & Key Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-xs rounded-md cursor-pointer">
+                Switch Organization
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-border/60" />
               <DropdownMenuItem
+                className="text-xs text-critical rounded-md cursor-pointer font-medium"
                 onClick={() => {
                   logout();
-                  navigate("/login", { replace: true });
+                  router.replace("/login");
                 }}
               >
-                Logout
+                Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
