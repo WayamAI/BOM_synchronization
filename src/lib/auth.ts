@@ -6,10 +6,12 @@ const STORAGE_KEY = "wayam_auth";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function isAuthenticated(): boolean {
+  if (typeof window === "undefined") return false;
   return window.localStorage.getItem(STORAGE_KEY) === "1";
 }
 
 export function login(email: string, password: string): boolean {
+  if (typeof window === "undefined") return false;
   if (EMAIL_PATTERN.test(email.trim()) && password.length > 0) {
     window.localStorage.setItem(STORAGE_KEY, "1");
     return true;
@@ -18,5 +20,7 @@ export function login(email: string, password: string): boolean {
 }
 
 export function logout(): void {
-  window.localStorage.removeItem(STORAGE_KEY);
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
 }

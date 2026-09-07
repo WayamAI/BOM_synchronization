@@ -14,7 +14,7 @@ const iconFor = (t: string) => {
 
 export const ActivityFeed = () => {
   return (
-    <div className="rounded-xl border border-border bg-card shadow-card h-full flex flex-col">
+    <div className="rounded-lg border border-border bg-surface-primary shadow-none h-full flex flex-col">
       <div className="p-4 border-b border-border flex items-center justify-between">
         <h3 className="text-sm font-semibold">Activity Pulse</h3>
         <span className="text-[10px] text-success flex items-center gap-1">

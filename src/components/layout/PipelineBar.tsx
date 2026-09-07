@@ -1,68 +1,99 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+"use client";
+
+import { usePathname, useRouter } from "next/navigation";
+import { AppIcon } from "@/components/ui/app-icon";
 import { pipeline } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
 const routes: Record<string, string> = {
-  cat: "/variants", ebom: "/ebom", mbom: "/mbom", sbom: "/software", service: "/service",
+  cat: "/variants",
+  ebom: "/ebom",
+  mbom: "/mbom",
+  sbom: "/software",
+  service: "/service",
 };
 
 const dotClass = (h: string) => {
   if (h === "critical") return "bg-critical";
-  if (h === "warning")  return "bg-warning";
+  if (h === "warning") return "bg-warning";
   return "bg-success";
 };
 
+/**
+ * Chronos-Adapted PipelineBar component.
+ * Fully opaque solid page background with zero blur, pill-shaped stages, and Geist font.
+ */
 export const PipelineBar = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
-    <div className="border-b border-border bg-card/60 backdrop-blur-md sticky top-16 z-30">
-      <div className="px-5 py-3 flex items-center gap-2 overflow-x-auto scrollbar-thin">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-3 shrink-0">
-          Lifecycle
-        </span>
-        {pipeline.map((s, idx) => {
-          const path = routes[s.id];
-          const active = path && location.pathname === path;
+    <div className="h-9 shrink-0 border-b border-stroke-subtle bg-page z-20 select-none">
+      <div className="h-full px-4 sm:px-5 flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+        {/* Category Lead-in */}
+        <div className="flex items-center gap-1.5 mr-2 shrink-0">
+          <span className="text-[10px] uppercase tracking-[0.08em] text-muted-foreground font-sans font-semibold">
+            Lifecycle
+          </span>
+        </div>
+
+        {/* Pipeline Stage Nodes */}
+        {pipeline.map((stage, idx) => {
+          const path = routes[stage.id];
+          const active = path && (pathname === path || pathname?.startsWith(`${path}/`));
+
           return (
-            <div key={s.id} className="flex items-center gap-1.5 shrink-0">
+            <div key={stage.id} className="flex items-center gap-1.5 shrink-0">
               <button
-                onClick={() => path && navigate(path)}
+                type="button"
+                onClick={() => path && router.push(path)}
+                aria-current={active ? "step" : undefined}
                 className={cn(
-                  "group flex items-center gap-2.5 rounded-lg border px-3 py-1.5 transition-all",
+                  "group flex items-center gap-2 rounded-full border px-2.5 py-0.5 text-xs transition-colors h-6 outline-none",
+                  "focus-visible:ring-2 focus-visible:ring-primary/50",
                   active
-                    ? "border-primary/40 bg-primary/5 ring-1 ring-primary/20"
-                    : "border-border bg-card hover:bg-muted/50"
+                    ? "border-primary/50 bg-primary/10 text-foreground font-medium"
+                    : "border-stroke-subtle bg-surface-primary hover:bg-surface-secondary text-muted-foreground hover:text-foreground"
                 )}
               >
-                <span className={cn("h-2 w-2 rounded-full animate-pulse-dot", dotClass(s.health))} />
-                <div className="flex flex-col items-start leading-tight">
-                  <span className="text-xs font-semibold">{s.name}</span>
-                  <span className="text-[10px] text-muted-foreground tabular-nums">
-                    {s.components.toLocaleString()} {s.countLabel} · {s.issues} issue{s.issues === 1 ? "" : "s"}
-                  </span>
-                </div>
-                {s.drift && (
-                  <span className="ml-1 flex items-center gap-1 text-[10px] text-warning">
-                    <AlertTriangle className="h-3 w-3" />
-                    {s.drift}
+                {/* Status Dot */}
+                <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", dotClass(stage.health))} />
+
+                {/* Stage Name */}
+                <span className="font-medium text-xs text-foreground">{stage.name}</span>
+
+                {/* Component Count */}
+                <span className="text-[11px] text-muted-foreground tabular-nums font-sans">
+                  {stage.components.toLocaleString()}{" "}
+                  <span className="text-[10px] opacity-70">{stage.countLabel}</span>
+                </span>
+
+                {/* Drift Warning */}
+                {stage.drift && (
+                  <span className="flex items-center gap-1 text-[11px] text-white bg-[#8a430f] px-1.5 py-0.2 rounded-full font-medium">
+                    <AppIcon name="warning" size="xs" aria-hidden />
+                    <span>{stage.drift}</span>
                   </span>
                 )}
               </button>
+
+              {/* Inter-stage Connector Chevron */}
               {idx < pipeline.length - 1 && (
-                <svg width="20" height="16" viewBox="0 0 20 16" className="shrink-0 text-border">
-                  <path d="M1 8 H14" stroke="currentColor" strokeWidth="1.25" fill="none" />
-                  <path d="M13 4 L17 8 L13 12" stroke="currentColor" strokeWidth="1.25" fill="none" />
-                </svg>
+                <AppIcon
+                  name="chevronRight"
+                  size="xs"
+                  className="shrink-0 text-muted-foreground/30 mx-0.5"
+                  aria-hidden
+                />
               )}
             </div>
           );
         })}
-        <div className="ml-auto hidden md:flex items-center gap-1.5 text-[11px] text-success shrink-0">
-          <CheckCircle2 className="h-3.5 w-3.5" />
-          Pipeline streaming live
+
+        {/* Ambient Sync Status Indicator */}
+        <div className="ml-auto hidden md:flex items-center gap-2 text-[11px] text-muted-foreground shrink-0 pl-3 border-l border-stroke-subtle font-sans">
+          <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
+          <span>Pipeline In Sync</span>
         </div>
       </div>
     </div>
