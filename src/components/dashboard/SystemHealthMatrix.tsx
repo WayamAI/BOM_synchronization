@@ -42,17 +42,16 @@ const descendants = (rootPN: string) => {
 type Score = { value: number | null; raw?: string };
 
 const cellStyle = (s: Score) => {
-  if (s.value === null) return { fg: "text-muted-foreground", bar: "bg-muted-foreground/30" };
+  if (s.value === null) return { fg: "text-quaternary", bar: "bg-quaternary" };
   if (s.value >= 85) return { fg: "text-success", bar: "bg-success" };
   if (s.value >= 65) return { fg: "text-warning", bar: "bg-warning" };
-  return { fg: "text-critical", bar: "bg-critical" };
+  return { fg: "text-error", bar: "bg-error" };
 };
 
 const scoreTone = (value: number | null) => {
-  if (value === null) return "border-border/60 bg-muted/35 text-muted-foreground";
-  if (value >= 85) return "border-success/20 bg-success/10 text-success";
-  if (value >= 65) return "border-warning/20 bg-warning/10 text-warning";
-  return "border-critical/20 bg-critical/10 text-critical";
+  // Colour is carried by the percentage and the bar; the cell itself stays neutral.
+  void value;
+  return "border-hairline bg-container";
 };
 
 export const SystemHealthMatrix = () => {
@@ -144,51 +143,51 @@ export const SystemHealthMatrix = () => {
   }, [rows]);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-card h-full">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-4">
+    <div className="h-full rounded-lg border border-hairline bg-container p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline pb-4">
         <div>
-          <h3 className="text-sm font-semibold">System Health Matrix</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <h3 className="type-eyebrow text-quaternary">System Health Matrix</h3>
+          <p className="type-body-sm mt-1 text-tertiary">
             Readiness by system across design, manufacturing, supply and cyber.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-success/20 bg-success/10 px-2 py-1 text-success">
-            <span className="h-1.5 w-1.5 rounded-full bg-success" />
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="type-caption inline-flex items-center gap-1.5 text-success">
+            <span className="size-1.5 rounded-full bg-success" />
             Healthy 85+
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-warning/20 bg-warning/10 px-2 py-1 text-warning">
-            <span className="h-1.5 w-1.5 rounded-full bg-warning" />
+          <span className="type-caption inline-flex items-center gap-1.5 text-warning">
+            <span className="size-1.5 rounded-full bg-warning" />
             Watch 65-84
           </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-critical/20 bg-critical/10 px-2 py-1 text-critical">
-            <span className="h-1.5 w-1.5 rounded-full bg-critical" />
+          <span className="type-caption inline-flex items-center gap-1.5 text-error">
+            <span className="size-1.5 rounded-full bg-error" />
             Risk below 65
           </span>
         </div>
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-2 md:grid-cols-6">
-        <div className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-          <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Systems</div>
-          <div className="mt-1 text-lg font-semibold tabular-nums">{rows.length}</div>
+        <div className="rounded-md border border-hairline bg-raised px-3 py-2">
+          <div className="type-eyebrow text-quaternary">Systems</div>
+          <div className="type-display-lg tabular mt-1 text-foreground">{rows.length}</div>
         </div>
-        <div className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-          <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Parts</div>
-          <div className="mt-1 text-lg font-semibold tabular-nums">{totals.totalParts}</div>
+        <div className="rounded-md border border-hairline bg-raised px-3 py-2">
+          <div className="type-eyebrow text-quaternary">Parts</div>
+          <div className="type-display-lg tabular mt-1 text-foreground">{totals.totalParts}</div>
         </div>
         {dims.map(d => {
           const v = totals[d.key as "design" | "mfg" | "supply" | "cyber"];
           return (
             <div key={d.key} className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-              <div className="flex items-center gap-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                <d.icon className="h-3 w-3" />
+              <div className="type-eyebrow flex items-center gap-1 text-quaternary">
+                <d.icon className="size-3" aria-hidden />
                 {d.label}
               </div>
               <div className={cn(
-                "mt-1 text-lg font-semibold tabular-nums",
-                v >= 85 ? "text-success" : v >= 65 ? "text-warning" : "text-critical"
+                "type-display-lg tabular mt-1",
+                v >= 85 ? "text-success" : v >= 65 ? "text-warning" : "text-error"
               )}>
                 {v}%
               </div>
@@ -197,7 +196,7 @@ export const SystemHealthMatrix = () => {
         })}
       </div>
 
-      <div className="mt-4 hidden grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] gap-3 px-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground lg:grid">
+      <div className="mt-4 hidden grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] type-eyebrow gap-3 px-2 text-quaternary lg:grid">
         <div>System</div>
         <div className="text-center">Parts</div>
         {dims.map(d => (
@@ -218,25 +217,20 @@ export const SystemHealthMatrix = () => {
                 <button onClick={() => navigate(`/parts/${row.pn}`)} className="min-w-0 text-left">
                   <div className="flex items-center gap-3">
                     <div
-                      className="grid h-10 w-10 shrink-0 place-items-center rounded-xl ring-1 ring-inset"
+                      className="grid size-10 shrink-0 place-items-center rounded-lg"
                       style={{ background: `color-mix(in srgb, ${row.color} 8%, transparent)`, color: row.color, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${row.color} 18%, transparent)` }}
                     >
-                      <Icon className="h-4 w-4" strokeWidth={2.1} />
+                      <Icon className="size-4" aria-hidden />
                     </div>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-semibold">{row.name}</span>
-                        <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
+                        <span className="type-label-md truncate text-foreground">{row.name}</span>
+                        <span className="type-caption rounded-full border border-hairline bg-action px-2 py-0.5 font-mono text-quaternary">
                           {row.short}
                         </span>
                       </div>
-                      <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
-                        <span className={cn(
-                          "rounded-full border px-2 py-0.5",
-                          row.inReview > 0
-                            ? "border-warning/20 bg-warning/10 text-warning"
-                            : "border-success/20 bg-success/10 text-success"
-                        )}>
+                      <div className="type-body-sm mt-1 flex flex-wrap items-center gap-2 text-tertiary">
+                        <span className={cn(row.inReview > 0 ? "text-warning" : "text-success")}>
                           {row.inReview > 0 ? `${row.inReview} in review` : "All released"}
                         </span>
                       </div>
@@ -245,8 +239,8 @@ export const SystemHealthMatrix = () => {
                 </button>
 
                 <div className="text-left lg:text-center">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground lg:hidden">Parts</div>
-                  <div className="text-2xl font-semibold tabular-nums lg:text-lg">{row.total}</div>
+                  <div className="type-eyebrow text-quaternary lg:hidden">Parts</div>
+                  <div className="type-display-lg tabular text-foreground">{row.total}</div>
                 </div>
 
                 {dims.map(d => {
@@ -259,25 +253,25 @@ export const SystemHealthMatrix = () => {
                       title={s.raw}
                       className={cn(
                         "rounded-lg border px-3 py-2 text-left transition-colors",
-                        "hover:border-primary/20 hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                        "outline-none duration-150 hover:border-strong focus-visible:ring-2 focus-visible:ring-active",
                         scoreTone(s.value)
                       )}
                     >
                       <div className="flex items-baseline justify-between gap-2">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground lg:hidden">
+                        <div className="type-eyebrow text-quaternary lg:hidden">
                           {d.label}
                         </div>
-                        <div className={cn("text-xl font-semibold tabular-nums leading-none", style.fg)}>
+                        <div className={cn("type-display-lg tabular leading-none", style.fg)}>
                           {s.value === null ? "N/A" : `${s.value}%`}
                         </div>
                       </div>
-                      <div className="mt-2 h-1 rounded-full bg-muted/80">
+                      <div className="mt-2 h-1 rounded-full bg-raised-2">
                         <div
                           className={cn("h-full rounded-full", style.bar)}
                           style={{ width: `${s.value ?? 0}%` }}
                         />
                       </div>
-                      <div className="mt-2 text-[11px] text-muted-foreground">{s.raw}</div>
+                      <div className="type-body-sm mt-2 text-tertiary">{s.raw}</div>
                     </button>
                   );
                 })}
@@ -286,13 +280,13 @@ export const SystemHealthMatrix = () => {
                   {row.openEcns > 0 ? (
                     <button
                       onClick={() => navigate("/changes")}
-                      className="inline-flex items-center gap-1 rounded-full border border-warning/25 bg-warning/10 px-2.5 py-1 text-[10px] font-semibold text-warning hover:bg-warning/15"
+                      className="type-label-sm inline-flex items-center gap-1 rounded-full border border-hairline bg-action px-2.5 py-1 text-warning outline-none transition-colors duration-150 hover:border-strong hover:bg-raised-2 focus-visible:ring-2 focus-visible:ring-active"
                     >
-                      <FileEdit className="h-3 w-3" />
+                      <FileEdit className="size-3" aria-hidden />
                       {row.openEcns} open
                     </button>
                   ) : (
-                    <span className="text-[11px] text-muted-foreground">-</span>
+                    <span className="type-body-sm text-quaternary">—</span>
                   )}
                 </div>
               </div>
