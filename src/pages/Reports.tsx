@@ -1,6 +1,5 @@
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Download, Calendar, FileText } from "lucide-react";
 import { totals, program } from "@/lib/mockData";
 
@@ -107,24 +106,22 @@ const Reports = () => (
   <PageHeader
     title="Reports & Exports"
     subtitle={`${reports.length} report types · regulatory, executive, operational and engineering deliverables for ${program.name} ${program.modelYear}`}
-    actions={<Button size="sm" className="gap-1.5 bg-gradient-primary border-0"><Calendar className="h-3.5 w-3.5" />Schedule Report</Button>}
+    actions={<Button size="sm" className="gap-1.5"><Calendar className="h-3.5 w-3.5" />Schedule report</Button>}
   >
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {reports.map(r => (
-        <div key={r.name} className="rounded-xl border border-border bg-card p-5 shadow-card hover:shadow-elevated hover:border-primary/40 transition-all cursor-pointer group">
+        <div key={r.name} className="rounded-lg border border-hairline bg-container p-4 hover:border-strong transition-colors duration-150 cursor-pointer group">
           <div className="flex items-start justify-between">
-            <div className="h-10 w-10 rounded-lg bg-gradient-accent grid place-items-center group-hover:shadow-glow transition-shadow">
-              <FileText className="h-5 w-5 text-accent-foreground" />
+            <div className="grid size-9 place-items-center rounded-full bg-action transition-colors duration-150 group-hover:bg-raised-2">
+              <FileText className="size-[17px] text-tertiary" aria-hidden />
             </div>
-            <Badge variant="outline" className="text-[10px]">{r.schedule}</Badge>
+            <span className="type-caption text-quaternary">{r.schedule}</span>
           </div>
-          <h3 className="text-sm font-semibold mt-3">{r.name}</h3>
-          <p className="text-xs text-muted-foreground mt-1">{r.desc}</p>
-          <div className="flex flex-wrap gap-1 mt-3">
-            {r.outputs.map(o => <Badge key={o} variant="secondary" className="text-[10px] font-mono">{o}</Badge>)}
-          </div>
-          <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
-            <span className="text-[11px] text-muted-foreground">Last run · {r.lastRun}</span>
+          <h3 className="type-body-md mt-3 font-medium text-foreground">{r.name}</h3>
+          <p className="type-body-sm mt-1 text-tertiary">{r.desc}</p>
+          <p className="type-body-sm mt-3 text-quaternary">{r.outputs.join(" · ")}</p>
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-hairline">
+            <span className="type-body-sm text-muted-foreground">Last run · {r.lastRun}</span>
             <Button size="sm" variant="ghost" className="h-7 gap-1.5 text-xs"><Download className="h-3 w-3" />Generate</Button>
           </div>
         </div>
