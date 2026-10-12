@@ -1,152 +1,133 @@
+@import "./styles/tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* =============================================================================
-   Wayam AI — BOM Synchronization Design System v2  (Meridian Program)
-   Palette: Wayam Orange primary/accent · Neutral slate canvas
-   Typography: Google Sans / Google Sans Text
-   All colors defined as HSL triplets so Tailwind can alpha-mix them.
+   Wayam AI BOM Synchronization on the Chronus design system.
+   Chronus tokens live in styles/tokens.css. The shadcn variables below are HSL
+   triplets derived from those tokens so existing shadcn classes pick up the
+   Chronus look. Strokes are opaque equivalents of the Chronus alpha strokes,
+   because the pages use opacity modifiers such as border-border/40.
    ============================================================================= */
 
 @layer base {
   :root {
-    /* Canvas / surfaces */
-    --background: 220 23% 97%;
-    --foreground: 224 71% 8%;
+    --background: 0 0% 94.9%;              /* page */
+    --foreground: 0 0% 6.3%;               /* text-primary */
 
-    --card: 0 0% 100%;
-    --card-foreground: 224 71% 8%;
-
+    --card: 0 0% 100%;                     /* container */
+    --card-foreground: 0 0% 6.3%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 8%;
+    --popover-foreground: 0 0% 6.3%;
 
-    /* Primary — Wayam Orange (brand core) */
-    --primary: 20 90% 50%;
+    --primary: 0 0% 6.3%;                  /* action-primary */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 33 100% 62%;
+    --primary-glow: 0 0% 13.7%;            /* action-primary-hover */
 
-    /* Secondary (subtle neutral chips / fills) */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 224 60% 18%;
+    --secondary: 0 0% 94.9%;               /* action */
+    --secondary-foreground: 0 0% 27.5%;    /* text-secondary */
 
-    /* Muted (subdued text + subtle backgrounds) */
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 42%;
+    --muted: 0 0% 94.9%;
+    --muted-foreground: 0 0% 45.1%;        /* text-tertiary */
 
-    /* Accent — Wayam Burnt Orange (darker brand tone, complements primary) */
-    --accent: 16 75% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 0 0% 94.9%;                  /* hover surface (was brand orange) */
+    --accent-foreground: 0 0% 6.3%;
 
-    /* Semantic */
-    --destructive: 0 72% 51%;
+    --destructive: 357 66% 46.7%;
     --destructive-foreground: 0 0% 100%;
-    --success: 158 64% 40%;
+    --success: 143 45% 30.4%;
     --success-foreground: 0 0% 100%;
-    --warning: 32 95% 50%;
-    --warning-foreground: 30 60% 10%;
-    --critical: 0 72% 51%;
+    --info: 209 68% 37.3%;
+    --info-foreground: 0 0% 100%;
+    --warning: 19 86% 40.8%;
+    --warning-foreground: 0 0% 100%;
+    --critical: 357 66% 46.7%;
     --critical-foreground: 0 0% 100%;
 
-    /* Lines */
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 20 90% 50%;
+    --border: 0 0% 91%;
+    --input: 0 0% 91%;
+    --ring: 0 0% 74%;
 
-    --radius: 0.625rem;
+    --radius: 0.5rem;                      /* cards 8px, inner 6px, small 4px */
 
-    /* Stacked surfaces */
     --surface-1: 0 0% 100%;
-    --surface-2: 220 20% 98%;
-    --surface-3: 220 16% 95%;
+    --surface-2: 0 0% 98%;
+    --surface-3: 0 0% 94.9%;
 
-    /* Gradients — Wayam Orange, restrained */
-    --gradient-primary: linear-gradient(135deg, hsl(33 100% 58%), hsl(16 75% 45%));
-    --gradient-accent:  linear-gradient(135deg, hsl(30 96% 56%), hsl(20 90% 50%));
-    --gradient-danger:  linear-gradient(135deg, hsl(0 72% 51%), hsl(12 82% 55%));
-    --gradient-success: linear-gradient(135deg, hsl(158 64% 40%), hsl(172 76% 38%));
-    --gradient-mesh: radial-gradient(at 12% 0%,  hsl(33 100% 58% / 0.10), transparent 50%),
-                     radial-gradient(at 90% 100%, hsl(16 75% 45% / 0.08), transparent 50%),
-                     radial-gradient(at 0% 100%,  hsl(20 90% 50% / 0.06), transparent 50%);
+    /* Flat: Chronus has no gradients, glows or card shadows. The utility
+       classes stay defined so unconverted pages keep compiling. */
+    --gradient-primary: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
+    --gradient-accent:  linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
+    --gradient-danger:  linear-gradient(hsl(var(--critical)), hsl(var(--critical)));
+    --gradient-success: linear-gradient(hsl(var(--success)), hsl(var(--success)));
+    --gradient-mesh: none;
 
-    /* Shadows — softer, more premium */
-    --shadow-card:      0 2px 8px -1px hsl(224 71% 8% / 0.08), 0 1px 4px -2px hsl(224 71% 8% / 0.06);
-    --shadow-elevated:  0 20px 25px -5px hsl(224 71% 8% / 0.1), 0 10px 10px -5px hsl(224 71% 8% / 0.04);
-    --shadow-glow:         0 0 15px -3px hsl(20 90% 50% / 0.3), 0 0 6px -2px hsl(20 90% 50% / 0.2);
-    --shadow-glow-danger:  0 0 15px -3px hsl(0 72% 51% / 0.3), 0 0 6px -2px hsl(0 72% 51% / 0.2);
-    --shadow-glow-success: 0 0 15px -3px hsl(158 64% 40% / 0.3), 0 0 6px -2px hsl(158 64% 40% / 0.2);
+    --shadow-card: none;
+    --shadow-elevated: none;
+    --shadow-glow: none;
+    --shadow-glow-danger: none;
+    --shadow-glow-success: none;
 
-    /* Sidebar */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 224 60% 18%;
-    --sidebar-primary: 20 90% 50%;
+    --sidebar-foreground: 0 0% 27.5%;
+    --sidebar-primary: 0 0% 6.3%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 96%;
-    --sidebar-accent-foreground: 224 71% 10%;
-    --sidebar-border: 220 13% 92%;
-    --sidebar-ring: 20 90% 50%;
+    --sidebar-accent: 0 0% 94.9%;
+    --sidebar-accent-foreground: 0 0% 6.3%;
+    --sidebar-border: 0 0% 91%;
+    --sidebar-ring: 0 0% 74%;
   }
 
-  .dark {
-    --background: 224 71% 4%;
-    --foreground: 210 20% 98%;
-    --card: 224 71% 7%;
-    --card-foreground: 210 20% 98%;
-    --card-hover: 224 71% 10%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 210 20% 98%;
-    --primary: 24 95% 58%;
-    --primary-glow: 33 100% 66%;
-    --secondary: 222.2 47.4% 11.2%;
-    --muted: 223 47% 11%;
-    --accent: 18 80% 50%;
-    --border: 217.2 32.6% 17.5%;
-    --secondary-foreground: 220 20% 96%;
+  .dark,
+  [data-theme="dark"] {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 6.3%;
+    --card-foreground: 0 0% 98%;
+    --card-hover: 0 0% 9.8%;
+    --popover: 0 0% 6.3%;
+    --popover-foreground: 0 0% 98%;
 
-    --muted: 224 24% 14%;
-    --muted-foreground: 220 10% 66%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 0%;
+    --primary-glow: 0 0% 89.8%;
 
-    --accent-foreground: 224 71% 8%;
+    --secondary: 0 0% 9.8%;
+    --secondary-foreground: 0 0% 83.1%;
+    --muted: 0 0% 9.8%;
+    --muted-foreground: 0 0% 54.1%;
+    --accent: 0 0% 13.7%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 72% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 158 64% 52%;
-    --success-foreground: 224 71% 8%;
-    --warning: 32 95% 58%;
-    --warning-foreground: 30 60% 10%;
-    --critical: 0 72% 60%;
-    --critical-foreground: 0 0% 100%;
+    --destructive: 357 100% 79.4%;
+    --destructive-foreground: 0 0% 0%;
+    --success: 142 49% 70.2%;
+    --success-foreground: 0 0% 0%;
+    --info: 201 83% 74.5%;
+    --info-foreground: 0 0% 0%;
+    --warning: 30 100% 69.8%;
+    --warning-foreground: 0 0% 0%;
+    --critical: 357 100% 79.4%;
+    --critical-foreground: 0 0% 0%;
 
-    --border: 224 22% 18%;
-    --input: 224 22% 18%;
-    --ring: 24 95% 58%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 30%;
 
-    --surface-1: 224 32% 10%;
-    --surface-2: 224 30% 12%;
-    --surface-3: 224 28% 14%;
+    --surface-1: 0 0% 6.3%;
+    --surface-2: 0 0% 9.8%;
+    --surface-3: 0 0% 13.7%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(36 100% 64%), hsl(18 80% 50%));
-    --gradient-accent:  linear-gradient(135deg, hsl(30 96% 60%), hsl(24 95% 58%));
-    --gradient-danger:  linear-gradient(135deg, hsl(0 72% 60%), hsl(12 82% 65%));
-    --gradient-success: linear-gradient(135deg, hsl(158 64% 52%), hsl(172 76% 48%));
-    --gradient-mesh: radial-gradient(at 12% 0%,  hsl(36 100% 64% / 0.16), transparent 60%),
-                     radial-gradient(at 90% 100%, hsl(18 80% 50% / 0.13), transparent 60%),
-                     radial-gradient(at 50% 50%,  hsl(24 95% 58% / 0.06), transparent 80%);
-
-    --shadow-card:      0 8px 16px -4px hsl(0 0% 0% / 0.5), 0 4px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-elevated:  0 20px 40px -10px hsl(0 0% 0% / 0.7);
-    --shadow-glow:         0 0 20px -5px hsl(24 95% 58% / 0.4), 0 0 10px -2px hsl(24 95% 58% / 0.3);
-    --shadow-glow-danger:  0 0 20px -5px hsl(0 72% 60% / 0.4), 0 0 10px -2px hsl(0 72% 60% / 0.3);
-    --shadow-glow-success: 0 0 20px -5px hsl(158 64% 52% / 0.4), 0 0 10px -2px hsl(158 64% 52% / 0.3);
-
-    --sidebar-background: 224 36% 8%;
-    --sidebar-foreground: 220 20% 92%;
-    --sidebar-primary: 24 95% 58%;
-    --sidebar-primary-foreground: 224 71% 8%;
-    --sidebar-accent: 224 28% 14%;
-    --sidebar-accent-foreground: 220 20% 96%;
-    --sidebar-border: 224 22% 16%;
-    --sidebar-ring: 24 95% 58%;
+    --sidebar-background: 0 0% 6.3%;
+    --sidebar-foreground: 0 0% 83.1%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 13.7%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 0 0% 30%;
   }
 }
 
@@ -157,105 +138,88 @@
   html, body, #root { height: 100%; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: "Google Sans", "Google Sans Text", "Product Sans", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
-    font-variant-ligatures: contextual common-ligatures;
+    background: var(--surface-page-background);
+    color: var(--text-secondary);
+    font-family: var(--font-geist, "Geist"), ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.01em;
+    text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.005em;
   }
 
-  /* Cleaner default typography scale */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: "Google Sans", "Product Sans", "Google Sans Text", Inter, system-ui, sans-serif;
-    letter-spacing: -0.02em;
-    font-feature-settings: "cv02", "cv03";
-  }
+  /* Chronus has no heading defaults; pages set their own role classes. */
 
-  /* Monospace should feel deliberate — for PN, CVE, rev */
+  /* Part numbers, CVE ids and revisions keep a deliberate, aligned look. */
   code, kbd, pre, .font-mono {
-    font-feature-settings: "calt", "ss01", "zero";
+    font-variant-numeric: tabular-nums;
     letter-spacing: -0.01em;
   }
 
-  /* Native form defaults */
-  ::placeholder { color: hsl(var(--muted-foreground) / 0.7); }
-  :focus-visible { outline: 2px solid hsl(var(--ring) / 0.5); outline-offset: 2px; }
-  ::selection { background: hsl(var(--primary) / 0.20); }
+  /* Chronus icon stroke */
+  svg.lucide { stroke-width: 1.75; }
+
+  ::placeholder { color: var(--text-quaternary); }
+  :focus-visible { outline: 2px solid var(--stroke-active); outline-offset: 2px; }
+  ::selection { background: var(--stroke-active); }
 }
 
 @layer utilities {
-  /* Background helpers */
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Legacy helpers, now flat (see the shadow and gradient variables) */
   .bg-mesh { background-image: var(--gradient-mesh); background-attachment: fixed; }
   .bg-gradient-primary { background-image: var(--gradient-primary); }
   .bg-gradient-accent  { background-image: var(--gradient-accent); }
   .bg-gradient-danger  { background-image: var(--gradient-danger); }
   .bg-gradient-success { background-image: var(--gradient-success); }
 
-  /* Shadows */
   .shadow-card          { box-shadow: var(--shadow-card); }
   .shadow-elevated      { box-shadow: var(--shadow-elevated); }
   .shadow-glow          { box-shadow: var(--shadow-glow); }
   .shadow-glow-danger   { box-shadow: var(--shadow-glow-danger); }
   .shadow-glow-success  { box-shadow: var(--shadow-glow-success); }
 
-  /* Text gradients */
-  .text-gradient-primary {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+  .text-gradient-primary,
   .text-gradient-accent {
-    background: var(--gradient-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    background: none;
+    color: hsl(var(--foreground));
   }
 
-  /* Surface utilities */
   .surface-1 { background-color: hsl(var(--surface-1)); }
   .surface-2 { background-color: hsl(var(--surface-2)); }
   .surface-3 { background-color: hsl(var(--surface-3)); }
 
-  /* Subtle card used for hover elevation */
+  /* Hover is a stronger border, never a lift or a glow */
   .card-hover {
-    transition: box-shadow 150ms ease, transform 150ms ease, border-color 150ms ease;
+    transition: border-color 150ms ease-out;
   }
   .card-hover:hover {
-    box-shadow: var(--shadow-elevated);
-    transform: translateY(-1px);
-    border-color: hsl(var(--primary) / 0.3);
+    border-color: var(--stroke-default);
   }
 
-  /* Premium glass surface */
   .glass {
-    background: hsl(var(--card) / 0.72);
-    backdrop-filter: saturate(180%) blur(12px);
-    -webkit-backdrop-filter: saturate(180%) blur(12px);
-    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    border: 1px solid var(--stroke-muted);
   }
 
   /* Scrollbars */
   .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
+    background: var(--surface-scroll-bar);
     border-radius: 999px;
     border: 2px solid transparent;
     background-clip: padding-box;
   }
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.4); background-clip: padding-box; }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 
-  /* Dotted pattern for empty canvases */
   .pattern-dots {
     background-image: radial-gradient(hsl(var(--border)) 1px, transparent 1px);
     background-size: 16px 16px;
   }
-
   .pattern-grid {
-    background-image: 
+    background-image:
       linear-gradient(to right, hsl(var(--border) / 0.3) 1px, transparent 1px),
       linear-gradient(to bottom, hsl(var(--border) / 0.3) 1px, transparent 1px);
     background-size: 40px 40px;
