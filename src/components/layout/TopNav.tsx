@@ -36,10 +36,9 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
         >
           <Menu className="size-4" aria-hidden />
         </Button>
-        <div className="min-w-0">
-          {group && <div className="type-eyebrow hidden truncate text-quaternary sm:block">{group}</div>}
-          <h1 className="type-display-lg truncate text-foreground">{title}</h1>
-        </div>
+        {/* The visible page title is the PageHeader h2; this h1 keeps one h1 per page for assistive tech. */}
+        <h1 className="sr-only">{title}</h1>
+        {group && <div className="type-eyebrow truncate text-quaternary" aria-hidden>{group}</div>}
       </div>
 
       <div className="flex shrink-0 items-center gap-2">

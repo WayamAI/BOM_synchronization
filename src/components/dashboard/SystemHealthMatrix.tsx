@@ -5,6 +5,7 @@ import {
 } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
 import { cn } from "@/lib/utils";
+import { Unit } from "@/components/ui/primitives";
 import {
   Zap, Battery, CircleDot, Box, Armchair, Cpu,
   TrendingUp, Factory, Truck, ShieldAlert, FileEdit,
@@ -189,7 +190,7 @@ export const SystemHealthMatrix = () => {
                 "type-display-lg tabular mt-1",
                 v >= 85 ? "text-success" : v >= 65 ? "text-warning" : "text-error"
               )}>
-                {v}%
+                {v}<Unit>%</Unit>
               </div>
             </div>
           );
@@ -262,7 +263,7 @@ export const SystemHealthMatrix = () => {
                           {d.label}
                         </div>
                         <div className={cn("type-display-lg tabular leading-none", style.fg)}>
-                          {s.value === null ? "N/A" : `${s.value}%`}
+                          {s.value === null ? "N/A" : <>{s.value}<Unit>%</Unit></>}
                         </div>
                       </div>
                       <div className="mt-2 h-1 rounded-full bg-raised-2">

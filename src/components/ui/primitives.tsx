@@ -22,6 +22,11 @@ const toneDot: Record<Tone, string> = {
   neutral: "bg-quaternary",
 };
 
+/** Unit or percent sign beside a Michroma value: Geist, same colour, slightly smaller. */
+export const Unit = ({ children, className }: { children: ReactNode; className?: string }) => (
+  <span className={cn("ml-0.5 font-sans text-[0.7em] tracking-normal", className)}>{children}</span>
+);
+
 /** Content card: 8px radius, hairline border, no shadow, optional eyebrow header. */
 export const Panel = ({
   title,
@@ -53,6 +58,7 @@ export const Panel = ({
 export const KpiTile = ({
   label,
   value,
+  unit,
   delta,
   tone = "neutral",
   hint,
@@ -61,6 +67,7 @@ export const KpiTile = ({
 }: {
   label: string;
   value: ReactNode;
+  unit?: string;
   delta?: string;
   tone?: Tone;
   hint?: string;
@@ -70,7 +77,7 @@ export const KpiTile = ({
   const body = (
     <>
       <span className="type-eyebrow truncate text-quaternary">{label}</span>
-      <span className="type-display-xl sm:type-display-2xl tabular text-foreground">{value}</span>
+      <span className="type-display-xl sm:type-display-2xl tabular text-foreground">{value}{unit && <Unit>{unit}</Unit>}</span>
       {(delta || hint) && (
         <span className="flex items-baseline gap-2">
           {delta && <span className={cn("type-body-sm tabular", toneText[tone])}>{delta}</span>}

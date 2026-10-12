@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { Unit } from "@/components/ui/primitives";
 
 interface Props {
   value: number; // 0–100
@@ -53,7 +54,7 @@ export const HealthArc = ({ value, label, tone = "primary", micro = [] }: Props)
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-end pb-1">
-            <div className="type-display-2xl tabular text-foreground">{Math.round(v)}<span className="type-body-md text-tertiary">%</span></div>
+            <div className="type-display-2xl tabular text-foreground">{Math.round(v)}<Unit>%</Unit></div>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-2 mt-3">
