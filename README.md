@@ -35,3 +35,14 @@ valid email address and any non-empty password will sign you in (see
 | `preview` | Preview the production build locally |
 | `lint` | Run ESLint |
 | `test` | Run the test suite (Vitest) |
+
+## Regenerating the entity icons
+
+The 12 entity icons in `public/icons/*.png` are cut from one source sheet. To re-run:
+
+```
+pip install pillow numpy
+python scripts/cut-icons.py
+```
+
+Input is `design/icons-sheet.jpg` (12 icons, 4 columns by 3 rows, order: part, assembly, variant, ebom, mbom, service-kit, fru, software, ecn, supplier, field-event, report). Output is one 144x144 transparent PNG per id in `public/icons/`. The script exits with an error if it does not find exactly 12 icons. The id to icon mapping lives in `src/components/icons/iconMap.ts`.

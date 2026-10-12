@@ -173,6 +173,23 @@ Not fixed in this redesign.
 
 Baseline: npm test 23/23, build OK, lint 10 problems (2 errors, 8 warnings), all pre-existing. Final: same results. Browser: 14 routes, light and dark, 1440px and 390px, with no console errors, one h1 each and no horizontal overflow. That browser check was done before the logo and app-name commits.
 
+## Icons
+
+Entity icons come from `src/components/icons/iconMap.ts`: one id to `{ lucide, mark }` map. Nothing is hard-coded in components. An unknown id falls back to a generic `Box` icon; a missing or failed mark falls back to its lucide icon.
+
+- **Marks (44px, empty alt):** `PageHeader` takes an optional `mark` prop. Shown on Variants, EBOM, MBOM, Service BOM, Software BOM, Part Master (list and detail), Supplier Intel, Field Quality, Reports, and Changes (list and ECN detail). Dashboard, BOM Compare and the not-found headers have none.
+- **Row and tab icons (grey lucide, 14px, `aria-hidden`):** EBOM tree rows (assembly or part), the first column of the Part Master, Changes and Supplier Intel tables, the Service Kits and Field-Replaceable Units chips, and the EBOM vs MBOM chip on BOM Compare. EBOM tree names and the part-number line carry a `title` for truncated text.
+- **Cutting script:** `scripts/cut-icons.py` reads `design/icons-sheet.jpg` (kept out of the build), detects the 12 icons by connected components, removes the background and shadows with edge defringing, and writes 144x144 PNGs to `public/icons/`. Re-run instructions are in `README.md`.
+- **Tests:** `src/tests/icons.test.tsx` (new file) covers the mapping, the fallback, PNG size and transparent corners, and the header marks.
+- **No brand colour token:** the marks carry the orange and row icons stay grey, so no `--icon-brand` was added and no brand icon sits next to a warning badge or dot.
+
+Known concerns:
+
+- **field-event looks like a warning sign.** It is used only in the Field Quality header, never in rows or next to warning badges. A test checks that no other page renders it.
+- **Unused sizes:** `EmptyState` accepts a `mark` prop for the 72px size, and the 36px KPI/card size is defined in the design system, but neither is used yet. Field Quality has no empty state, and no KPI tile or card needed a mark.
+- **Provenance:** the icons were AI-generated (Google Flow) from a single sheet, so there is no editable vector source.
+- **Sidebar mismatches:** a few entity icons in the mapping differ from the sidebar icon for the same page (Service BOM, Software BOM, Part Master, Reports). The nav is unchanged; see the review notes.
+
 ## Questions for reviewer
 
 1. Should Medium stay blue (info), or go back to orange (warning)?
