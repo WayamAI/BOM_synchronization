@@ -1,4 +1,4 @@
-import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus } from "@/components/ui/primitives";
+import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -20,6 +20,19 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GraphView from "@/components/EbomGraphView";
+
+// Health from node.health (same data as before). Healthy rows show nothing visible;
+// warning and critical rows show a status dot. The state is always readable by assistive tech.
+const HealthDot = ({ health }: { health?: string }) => {
+  const tone = health === "critical" ? "error" : health === "warning" ? "warning" : null;
+  const label = health === "critical" ? "Health: critical" : health === "warning" ? "Health: warning" : "Health: ok";
+  return (
+    <span className="inline-flex size-2 shrink-0" title={tone ? label : undefined}>
+      {tone && <StatusDot tone={tone} className="size-2" />}
+      <span className="sr-only">{label}</span>
+    </span>
+  );
+};
 
 const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
   node: EbomNode; depth?: number; onSelect: (n: EbomNode) => void;
@@ -46,6 +59,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
         style={{ paddingLeft: 8 + depth * 16 }}
       >
         {has ? (open ? <ChevronDown className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
+        <HealthDot health={node.health} />
         <span className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
         <span className="type-body-sm tabular truncate text-tertiary">
           {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
@@ -350,6 +364,7 @@ const EbomManager = () => {
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap"><span className="sr-only">Health</span></th>
                       <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
                       <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                       <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
@@ -362,10 +377,11 @@ const EbomManager = () => {
                   </thead>
                   <tbody>
                     {filteredRows.length === 0 && (
-                      <tr><td colSpan={8}><EmptyState title="No components match this search" /></td></tr>
+                      <tr><td colSpan={9}><EmptyState title="No components match this search" /></td></tr>
                     )}
                     {filteredRows.map(n => (
                       <tr key={n.id + Math.random()} className="border-b border-hairline hover:bg-raised cursor-pointer" onClick={() => setSelected(n)}>
+                        <td className="px-3 py-2"><HealthDot health={n.health} /></td>
                         <td className="px-3 py-2 tabular text-tertiary">{n.partNumber}</td>
                         <td className="type-body-md px-3 py-2 font-medium text-foreground">{n.name}</td>
                         <td className="type-body-sm px-3 py-2 text-quaternary">{n.type}</td>

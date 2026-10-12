@@ -115,12 +115,12 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
   </span>
 );
 
-/** BOM lifecycle state. Released and In Work are quiet; In Review and Obsolete get a solid badge. */
+/** BOM lifecycle state. Released and In Work are plain text (no dot: a dot means health); In Review and Obsolete get a solid badge. */
 export const LifecycleStatus = ({ status }: { status?: string }) => {
   if (!status) return <span className="type-body-sm text-quaternary">—</span>;
   if (status === "In Review") return <Badge variant="warning">{status}</Badge>;
   if (status === "Obsolete") return <Badge variant="neutral">{status}</Badge>;
-  return <QuietStatus tone={status === "In Work" ? "info" : "success"}>{status}</QuietStatus>;
+  return <span className="type-body-sm whitespace-nowrap text-tertiary">{status}</span>;
 };
 
 /** Plain statement, no illustration, no call to action. */
