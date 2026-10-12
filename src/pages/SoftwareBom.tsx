@@ -1,10 +1,10 @@
-import { EmptyState } from "@/components/ui/primitives";
+import { EmptyState, KpiTile, Panel, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   softwareComponents, parts as allParts, getPart, cveTimeline, totals,
 } from "@/lib/mockData";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeVariant } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -16,12 +16,12 @@ import { ShieldAlert, Search, Download, Cpu } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
-const sevCls = (s: string) =>
-  s === "Critical" ? "bg-critical/15 text-critical border-critical/30" :
-  s === "High"     ? "bg-orange-500/15 text-orange-500 border-orange-500/30" :
-  s === "Medium"   ? "bg-warning/15 text-warning border-warning/30" :
-  s === "Low"      ? "bg-muted text-muted-foreground border-border" :
-                     "bg-success/15 text-success border-success/30";
+const sevCls = (s: string): BadgeVariant =>
+  s === "Critical" ? "error" :
+  s === "High"     ? "warning" :
+  s === "Medium"   ? "info" :
+  s === "Low"      ? "neutral" :
+                     "success";
 
 const SoftwareBom = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const SoftwareBom = () => {
       actions={
         <>
           <Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" />Export CycloneDX</Button>
-          <Button size="sm" className="gap-1.5 bg-gradient-primary border-0"><ShieldAlert className="h-3.5 w-3.5" />Run Vulnerability Scan</Button>
+          <Button size="sm" className="gap-1.5"><ShieldAlert className="h-3.5 w-3.5" />Run vulnerability scan</Button>
         </>
       }
     >
@@ -68,51 +68,48 @@ const SoftwareBom = () => {
           { label: "Critical CVEs",   value: totals.criticalCves, tone: "critical" },
           { label: "License clean",   value: `${softwareComponents.filter(c => !["GPL-3.0","AGPL-3.0"].includes(c.license)).length}/${softwareComponents.length}` },
         ].map(k => (
-          <div key={k.label} className="rounded-lg border border-border bg-card p-3">
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{k.label}</div>
-            <div className={cn("text-lg font-bold tabular-nums",
-              k.tone === "critical" && "text-critical",
-              k.tone === "warning" && "text-warning",
-            )}>{k.value}</div>
-          </div>
+          <KpiTile
+            key={k.label}
+            label={k.label}
+            value={k.value}
+            valueClassName={k.tone === "critical" ? "text-error" : k.tone === "warning" ? "text-warning" : undefined}
+          />
         ))}
       </div>
 
       {/* ECU rollup + CVE trend */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 rounded-xl border border-border bg-card p-5 shadow-card">
-          <h3 className="text-sm font-semibold">ECU Cyber Posture</h3>
-          <p className="text-[11px] text-muted-foreground mb-3">Each ECU and its software package footprint</p>
+        <Panel title="ECU Cyber Posture" className="lg:col-span-2">
+          <p className="type-body-sm text-muted-foreground mb-3">Each ECU and its software package footprint</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {ecuRollup.map(r => (
               <button
                 key={r.ecu.partNumber}
                 onClick={() => navigate(`/parts/${r.ecu.partNumber}`)}
-                className="flex items-center justify-between rounded-md border border-border p-2 hover:bg-muted/30 text-left"
+                className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left"
               >
                 <div className="flex items-center gap-2 min-w-0">
                   <Cpu className="h-3.5 w-3.5 text-primary shrink-0" />
                   <div className="min-w-0">
                     <div className="text-xs font-semibold truncate">{r.ecu.name}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground">{r.ecu.partNumber} · {r.ecu.revision}</div>
+                    <div className="type-caption font-mono text-muted-foreground">{r.ecu.partNumber} · {r.ecu.revision}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <Badge variant="outline" className="text-[10px]">{r.pkgs} pkg</Badge>
+                  <span className="type-body-sm tabular text-tertiary">{r.pkgs} pkg</span>
                   {r.crit > 0
-                    ? <Badge className="bg-critical/15 text-critical border-critical/30 text-[10px]">{r.crit} crit</Badge>
+                    ? <Badge variant="error">{r.crit} crit</Badge>
                     : r.cves > 0
-                      ? <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]">{r.cves} CVE</Badge>
-                      : <Badge className="bg-success/15 text-success border-success/30 text-[10px]">clean</Badge>}
+                      ? <Badge variant="warning">{r.cves} CVE</Badge>
+                      : <QuietStatus tone="success">clean</QuietStatus>}
                 </div>
               </button>
             ))}
           </div>
-        </div>
+        </Panel>
 
-        <div className="rounded-xl border border-border bg-card p-5 shadow-card">
-          <h3 className="text-sm font-semibold">CVE Trend · 6 weeks</h3>
-          <p className="text-[11px] text-muted-foreground">New vulnerabilities identified per week</p>
+        <Panel title="CVE Trend · 6 weeks">
+          <p className="type-body-sm text-muted-foreground">New vulnerabilities identified per week</p>
           <div className="h-[220px] mt-2">
             <ResponsiveContainer>
               <BarChart data={cveTimeline} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
@@ -127,7 +124,7 @@ const SoftwareBom = () => {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </Panel>
       </div>
 
       {/* Filters */}
@@ -186,18 +183,18 @@ const SoftwareBom = () => {
                   <td className="px-3 py-2">
                     <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${c.runsOnECU}`)}>
                       <div>{ecu?.name}</div>
-                      <div className="font-mono text-[10px] text-muted-foreground">{c.runsOnECU}</div>
+                      <div className="font-mono type-caption text-muted-foreground">{c.runsOnECU}</div>
                     </button>
                   </td>
-                  <td className="px-3 py-2">{c.critical ? <Badge className="bg-critical/15 text-critical border-critical/30 text-[10px]">Safety-critical</Badge> : <Badge variant="outline" className="text-[10px]">Non-critical</Badge>}</td>
+                  <td className="px-3 py-2">{c.critical ? <Badge variant="error">Safety-critical</Badge> : <span className="type-body-sm text-tertiary">Non-critical</span>}</td>
                   <td className="px-3 py-2">
-                    {c.cves.length === 0 && <Badge className="bg-success/15 text-success border-success/30 text-[10px]">Clean</Badge>}
+                    {c.cves.length === 0 && <QuietStatus tone="success">Clean</QuietStatus>}
                     <div className="flex flex-col gap-1">
                       {c.cves.map(v => (
                         <div key={v.id} className="flex items-center gap-1.5">
-                          <Badge className={cn("text-[10px] border", sevCls(v.severity))}>{v.severity}</Badge>
-                          <span className="font-mono text-[10px]">{v.id}</span>
-                          {v.fixedIn && <span className="text-[10px] text-muted-foreground">→ fixed in {v.fixedIn}</span>}
+                          <Badge variant={sevCls(v.severity)}>{v.severity}</Badge>
+                          <span className="font-mono type-caption">{v.id}</span>
+                          {v.fixedIn && <span className="type-caption text-muted-foreground">fixed in {v.fixedIn}</span>}
                         </div>
                       ))}
                     </div>
