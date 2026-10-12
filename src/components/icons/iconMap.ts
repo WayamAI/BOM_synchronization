@@ -1,6 +1,6 @@
 import {
   Box, Boxes, Layers, GitBranch, Factory, Wrench, Cog, Cpu, FileEdit, Truck,
-  AlertOctagon, FileBarChart, Cog, type LucideIcon,
+  AlertOctagon, FileBarChart, type LucideIcon,
 } from "lucide-react";
 
 // Single source of truth for entity icons: id -> { lucide, mark }.
