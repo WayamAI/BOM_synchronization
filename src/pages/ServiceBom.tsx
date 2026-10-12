@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wrench, Search, Package, BookOpen, Receipt, Tag } from "lucide-react";
+import { Wrench, Search, Plus, BookOpen, Receipt, Tag } from "lucide-react";
 
 const catBadge = (c: string): BadgeVariant =>
   c === "Recall"  ? "error" :
@@ -76,7 +76,7 @@ const ServiceBom = () => {
       actions={
         <>
           <Button variant="outline" size="sm" className="gap-1.5"><BookOpen aria-hidden className="h-3.5 w-3.5" />Service manual</Button>
-          <Button size="sm" className="gap-1.5"><Package aria-hidden className="h-3.5 w-3.5" />New service kit</Button>
+          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />New service kit</Button>
         </>
       }
     >

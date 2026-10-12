@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
-import { Download, Calendar, FileText } from "lucide-react";
+import { Download, Calendar } from "lucide-react";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { totals, program } from "@/lib/mockData";
 
 const reports = [
@@ -114,7 +115,7 @@ const Reports = () => (
         <div key={r.name} className="rounded-lg border border-hairline bg-container p-4 hover:border-strong transition-colors duration-150 cursor-pointer group">
           <div className="flex items-start justify-between">
             <div className="grid size-9 place-items-center rounded-full bg-action transition-colors duration-150 group-hover:bg-raised-2">
-              <FileText className="size-[17px] text-tertiary" aria-hidden />
+              <EntityIcon id="report" className="size-[17px]" />
             </div>
             <span className="type-caption text-quaternary">{r.schedule}</span>
           </div>
