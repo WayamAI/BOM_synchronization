@@ -3,8 +3,10 @@ import { ChevronRight, ChevronDown, Pin, X, PanelLeftClose, PanelLeftOpen } from
 import { useState, useMemo, type SyntheticEvent } from "react";
 import { ebomTree, type EbomNode } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
-import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
-import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
+import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
+import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
+import wayamWordmarkLight from "@/assets/brand/wayam-wordmark-light.svg";
+import wayamWordmarkDark from "@/assets/brand/wayam-wordmark-dark.svg";
 import { navGroups, pinnedItems } from "./nav";
 
 const healthDot = (h?: string) => {
@@ -83,11 +85,11 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
           aria-label="Wayam AI, BOM Synchronization"
           className="flex min-w-0 items-center gap-2.5 rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-active"
         >
-          <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
-          <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
-          <span className={cn("min-w-0 leading-tight", railOnly)}>
-            <span className="type-label-md block truncate text-foreground">Wayam AI</span>
-            <span className="type-eyebrow block truncate text-quaternary">BOM Synchronization</span>
+          <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
+          <img src={wayamMarkDark} alt="" className="hidden h-auto w-8 shrink-0 dark:block" />
+          <span className={cn("flex shrink-0 items-center", railOnly)}>
+            <img src={wayamWordmarkLight} alt="" className="h-5 w-auto dark:hidden" />
+            <img src={wayamWordmarkDark} alt="" className="hidden h-5 w-auto dark:block" />
           </span>
         </Link>
       </div>
