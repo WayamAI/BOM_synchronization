@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ChevronRight, ChevronDown, Pin, X, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, type SyntheticEvent } from "react";
 import { ebomTree, type EbomNode } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
@@ -51,6 +51,16 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
   const [pinnedOpen, setPinnedOpen] = useState(true);
   const tree = useMemo(() => ebomTree, []);
 
+  // Collapsed rail: hovering or focusing a puck shows a label flyout to its right.
+  // The nav column scrolls (and clips), so the flyout is position:fixed.
+  const [flyout, setFlyout] = useState<{ group: string; label: string; top: number } | null>(null);
+  const showFlyout = (e: SyntheticEvent<HTMLElement>, group: string, label: string) => {
+    if (expanded) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    setFlyout({ group, label, top: r.top + r.height / 2 });
+  };
+  const hideFlyout = () => setFlyout(null);
+
   // Below lg the sidebar is an off-canvas drawer and always shows its full
   // layout. From lg it is a 68px rail that expands to 252px; labels, the
   // program tree and Pinned are shown only when expanded.
@@ -94,7 +104,11 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
                   key={to}
                   to={to}
                   end={end}
-                  title={label}
+                  aria-label={label}
+                  onMouseEnter={(e) => showFlyout(e, group.section, label)}
+                  onFocus={(e) => showFlyout(e, group.section, label)}
+                  onMouseLeave={hideFlyout}
+                  onBlur={hideFlyout}
                   className="group flex items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
                 >
                   {({ isActive }) => (
@@ -185,6 +199,16 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
           </span>
         </button>
       </div>
+      {flyout && !expanded && (
+        <div
+          role="presentation"
+          style={{ top: flyout.top }}
+          className="pointer-events-none fixed left-[76px] z-50 hidden -translate-y-1/2 rounded-xl border border-hairline bg-container px-3 py-2 shadow-lg lg:block"
+        >
+          <div className="type-eyebrow text-quaternary">{flyout.group}</div>
+          <div className="type-label-md whitespace-nowrap text-foreground">{flyout.label}</div>
+        </div>
+      )}
     </aside>
   );
 };
