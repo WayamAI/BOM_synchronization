@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/ui/primitives";
+import { EmptyState, KpiTile } from "@/components/ui/primitives";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,7 +10,7 @@ import {
   ChevronDown, ChevronRight, Plus, Link2, Search, Filter, X,
   GitBranch, Boxes, ShieldAlert, GitCompare, ExternalLink,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeVariant } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -22,14 +22,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GraphView from "@/components/EbomGraphView";
 
 const dotCls = (h?: string) =>
-  h === "critical" ? "bg-critical shadow-glow-danger animate-pulse-dot" :
+  h === "critical" ? "bg-error" :
   h === "warning"  ? "bg-warning" : "bg-success";
 
-const lcBadge = (lc?: string) => {
-  if (lc === "In Review") return "bg-warning/15 text-warning border-warning/30";
-  if (lc === "In Work")   return "bg-primary/15 text-primary border-primary/30";
-  if (lc === "Obsolete")  return "bg-muted text-muted-foreground";
-  return "bg-success/15 text-success border-success/30"; // Released
+const lcBadge = (lc?: string): BadgeVariant => {
+  if (lc === "In Review") return "warning";
+  if (lc === "In Work")   return "info";
+  if (lc === "Obsolete")  return "neutral";
+  return "success"; // Released
 };
 
 const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
@@ -51,21 +51,21 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
       <div
         onClick={() => { onSelect(node); if (has) setOpen(!open); }}
         className={cn(
-          "group flex items-center gap-2 py-2 px-2 rounded-md cursor-pointer hover:bg-muted/50 transition-colors",
-          isSel && "bg-primary/10 ring-1 ring-primary/30"
+          "group flex items-center gap-2 py-2 px-2 rounded-md cursor-pointer hover:bg-raised transition-colors",
+          isSel && "bg-raised ring-1 ring-active"
         )}
         style={{ paddingLeft: 8 + depth * 16 }}
       >
         {has ? (open ? <ChevronDown className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
         <span className={cn("h-2 w-2 rounded-full shrink-0", dotCls(node.health))} />
         <span className="text-sm font-semibold">{node.name}</span>
-        <span className="text-[10px] font-mono text-muted-foreground">{node.partNumber}</span>
-        {node.qty && node.qty > 1 && <Badge variant="outline" className="text-[10px] h-5 px-1.5">×{node.qty}</Badge>}
-        {node.version && <Badge variant="outline" className="font-mono text-[10px] h-5 px-1.5">{node.version}</Badge>}
-        {node.status && <Badge className={cn("text-[10px] h-5 border", lcBadge(node.status))}>{node.status}</Badge>}
-        {!!node.cves && <Badge className="bg-critical/15 text-critical hover:bg-critical/15 border-critical/30 text-[10px] h-5">{node.cves} CVE</Badge>}
-        {!!node.warnings && <Badge className="bg-warning/15 text-warning hover:bg-warning/15 border-warning/30 text-[10px] h-5">{node.warnings} warn</Badge>}
-        <span className="ml-auto text-[10px] text-muted-foreground">{node.type}</span>
+        <span className="type-caption font-mono text-muted-foreground">{node.partNumber}</span>
+        {node.qty && node.qty > 1 && <Badge variant="outline" className="type-caption h-5 px-1.5">×{node.qty}</Badge>}
+        {node.version && <Badge variant="outline" className="font-mono type-caption h-5 px-1.5">{node.version}</Badge>}
+        {node.status && <Badge variant={lcBadge(node.status)}>{node.status}</Badge>}
+        {!!node.cves && <Badge variant="error">{node.cves} CVE</Badge>}
+        {!!node.warnings && <Badge variant="warning">{node.warnings} warn</Badge>}
+        <span className="ml-auto type-caption text-muted-foreground">{node.type}</span>
       </div>
       {open && has && node.children!.map(c => (
         <TreeRow key={c.id} node={c} depth={depth + 1} onSelect={onSelect} selected={selected} filter={filter} />
@@ -106,7 +106,7 @@ const getChildCount = (node: EbomNode): number => {
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
-    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{label}</p>
+    <p className="type-eyebrow text-quaternary">{label}</p>
     <p className="text-xs">{value}</p>
   </div>
 );
@@ -124,26 +124,27 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
   const childCount = getChildCount(node);
 
   return (
-    <aside className="w-full lg:w-[420px] shrink-0 rounded-xl border border-border bg-card shadow-elevated animate-slide-in-right">
-      <div className="p-4 border-b border-border flex items-start justify-between">
+    <aside className="w-full lg:w-[420px] shrink-0 rounded-lg border border-strong bg-container">
+      <div className="p-4 border-b border-hairline flex items-start justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-base font-bold truncate">{node.name}</h3>
-            <Badge variant="outline" className="text-[10px]">{node.type}</Badge>
-            {node.version && <Badge className="bg-gradient-primary border-0 text-[10px]">{node.version}</Badge>}
+            <h3 className="type-display-lg truncate text-foreground">{node.name}</h3>
+            <Badge variant="outline" className="type-caption">{node.type}</Badge>
+            {node.version && <Badge variant="default">{node.version}</Badge>}
           </div>
-          <p className="text-[11px] text-muted-foreground mt-1 font-mono">{node.partNumber}</p>
-          <p className="text-[11px] text-muted-foreground">{node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
+          <p className="type-body-sm text-muted-foreground mt-1 font-mono">{node.partNumber}</p>
+          <p className="type-body-sm text-muted-foreground">{node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}><X className="h-4 w-4" /></Button>
       </div>
 
-      <div className="flex gap-1 p-2 border-b border-border overflow-x-auto scrollbar-thin">
+      <div className="flex gap-1 p-2 border-b border-hairline overflow-x-auto scrollbar-thin">
         {tabs.map(t => (
           <button key={t}
             onClick={() => setTab(t)}
-            className={cn("px-2.5 py-1 text-[11px] rounded-md whitespace-nowrap transition-colors",
-              tab === t ? "bg-primary/15 text-primary font-semibold" : "text-muted-foreground hover:bg-muted/50")}>
+            aria-pressed={tab === t}
+            className={cn("rounded-full border px-2.5 py-1 text-xs font-medium whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active",
+              tab === t ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>
             {t}
           </button>
         ))}
@@ -155,10 +156,10 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
             <Field label="Part number" value={<span className="font-mono">{node.partNumber}</span>} />
             <Field label="Revision" value={node.revision ?? "—"} />
             <Field label="Type" value={node.type} />
-            <Field label="Lifecycle" value={<Badge className={cn("text-[10px] border", lcBadge(node.status))}>{node.status ?? "—"}</Badge>} />
+            <Field label="Lifecycle" value={<Badge variant={lcBadge(node.status)}>{node.status ?? "—"}</Badge>} />
             <Field label="Owner team" value={node.owner ?? "—"} />
             <Field label="Supplier" value={node.supplier ?? "—"} />
-            <Field label="Unit cost" value={part?.cost ? `$${part.cost.toLocaleString()}` : "—"} />
+            <Field label="Unit cost" value={part?.cost ? `$${part.cost.toLocaleString("en-US")}` : "—"} />
             <Field label="Lead time" value={part ? `${part.leadTimeDays} days` : "—"} />
             <Field label="UoM" value={part?.uom ?? "—"} />
             <Field label="Serviceable" value={part?.serviceable ? "Yes (in Service BOM)" : "No"} />
@@ -175,15 +176,15 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "Where-Used" && (
           <div className="space-y-2">
-            <p className="text-[11px] text-muted-foreground">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
-            {whereUsed.length === 0 && <p className="text-[11px] italic text-muted-foreground">No parents — this is the top-level vehicle.</p>}
+            <p className="type-body-sm text-muted-foreground">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">No parents — this is the top-level vehicle.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (
-                <div key={i} className="flex items-center justify-between rounded-md border border-border p-2 hover:bg-muted/30 cursor-pointer" onClick={() => navigate(`/parts/${e.parentPN}`)}>
+                <div key={i} className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised cursor-pointer" onClick={() => navigate(`/parts/${e.parentPN}`)}>
                   <div>
                     <div className="text-xs font-semibold">{parent?.name ?? e.parentPN}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}</div>
+                    <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}</div>
                   </div>
                   <ExternalLink className="h-3 w-3 opacity-50" />
                 </div>
@@ -194,58 +195,53 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "Manufacturing" && (
           <div className="space-y-2">
-            {routingOps.length === 0 && <p className="text-[11px] italic text-muted-foreground">No MBOM routing defined. Add one from the MBOM Manager.</p>}
+            {routingOps.length === 0 && <p className="type-body-sm italic text-muted-foreground">No MBOM routing defined. Add one from the MBOM Manager.</p>}
             {routingOps.map(op => {
               const plant = plants.find(p => p.id === op.plantId);
               return (
-                <div key={op.id} className="rounded-lg border border-border p-3 bg-muted/30">
+                <div key={op.id} className="rounded-lg border border-hairline p-3 bg-raised">
                   <div className="text-xs font-semibold">{op.operation}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1">{plant?.name} · {op.line} · {op.station}</div>
-                  <div className="flex items-center justify-between text-[10px] mt-2">
+                  <div className="type-body-sm text-muted-foreground mt-1">{plant?.name} · {op.line} · {op.station}</div>
+                  <div className="flex items-center justify-between type-caption mt-2">
                     <span className="text-muted-foreground">{op.takeTimeSec}s takt · {op.workInstructionId}</span>
-                    <Badge className={
-                      op.status === "ready"   ? "bg-success/15 text-success border-success/30" :
-                      op.status === "warning" ? "bg-warning/15 text-warning border-warning/30" :
-                      op.status === "blocked" ? "bg-critical/15 text-critical border-critical/30" :
-                                                "bg-muted text-muted-foreground"
-                    }>{op.status}</Badge>
+                    <Badge variant={op.status === "ready" ? "success" : op.status === "warning" ? "warning" : op.status === "blocked" ? "error" : "neutral"}>{op.status}</Badge>
                   </div>
                 </div>
               );
             })}
-            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate("/mbom")}>Open in MBOM Manager →</Button>
+            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate("/mbom")}>Open in MBOM Manager</Button>
           </div>
         )}
 
         {tab === "Software" && (
           <div className="space-y-2">
-            {softOnMe.length === 0 && <p className="text-[11px] italic text-muted-foreground">No software packages declared for this part. Relevant only for ECU-type parts.</p>}
+            {softOnMe.length === 0 && <p className="type-body-sm italic text-muted-foreground">No software packages declared for this part. Relevant only for ECU-type parts.</p>}
             {softOnMe.map(c => (
-              <div key={c.id} className="flex items-center justify-between rounded-md border border-border p-2">
+              <div key={c.id} className="flex items-center justify-between rounded-md border border-hairline p-2">
                 <div>
                   <div className="text-xs font-semibold">{c.name} <span className="font-mono text-muted-foreground">{c.version}</span></div>
-                  <div className="text-[10px] text-muted-foreground">{c.license} · {c.supplier}</div>
+                  <div className="type-caption text-muted-foreground">{c.license} · {c.supplier}</div>
                 </div>
                 {c.cves.length > 0
-                  ? <Badge className="bg-critical/15 text-critical border-critical/30">{c.cves.length} CVE</Badge>
-                  : <Badge className="bg-success/15 text-success border-success/30">Clean</Badge>}
+                  ? <Badge variant="error">{c.cves.length} CVE</Badge>
+                  : <Badge variant="success">Clean</Badge>}
               </div>
             ))}
           </div>
         )}
 
         {tab === "History" && (
-          <div className="relative pl-4 space-y-3 border-l border-border">
-            {history.length === 0 && <p className="text-[11px] italic text-muted-foreground">No revision history yet.</p>}
+          <div className="relative pl-4 space-y-3 border-l border-hairline">
+            {history.length === 0 && <p className="type-body-sm italic text-muted-foreground">No revision history yet.</p>}
             {history.map((h, i) => (
               <div key={i} className="relative">
                 <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-primary" />
                 <div className="text-xs font-semibold">rev {h.revision}{h.ecnId ? ` · ${h.ecnId}` : ""}</div>
-                <div className="text-[11px]">{h.note}</div>
-                <div className="text-[10px] text-muted-foreground">{h.date} · {h.by}</div>
+                <div className="type-body-sm">{h.note}</div>
+                <div className="type-caption text-muted-foreground">{h.date} · {h.by}</div>
               </div>
             ))}
-            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate(`/lineage/${node.partNumber}`)}>Open full lineage →</Button>
+            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate(`/lineage/${node.partNumber}`)}>Open full lineage</Button>
           </div>
         )}
       </div>
@@ -300,16 +296,16 @@ const EbomManager = () => {
       actions={
         <>
           <Button variant="outline" size="sm" className="gap-1.5"><GitCompare className="h-3.5 w-3.5" />Compare</Button>
-          <Button variant="outline" size="sm" className="gap-1.5"><Link2 className="h-3.5 w-3.5" />Add Relationship</Button>
-          <Button size="sm" className="gap-1.5 bg-gradient-primary border-0"><Plus className="h-3.5 w-3.5" />Add Component</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><Link2 className="h-3.5 w-3.5" />Add relationship</Button>
+          <Button size="sm" className="gap-1.5"><Plus className="h-3.5 w-3.5" />Add component</Button>
         </>
       }
     >
-      <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-full">
-        <TabsList className="inline-flex h-9 items-center justify-start rounded-lg bg-muted/50 p-1 mb-6">
-          <TabsTrigger value="tree" className="text-xs px-5 py-1.5 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-card data-[state=active]:shadow-sm">Tree View</TabsTrigger>
-          <TabsTrigger value="table" className="text-xs px-5 py-1.5 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-card data-[state=active]:shadow-sm">Table View</TabsTrigger>
-          <TabsTrigger value="graph" className="text-xs px-5 py-1.5 rounded-md data-[state=active]:bg-white dark:data-[state=active]:bg-card data-[state=active]:shadow-sm">Graph View</TabsTrigger>
+      <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-full space-y-4">
+        <TabsList>
+          <TabsTrigger value="tree">Tree View</TabsTrigger>
+          <TabsTrigger value="table">Table View</TabsTrigger>
+          <TabsTrigger value="graph">Graph View</TabsTrigger>
         </TabsList>
 
         {/* Toolbar */}
@@ -340,23 +336,20 @@ const EbomManager = () => {
         {/* Completeness / quick stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { l: "Parts in view",    v: (filteredRows.length).toLocaleString() },
+            { l: "Parts in view",    v: (filteredRows.length).toLocaleString("en-US") },
             { l: "Unique assemblies", v: all.filter(n => n.type === "Assembly" || n.type === "Sub-Assembly").length },
             { l: "ECUs",             v: all.filter(n => n.type === "ECU").length },
-            { l: "Rolled-up cost",   v: `$${Math.round(totalCost).toLocaleString()}` },
+            { l: "Rolled-up cost",   v: `$${Math.round(totalCost).toLocaleString("en-US")}` },
             { l: "Parts in program", v: activeProgram.parts.length },
           ].map(k => (
-            <div key={k.l} className="rounded-lg border border-border bg-card p-3">
-              <div className="text-[10px] uppercase tracking-wider text-muted-foreground">{k.l}</div>
-              <div className="text-base font-bold tabular-nums">{k.v}</div>
-            </div>
+            <KpiTile key={k.l} label={k.l} value={k.v} />
           ))}
         </div>
 
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 rounded-xl border border-border bg-card shadow-card p-2 min-h-[520px]">
+            <div className="flex-1 rounded-lg border border-hairline bg-container p-2 min-h-[520px]">
               <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
             </div>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
@@ -364,7 +357,7 @@ const EbomManager = () => {
         </TabsContent>
         <TabsContent value="table" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 rounded-xl border border-border bg-card shadow-card p-2 min-h-[520px]">
+            <div className="flex-1 rounded-lg border border-hairline bg-container p-2 min-h-[520px]">
               <div className="overflow-x-auto">
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
@@ -392,9 +385,9 @@ const EbomManager = () => {
                         <td className="px-3 py-2 text-muted-foreground">{n.type}</td>
                         <td className="px-3 py-2 font-mono">{n.revision}</td>
                         <td className="px-3 py-2 tabular-nums">{n.qty}</td>
-                        <td className="px-3 py-2 tabular-nums text-right">{n.cost ? `$${n.cost.toLocaleString()}` : "—"}</td>
+                        <td className="px-3 py-2 tabular-nums text-right">{n.cost ? `$${n.cost.toLocaleString("en-US")}` : "—"}</td>
                         <td className="px-3 py-2 text-muted-foreground">{n.supplier ?? "—"}</td>
-                        <td className="px-3 py-2"><Badge className={cn("text-[10px] border", lcBadge(n.status))}>{n.status}</Badge></td>
+                        <td className="px-3 py-2"><Badge variant={lcBadge(n.status)}>{n.status}</Badge></td>
                       </tr>
                     ))}
                   </tbody>
@@ -414,7 +407,7 @@ const EbomManager = () => {
         </TabsContent>
 
         {/* Validation footer */}
-        <div className="rounded-xl border border-warning/30 bg-warning/5 p-3 flex items-center gap-3 flex-wrap">
+        <div className="rounded-lg border border-hairline bg-warning-surface p-3 flex items-center gap-3 flex-wrap">
           <GitBranch className="h-4 w-4 text-warning" />
           <span className="text-xs font-semibold text-warning">Validation</span>
           <span className="text-xs text-muted-foreground">
