@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -365,32 +366,35 @@ const EbomManager = () => {
           <div className="flex flex-col lg:flex-row gap-4">
             <div className="flex-1 rounded-xl border border-border bg-card shadow-card p-2 min-h-[520px]">
               <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    <tr className="border-b border-border">
-                      <th className="text-left p-2"></th>
-                      <th className="text-left p-2">Part Number</th>
-                      <th className="text-left p-2">Name</th>
-                      <th className="text-left p-2">Type</th>
-                      <th className="text-left p-2">Rev</th>
-                      <th className="text-left p-2">Qty</th>
-                      <th className="text-right p-2">Cost</th>
-                      <th className="text-left p-2">Supplier</th>
-                      <th className="text-left p-2">Lifecycle</th>
+                <table className="tabular w-full text-xs">
+                  <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
+                    <tr className="border-b border-hairline">
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap"></th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Qty</th>
+                      <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Lifecycle</th>
                     </tr>
                   </thead>
                   <tbody>
+                    {filteredRows.length === 0 && (
+                      <tr><td colSpan={9}><EmptyState title="No components match this search" /></td></tr>
+                    )}
                     {filteredRows.map(n => (
-                      <tr key={n.id + Math.random()} className="border-b border-border/40 hover:bg-muted/40 cursor-pointer" onClick={() => setSelected(n)}>
-                        <td className="p-2"><span className={cn("inline-block h-2 w-2 rounded-full", dotCls(n.health))} /></td>
-                        <td className="p-2 font-mono">{n.partNumber}</td>
-                        <td className="p-2 font-semibold">{n.name}</td>
-                        <td className="p-2 text-muted-foreground">{n.type}</td>
-                        <td className="p-2 font-mono">{n.revision}</td>
-                        <td className="p-2 tabular-nums">{n.qty}</td>
-                        <td className="p-2 tabular-nums text-right">{n.cost ? `$${n.cost.toLocaleString()}` : "—"}</td>
-                        <td className="p-2 text-muted-foreground">{n.supplier ?? "—"}</td>
-                        <td className="p-2"><Badge className={cn("text-[10px] border", lcBadge(n.status))}>{n.status}</Badge></td>
+                      <tr key={n.id + Math.random()} className="border-b border-hairline hover:bg-raised cursor-pointer" onClick={() => setSelected(n)}>
+                        <td className="px-3 py-2"><span className={cn("inline-block h-2 w-2 rounded-full", dotCls(n.health))} /></td>
+                        <td className="px-3 py-2 font-mono">{n.partNumber}</td>
+                        <td className="px-3 py-2 font-semibold">{n.name}</td>
+                        <td className="px-3 py-2 text-muted-foreground">{n.type}</td>
+                        <td className="px-3 py-2 font-mono">{n.revision}</td>
+                        <td className="px-3 py-2 tabular-nums">{n.qty}</td>
+                        <td className="px-3 py-2 tabular-nums text-right">{n.cost ? `$${n.cost.toLocaleString()}` : "—"}</td>
+                        <td className="px-3 py-2 text-muted-foreground">{n.supplier ?? "—"}</td>
+                        <td className="px-3 py-2"><Badge className={cn("text-[10px] border", lcBadge(n.status))}>{n.status}</Badge></td>
                       </tr>
                     ))}
                   </tbody>

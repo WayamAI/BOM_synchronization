@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -157,36 +158,39 @@ const SoftwareBom = () => {
       </div>
 
       {/* Package table */}
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">Package</th>
-              <th className="text-left p-3">Version</th>
-              <th className="text-left p-3">License</th>
-              <th className="text-left p-3">Supplier</th>
-              <th className="text-left p-3">Runs on (ECU)</th>
-              <th className="text-left p-3">Safety-critical</th>
-              <th className="text-left p-3">Vulnerabilities</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Package</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Version</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">License</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Runs on (ECU)</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Safety-critical</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Vulnerabilities</th>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr><td colSpan={7}><EmptyState title="No packages match this filter" /></td></tr>
+            )}
             {filtered.map(c => {
               const ecu = getPart(c.runsOnECU);
               return (
-                <tr key={c.id} className="border-t border-border/40 hover:bg-muted/30">
-                  <td className="p-3 font-mono font-semibold">{c.name}</td>
-                  <td className="p-3 font-mono">{c.version}</td>
-                  <td className="p-3">{c.license}</td>
-                  <td className="p-3 text-muted-foreground">{c.supplier}</td>
-                  <td className="p-3">
+                <tr key={c.id} className="border-t border-hairline hover:bg-raised">
+                  <td className="px-3 py-2 font-mono font-semibold">{c.name}</td>
+                  <td className="px-3 py-2 font-mono">{c.version}</td>
+                  <td className="px-3 py-2">{c.license}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{c.supplier}</td>
+                  <td className="px-3 py-2">
                     <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${c.runsOnECU}`)}>
                       <div>{ecu?.name}</div>
                       <div className="font-mono text-[10px] text-muted-foreground">{c.runsOnECU}</div>
                     </button>
                   </td>
-                  <td className="p-3">{c.critical ? <Badge className="bg-critical/15 text-critical border-critical/30 text-[10px]">Safety-critical</Badge> : <Badge variant="outline" className="text-[10px]">Non-critical</Badge>}</td>
-                  <td className="p-3">
+                  <td className="px-3 py-2">{c.critical ? <Badge className="bg-critical/15 text-critical border-critical/30 text-[10px]">Safety-critical</Badge> : <Badge variant="outline" className="text-[10px]">Non-critical</Badge>}</td>
+                  <td className="px-3 py-2">
                     {c.cves.length === 0 && <Badge className="bg-success/15 text-success border-success/30 text-[10px]">Clean</Badge>}
                     <div className="flex flex-col gap-1">
                       {c.cves.map(v => (

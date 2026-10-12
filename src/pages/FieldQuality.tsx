@@ -82,29 +82,29 @@ const FieldQuality = () => {
           <Badge variant="outline" className="text-[10px]">{fieldEvents.length} tracked</Badge>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/30">
+          <table className="tabular w-full text-xs">
+            <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
-                <th className="text-left p-3">ID</th>
-                <th className="text-left p-3">Severity</th>
-                <th className="text-left p-3">Event</th>
-                <th className="text-left p-3">Linked part</th>
-                <th className="text-left p-3">Variant</th>
-                <th className="text-right p-3">VINs</th>
-                <th className="text-left p-3">Age</th>
-                <th className="text-left p-3">Status</th>
-                <th className="text-left p-3"></th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">ID</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Severity</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Event</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Linked part</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant</th>
+                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">VINs</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Age</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Status</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap"></th>
               </tr>
             </thead>
             <tbody>
               {fieldEvents.map(e => {
                 const part = e.partNumber ? getPart(e.partNumber) : null;
                 return (
-                  <tr key={e.id} className="border-t border-border/40 hover:bg-muted/30">
-                    <td className="p-3 font-mono text-[10px]">{e.id}</td>
-                    <td className="p-3"><Badge className={cn("text-[10px] border capitalize", sevTone(e.severity))}>{e.severity}</Badge></td>
-                    <td className="p-3 font-semibold">{e.title}</td>
-                    <td className="p-3">
+                  <tr key={e.id} className="border-t border-hairline hover:bg-raised">
+                    <td className="px-3 py-2 font-mono text-[10px]">{e.id}</td>
+                    <td className="px-3 py-2"><Badge className={cn("text-[10px] border capitalize", sevTone(e.severity))}>{e.severity}</Badge></td>
+                    <td className="px-3 py-2 font-semibold">{e.title}</td>
+                    <td className="px-3 py-2">
                       {part
                         ? <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${e.partNumber}`)}>
                             <div>{part.name}</div>
@@ -112,11 +112,11 @@ const FieldQuality = () => {
                           </button>
                         : <span className="text-muted-foreground">—</span>}
                     </td>
-                    <td className="p-3 text-muted-foreground">{e.variant}</td>
-                    <td className="p-3 text-right tabular-nums">{e.vinsAffected.toLocaleString()}</td>
-                    <td className="p-3 text-muted-foreground">{e.ageHours < 24 ? `${e.ageHours}h` : `${Math.round(e.ageHours / 24)}d`}</td>
-                    <td className="p-3"><Badge className={cn("text-[10px] border", statusTone(e.status))}>{e.status}</Badge></td>
-                    <td className="p-3">
+                    <td className="px-3 py-2 text-muted-foreground">{e.variant}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{e.vinsAffected.toLocaleString()}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{e.ageHours < 24 ? `${e.ageHours}h` : `${Math.round(e.ageHours / 24)}d`}</td>
+                    <td className="px-3 py-2"><Badge className={cn("text-[10px] border", statusTone(e.status))}>{e.status}</Badge></td>
+                    <td className="px-3 py-2">
                       <Button size="sm" variant="ghost" className="h-6 text-[11px] gap-1 text-primary"><MapPin className="h-3 w-3" />Trace</Button>
                     </td>
                   </tr>

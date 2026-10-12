@@ -147,24 +147,24 @@ const BomCompare = () => {
             <div className="rounded-xl border border-border bg-card p-4 shadow-card">
               <h3 className="text-sm font-semibold mb-2">Unmapped EBOM Assemblies</h3>
               <div className="overflow-x-auto">
-                <table className="w-full text-xs">
-                  <thead className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    <tr className="border-b border-border">
-                      <th className="text-left p-2">Part Number</th>
-                      <th className="text-left p-2">Name</th>
-                      <th className="text-left p-2">Type</th>
-                      <th className="text-left p-2">Supplier</th>
+                <table className="tabular w-full text-xs">
+                  <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
+                    <tr className="border-b border-hairline">
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ebomVsMbom.onlyEbom.map(pn => {
                       const p = getPart(pn);
                       return (
-                        <tr key={pn} className="border-b border-border/30 hover:bg-muted/30">
-                          <td className="p-2 font-mono">{pn}</td>
-                          <td className="p-2 font-semibold">{p?.name}</td>
-                          <td className="p-2 text-muted-foreground">{p?.type}</td>
-                          <td className="p-2 text-muted-foreground">{p?.supplierId}</td>
+                        <tr key={pn} className="border-b border-hairline hover:bg-raised">
+                          <td className="px-3 py-2 font-mono">{pn}</td>
+                          <td className="px-3 py-2 font-semibold">{p?.name}</td>
+                          <td className="px-3 py-2 text-muted-foreground">{p?.type}</td>
+                          <td className="px-3 py-2 text-muted-foreground">{p?.supplierId}</td>
                         </tr>
                       );
                     })}

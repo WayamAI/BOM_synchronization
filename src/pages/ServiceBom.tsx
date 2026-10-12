@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -231,36 +232,39 @@ const ServiceBom = () => {
 
       {/* FRU view */}
       {tab === "frus" && (
-        <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+        <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+          <table className="tabular w-full text-xs">
+            <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
-                <th className="text-left p-3">Part Number</th>
-                <th className="text-left p-3">Name</th>
-                <th className="text-left p-3">Type</th>
-                <th className="text-left p-3">Supplier</th>
-                <th className="text-right p-3">Replacement<br/><span className="font-normal normal-case text-[9px]">parts only</span></th>
-                <th className="text-right p-3">Labor</th>
-                <th className="text-right p-3">Service<br/><span className="font-normal normal-case text-[9px]">parts + labor</span></th>
-                <th className="text-left p-3">In Kits</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Replacement<br/><span className="font-normal normal-case text-[9px]">parts only</span></th>
+                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Labor</th>
+                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Service<br/><span className="font-normal normal-case text-[9px]">parts + labor</span></th>
+                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">In Kits</th>
               </tr>
             </thead>
             <tbody>
+              {filteredFrus.length === 0 && (
+                <tr><td colSpan={8}><EmptyState title="No FRUs match this filter" /></td></tr>
+              )}
               {filteredFrus.map(({ part: p, costs }) => {
                 const kits = serviceKits.filter(k => k.items.some(i => i.partNumber === p.partNumber));
                 return (
-                  <tr key={p.partNumber} className="border-t border-border/40 hover:bg-muted/30 cursor-pointer" onClick={() => navigate(`/parts/${p.partNumber}`)}>
-                    <td className="p-3 font-mono">{p.partNumber}</td>
-                    <td className="p-3 font-semibold">{p.name}</td>
-                    <td className="p-3 text-muted-foreground">{p.type}</td>
-                    <td className="p-3 text-muted-foreground">{p.supplierId}</td>
-                    <td className="p-3 text-right tabular-nums text-success font-semibold">{money(costs.replacementCost)}</td>
-                    <td className="p-3 text-right tabular-nums text-muted-foreground">
+                  <tr key={p.partNumber} className="border-t border-hairline hover:bg-raised cursor-pointer" onClick={() => navigate(`/parts/${p.partNumber}`)}>
+                    <td className="px-3 py-2 font-mono">{p.partNumber}</td>
+                    <td className="px-3 py-2 font-semibold">{p.name}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{p.supplierId}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-success font-semibold">{money(costs.replacementCost)}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
                       {money(costs.laborCost)}
                       <div className="text-[9px] opacity-70">{costs.laborHours}h</div>
                     </td>
-                    <td className="p-3 text-right tabular-nums text-primary font-semibold">{money(costs.serviceCost)}</td>
-                    <td className="p-3">
+                    <td className="px-3 py-2 text-right tabular-nums text-primary font-semibold">{money(costs.serviceCost)}</td>
+                    <td className="px-3 py-2">
                       {kits.length > 0
                         ? <div className="flex flex-wrap gap-1">{kits.map(k => <Badge key={k.id} variant="outline" className="text-[10px] font-mono">{k.id}</Badge>)}</div>
                         : <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]">not in any kit</Badge>}

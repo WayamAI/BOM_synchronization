@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -98,38 +99,41 @@ const ChangesList = () => {
       </div>
 
       {/* List */}
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">ECN</th>
-              <th className="text-left p-3">Title</th>
-              <th className="text-left p-3">State</th>
-              <th className="text-left p-3">Priority</th>
-              <th className="text-left p-3">Reason</th>
-              <th className="text-left p-3">Affected PNs</th>
-              <th className="text-right p-3">Cost/veh</th>
-              <th className="text-right p-3">VINs</th>
-              <th className="text-left p-3">Raised</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">ECN</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Title</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">State</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Priority</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Reason</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Affected PNs</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost/veh</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">VINs</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Raised</th>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr><td colSpan={9}><EmptyState title="No changes match this filter" /></td></tr>
+            )}
             {filtered.map(e => (
-              <tr key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="border-t border-border/40 hover:bg-muted/30 cursor-pointer">
-                <td className="p-3 font-mono font-semibold">{e.id}</td>
-                <td className="p-3">{e.title}</td>
-                <td className="p-3"><Badge className={cn("text-[10px] border", stateCls(e.state))}>{e.state}</Badge></td>
-                <td className="p-3"><Badge className={cn("text-[10px] border", prioCls(e.priority))}>{e.priority}</Badge></td>
-                <td className="p-3 text-muted-foreground">{e.reason}</td>
-                <td className="p-3">
+              <tr key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
+                <td className="px-3 py-2 font-mono font-semibold">{e.id}</td>
+                <td className="px-3 py-2">{e.title}</td>
+                <td className="px-3 py-2"><Badge className={cn("text-[10px] border", stateCls(e.state))}>{e.state}</Badge></td>
+                <td className="px-3 py-2"><Badge className={cn("text-[10px] border", prioCls(e.priority))}>{e.priority}</Badge></td>
+                <td className="px-3 py-2 text-muted-foreground">{e.reason}</td>
+                <td className="px-3 py-2">
                   <div className="flex flex-wrap gap-1">
                     {e.affectedPNs.slice(0, 2).map(pn => <span key={pn} className="font-mono text-[10px] text-muted-foreground">{pn}</span>)}
                     {e.affectedPNs.length > 2 && <span className="text-[10px] text-muted-foreground">+{e.affectedPNs.length - 2}</span>}
                   </div>
                 </td>
-                <td className="p-3 text-right tabular-nums">{e.estCostImpactUsd >= 0 ? "+" : ""}${e.estCostImpactUsd}</td>
-                <td className="p-3 text-right tabular-nums">{e.estVinsAffected.toLocaleString()}</td>
-                <td className="p-3 text-[11px] text-muted-foreground">{e.raisedAt} · {e.raisedBy}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{e.estCostImpactUsd >= 0 ? "+" : ""}${e.estCostImpactUsd}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{e.estVinsAffected.toLocaleString()}</td>
+                <td className="px-3 py-2 text-[11px] text-muted-foreground">{e.raisedAt} · {e.raisedBy}</td>
               </tr>
             ))}
           </tbody>
@@ -311,15 +315,15 @@ const ChangesDetail = ({ id }: { id: string }) => {
             </div>
           )}
         </div>
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/20">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">Part Number</th>
-              <th className="text-left p-3">Name</th>
-              <th className="text-left p-3">Type</th>
-              <th className="text-left p-3">Current Rev</th>
-              <th className="text-left p-3">Supplier</th>
-              <th className="text-right p-3">Unit Cost</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Current Rev</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Unit Cost</th>
             </tr>
           </thead>
           <tbody>
@@ -327,13 +331,13 @@ const ChangesDetail = ({ id }: { id: string }) => {
               const part = getPart(pn);
               if (!part) return null;
               return (
-                <tr key={pn} onClick={() => navigate(`/parts/${pn}`)} className="border-t border-border/40 hover:bg-muted/30 cursor-pointer">
-                  <td className="p-3 font-mono">{pn}</td>
-                  <td className="p-3 font-semibold">{part.name}</td>
-                  <td className="p-3 text-muted-foreground">{part.type}</td>
-                  <td className="p-3 font-mono">{part.revision}</td>
-                  <td className="p-3 text-muted-foreground">{part.supplierId}</td>
-                  <td className="p-3 text-right tabular-nums">${part.cost.toLocaleString()}</td>
+                <tr key={pn} onClick={() => navigate(`/parts/${pn}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
+                  <td className="px-3 py-2 font-mono">{pn}</td>
+                  <td className="px-3 py-2 font-semibold">{part.name}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{part.type}</td>
+                  <td className="px-3 py-2 font-mono">{part.revision}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{part.supplierId}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">${part.cost.toLocaleString()}</td>
                 </tr>
               );
             })}

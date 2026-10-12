@@ -71,18 +71,18 @@ const Variants = () => {
       </div>
 
       {/* Variant table */}
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">SKU</th>
-              <th className="text-left p-3">Variant Name</th>
-              <th className="text-left p-3">Powertrain</th>
-              <th className="text-left p-3">Trim</th>
-              <th className="text-left p-3">Market</th>
-              <th className="text-left p-3">SOP</th>
-              <th className="text-right p-3">Planned / yr</th>
-              <th className="text-left p-3">Conflicts</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">SKU</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant Name</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Powertrain</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Trim</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Market</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">SOP</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Planned / yr</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Conflicts</th>
             </tr>
           </thead>
           <tbody>
@@ -91,14 +91,14 @@ const Variants = () => {
                   onClick={() => setSelectedVariant(v.code)}
                   className={cn("border-t border-border/40 cursor-pointer hover:bg-muted/30",
                     selectedVariant === v.code && "bg-primary/5")}>
-                <td className="p-3 font-mono">{v.code}</td>
-                <td className="p-3 font-semibold">{v.name}</td>
-                <td className="p-3"><Badge variant="outline" className="text-[10px]">{v.powertrain}</Badge></td>
-                <td className="p-3"><Badge variant="outline" className="text-[10px]">{v.trim}</Badge></td>
-                <td className="p-3 text-muted-foreground">{v.market}</td>
-                <td className="p-3 font-mono">{v.startEffectivity}</td>
-                <td className="p-3 text-right tabular-nums">{v.unitsPlanned.toLocaleString()}</td>
-                <td className="p-3">{v.conflicts > 0
+                <td className="px-3 py-2 font-mono">{v.code}</td>
+                <td className="px-3 py-2 font-semibold">{v.name}</td>
+                <td className="px-3 py-2"><Badge variant="outline" className="text-[10px]">{v.powertrain}</Badge></td>
+                <td className="px-3 py-2"><Badge variant="outline" className="text-[10px]">{v.trim}</Badge></td>
+                <td className="px-3 py-2 text-muted-foreground">{v.market}</td>
+                <td className="px-3 py-2 font-mono">{v.startEffectivity}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{v.unitsPlanned.toLocaleString()}</td>
+                <td className="px-3 py-2">{v.conflicts > 0
                   ? <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]"><AlertTriangle className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
                   : <Badge className="bg-success/15 text-success border-success/30 text-[10px]"><Check className="h-3 w-3 mr-1" />Clean</Badge>}</td>
               </tr>
@@ -132,12 +132,12 @@ const Variants = () => {
           <h3 className="text-sm font-semibold">Effectivity Matrix</h3>
           <p className="text-[11px] text-muted-foreground">Which variants include each optional / powertrain-gated part</p>
           <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border text-[10px] uppercase text-muted-foreground">
-                  <th className="text-left p-2 sticky left-0 bg-card">Part</th>
+            <table className="tabular w-full text-xs">
+              <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
+                <tr className="border-b border-hairline">
+                  <th className="text-left px-3 py-2 sticky left-0 bg-container font-medium whitespace-nowrap">Part</th>
                   {variants.map(v => (
-                    <th key={v.code} className="text-center p-2 font-mono whitespace-nowrap">
+                    <th key={v.code} className="text-center px-3 py-2 font-mono font-medium whitespace-nowrap">
                       {v.code.split("-").slice(1).join("-")}
                     </th>
                   ))}
@@ -145,13 +145,13 @@ const Variants = () => {
               </thead>
               <tbody>
                 {effectivityMatrix.map(row => (
-                  <tr key={row.pn} className="border-b border-border/30 hover:bg-muted/20">
-                    <td className="p-2 sticky left-0 bg-card">
+                  <tr key={row.pn} className="border-b border-hairline hover:bg-raised">
+                    <td className="px-3 py-2 sticky left-0 bg-card">
                       <div className="font-semibold text-xs">{row.part?.name}</div>
                       <div className="font-mono text-[10px] text-muted-foreground">{row.pn}</div>
                     </td>
                     {row.cells.map(c => (
-                      <td key={c.variantCode} className={cn("text-center p-2", c.variantCode === selectedVariant && "bg-primary/5")}>
+                      <td key={c.variantCode} className={cn("text-center px-3 py-2", c.variantCode === selectedVariant && "bg-primary/5")}>
                         {c.included
                           ? <Check className="inline h-3.5 w-3.5 text-success" />
                           : <XIcon className="inline h-3.5 w-3.5 text-muted-foreground opacity-40" />}

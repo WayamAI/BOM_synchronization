@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { suppliers, parts as allParts, totals } from "@/lib/mockData";
@@ -103,35 +104,38 @@ const SupplierIntel = () => {
       </div>
 
       {/* Suppliers table */}
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/30">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">Supplier</th>
-              <th className="text-left p-3">Country / Region</th>
-              <th className="text-left p-3">Tier</th>
-              <th className="text-right p-3">Parts</th>
-              <th className="text-left p-3">Single-source</th>
-              <th className="text-left p-3">Financial</th>
-              <th className="text-left p-3">Geo risk</th>
-              <th className="text-right p-3">On-time</th>
-              <th className="text-right p-3">Defects PPM</th>
-              <th className="text-right p-3">Risk</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Country / Region</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Tier</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Parts</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Single-source</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Financial</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Geo risk</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">On-time</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Defects PPM</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Risk</th>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr><td colSpan={10}><EmptyState title="No suppliers match this search" /></td></tr>
+            )}
             {filtered.map(s => (
-              <tr key={s.id} className="border-t border-border/40 hover:bg-muted/30">
-                <td className="p-3 font-semibold">{s.name}</td>
-                <td className="p-3 text-muted-foreground flex items-center gap-1.5"><MapPin className="h-3 w-3" />{s.country} · {s.region}</td>
-                <td className="p-3"><Badge variant="outline" className="text-[10px]">T{s.tier}</Badge></td>
-                <td className="p-3 text-right tabular-nums">{s.partsCount}</td>
-                <td className="p-3">{s.singleSource ? <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]">Yes</Badge> : <span className="text-muted-foreground">—</span>}</td>
-                <td className="p-3"><Badge variant="secondary" className="text-[10px] font-mono">{s.financialRating}</Badge></td>
-                <td className="p-3"><Badge variant="secondary" className="text-[10px]">{s.geoRisk}</Badge></td>
-                <td className="p-3 text-right tabular-nums">{s.onTimePct}%</td>
-                <td className="p-3 text-right tabular-nums">{s.pPMDefects}</td>
-                <td className={cn("p-3 text-right font-bold tabular-nums", riskTone(s.riskScore))}>{s.riskScore}</td>
+              <tr key={s.id} className="border-t border-hairline hover:bg-raised">
+                <td className="px-3 py-2 font-semibold">{s.name}</td>
+                <td className="px-3 py-2 text-muted-foreground flex items-center gap-1.5"><MapPin className="h-3 w-3" />{s.country} · {s.region}</td>
+                <td className="px-3 py-2"><Badge variant="outline" className="text-[10px]">T{s.tier}</Badge></td>
+                <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>
+                <td className="px-3 py-2">{s.singleSource ? <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]">Yes</Badge> : <span className="text-muted-foreground">—</span>}</td>
+                <td className="px-3 py-2"><Badge variant="secondary" className="text-[10px] font-mono">{s.financialRating}</Badge></td>
+                <td className="px-3 py-2"><Badge variant="secondary" className="text-[10px]">{s.geoRisk}</Badge></td>
+                <td className="px-3 py-2 text-right tabular-nums">{s.onTimePct}%</td>
+                <td className="px-3 py-2 text-right tabular-nums">{s.pPMDefects}</td>
+                <td className={cn("px-3 py-2 text-right font-bold tabular-nums", riskTone(s.riskScore))}>{s.riskScore}</td>
               </tr>
             ))}
           </tbody>

@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -80,37 +81,40 @@ const PartList = () => {
         <Badge variant="secondary" className="ml-auto">{filtered.length} part{filtered.length === 1 ? "" : "s"}</Badge>
       </div>
 
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">Part Number</th>
-              <th className="text-left p-3">Name</th>
-              <th className="text-left p-3">Program</th>
-              <th className="text-left p-3">Type</th>
-              <th className="text-left p-3">Rev</th>
-              <th className="text-left p-3">Lifecycle</th>
-              <th className="text-left p-3">Owner</th>
-              <th className="text-left p-3">Supplier</th>
-              <th className="text-right p-3">Cost</th>
-              <th className="text-right p-3">Lead</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Program</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Lifecycle</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Owner</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Lead</th>
             </tr>
           </thead>
           <tbody>
+            {filtered.length === 0 && (
+              <tr><td colSpan={10}><EmptyState title="No parts match this filter" /></td></tr>
+            )}
             {filtered.map(p => {
               const prog = products.find(pr => pr.id === p.programId);
               return (
-                <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-border/40 hover:bg-muted/30 cursor-pointer">
-                  <td className="p-3 font-mono">{p.partNumber}</td>
-                  <td className="p-3 font-semibold">{p.name}</td>
-                  <td className="p-3 text-muted-foreground text-[11px]">{prog?.name ?? "—"}</td>
-                  <td className="p-3 text-muted-foreground">{p.type}</td>
-                  <td className="p-3 font-mono">{p.revision}</td>
-                  <td className="p-3"><Badge className={cn("text-[10px] border", lcBadge(p.lifecycle))}>{p.lifecycle}</Badge></td>
-                  <td className="p-3">{p.owner}</td>
-                  <td className="p-3 text-muted-foreground">{p.supplierId ?? "—"}</td>
-                  <td className="p-3 text-right tabular-nums">${p.cost.toLocaleString()}</td>
-                  <td className="p-3 text-right tabular-nums">{p.leadTimeDays}d</td>
+                <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
+                  <td className="px-3 py-2 font-mono">{p.partNumber}</td>
+                  <td className="px-3 py-2 font-semibold">{p.name}</td>
+                  <td className="px-3 py-2 text-muted-foreground text-[11px]">{prog?.name ?? "—"}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
+                  <td className="px-3 py-2 font-mono">{p.revision}</td>
+                  <td className="px-3 py-2"><Badge className={cn("text-[10px] border", lcBadge(p.lifecycle))}>{p.lifecycle}</Badge></td>
+                  <td className="px-3 py-2">{p.owner}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{p.supplierId ?? "—"}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">${p.cost.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">{p.leadTimeDays}d</td>
                 </tr>
               );
             })}

@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -145,41 +146,44 @@ const MbomManager = () => {
       </div>
 
       {/* Routing table */}
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">Op ID</th>
-              <th className="text-left p-3">Produces</th>
-              <th className="text-left p-3">Operation</th>
-              <th className="text-left p-3">Plant</th>
-              <th className="text-left p-3">Line</th>
-              <th className="text-left p-3">Station</th>
-              <th className="text-right p-3">Takt</th>
-              <th className="text-left p-3">Work Instr.</th>
-              <th className="text-left p-3">Status</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Op ID</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Produces</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Operation</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Plant</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Line</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Station</th>
+              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Takt</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Work Instr.</th>
+              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Status</th>
             </tr>
           </thead>
           <tbody>
+            {filteredOps.length === 0 && (
+              <tr><td colSpan={9}><EmptyState title="No operations match this filter" /></td></tr>
+            )}
             {filteredOps.map(o => {
               const plant = plants.find(p => p.id === o.plantId);
               const part = getPart(o.partNumber);
               return (
-                <tr key={o.id} className="border-t border-border/40 hover:bg-muted/30">
-                  <td className="p-3 font-mono">{o.id}</td>
-                  <td className="p-3">
+                <tr key={o.id} className="border-t border-hairline hover:bg-raised">
+                  <td className="px-3 py-2 font-mono">{o.id}</td>
+                  <td className="px-3 py-2">
                     <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${o.partNumber}`)}>
                       <div className="font-semibold">{part?.name ?? o.partNumber}</div>
                       <div className="font-mono text-[10px] text-muted-foreground">{o.partNumber}</div>
                     </button>
                   </td>
-                  <td className="p-3">{o.operation}</td>
-                  <td className="p-3">{plant?.name}</td>
-                  <td className="p-3 text-muted-foreground">{o.line}</td>
-                  <td className="p-3 font-mono">{o.station}</td>
-                  <td className="p-3 text-right tabular-nums">{o.takeTimeSec}s</td>
-                  <td className="p-3 font-mono text-[10px]">{o.workInstructionId}</td>
-                  <td className="p-3"><Badge className={cn("text-[10px] border capitalize", opStatusCls(o.status))}>{o.status}</Badge></td>
+                  <td className="px-3 py-2">{o.operation}</td>
+                  <td className="px-3 py-2">{plant?.name}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{o.line}</td>
+                  <td className="px-3 py-2 font-mono">{o.station}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">{o.takeTimeSec}s</td>
+                  <td className="px-3 py-2 font-mono text-[10px]">{o.workInstructionId}</td>
+                  <td className="px-3 py-2"><Badge className={cn("text-[10px] border capitalize", opStatusCls(o.status))}>{o.status}</Badge></td>
                 </tr>
               );
             })}
