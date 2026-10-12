@@ -64,6 +64,7 @@ export const KpiTile = ({
   hint,
   onClick,
   className,
+  valueClassName,
 }: {
   label: string;
   value: ReactNode;
@@ -73,11 +74,12 @@ export const KpiTile = ({
   hint?: string;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   className?: string;
+  valueClassName?: string;
 }) => {
   const body = (
     <>
       <span className="type-eyebrow truncate text-quaternary">{label}</span>
-      <span className="type-display-xl sm:type-display-2xl tabular text-foreground">{value}{unit && <Unit>{unit}</Unit>}</span>
+      <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>{value}{unit && <Unit>{unit}</Unit>}</span>
       {(delta || hint) && (
         <span className="flex items-baseline gap-2">
           {delta && <span className={cn("type-body-sm tabular", toneText[tone])}>{delta}</span>}
