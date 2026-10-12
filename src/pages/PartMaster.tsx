@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/ui/primitives";
+import { EmptyState, Panel } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -6,7 +6,7 @@ import {
   softwareComponents, ecns, revisions, mbomOps, serviceKits, plants, products,
 } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
-import { Badge } from "@/components/ui/badge";
+import { Badge, type BadgeVariant } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/select";
 import { Search, ArrowLeft, GitBranch, Boxes, ExternalLink, FileEdit } from "lucide-react";
 
-const lcBadge = (lc?: string) => {
-  if (lc === "In Review") return "bg-warning/15 text-warning border-warning/30";
-  if (lc === "In Work")   return "bg-primary/15 text-primary border-primary/30";
-  if (lc === "Obsolete")  return "bg-muted text-muted-foreground";
-  return "bg-success/15 text-success border-success/30";
+const lcBadge = (lc?: string): BadgeVariant => {
+  if (lc === "In Review") return "warning";
+  if (lc === "In Work")   return "info";
+  if (lc === "Obsolete")  return "neutral";
+  return "success";
 };
 
 const PartList = () => {
@@ -47,7 +47,7 @@ const PartList = () => {
     <PageHeader
       title="Part Master"
       subtitle={`Canonical registry · ${allParts.length} total parts across ${products.length} programs · single source of truth`}
-      actions={<Button size="sm" className="gap-1.5 bg-gradient-primary border-0"><Boxes className="h-3.5 w-3.5" />New Part</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Boxes className="h-3.5 w-3.5" />New part</Button>}
     >
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
@@ -107,13 +107,13 @@ const PartList = () => {
                 <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
                   <td className="px-3 py-2 font-mono">{p.partNumber}</td>
                   <td className="px-3 py-2 font-semibold">{p.name}</td>
-                  <td className="px-3 py-2 text-muted-foreground text-[11px]">{prog?.name ?? "—"}</td>
+                  <td className="px-3 py-2 text-muted-foreground type-body-sm">{prog?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
                   <td className="px-3 py-2 font-mono">{p.revision}</td>
-                  <td className="px-3 py-2"><Badge className={cn("text-[10px] border", lcBadge(p.lifecycle))}>{p.lifecycle}</Badge></td>
+                  <td className="px-3 py-2"><Badge variant={lcBadge(p.lifecycle)}>{p.lifecycle}</Badge></td>
                   <td className="px-3 py-2">{p.owner}</td>
                   <td className="px-3 py-2 text-muted-foreground">{p.supplierId ?? "—"}</td>
-                  <td className="px-3 py-2 text-right tabular-nums">${p.cost.toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">${p.cost.toLocaleString("en-US")}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{p.leadTimeDays}d</td>
                 </tr>
               );
@@ -156,68 +156,66 @@ const PartDetail = ({ pn }: { pn: string }) => {
           <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
             <ArrowLeft className="h-3.5 w-3.5 mr-1" />All parts
           </Button>
-          <Button size="sm" className="gap-1.5 bg-gradient-primary border-0"><FileEdit className="h-3.5 w-3.5" />Propose change</Button>
+          <Button size="sm" className="gap-1.5"><FileEdit className="h-3.5 w-3.5" />Propose change</Button>
         </>
       }
     >
       {/* Facts grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-border bg-card p-5 shadow-card lg:col-span-2">
-          <h3 className="text-sm font-semibold">Part Details</h3>
+        <Panel title="Part Details" className="lg:col-span-2">
           <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 text-xs">
-            <div><div className="text-[10px] uppercase text-muted-foreground">Part Number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Revision</div><div className="font-mono">{part.revision}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Type</div><div>{part.type}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Lifecycle</div><Badge className={cn("text-[10px] border", lcBadge(part.lifecycle))}>{part.lifecycle}</Badge></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Owner</div><div>{part.owner}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Serviceable</div><div>{part.serviceable ? "Yes" : "No"}{part.fru ? " · FRU" : ""}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Unit cost</div><div className="tabular-nums">${part.cost.toLocaleString()}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Lead time</div><div>{part.leadTimeDays} days</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">UoM</div><div>{part.uom}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Created</div><div>{part.createdAt}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Updated</div><div>{part.updatedAt}</div></div>
-            <div><div className="text-[10px] uppercase text-muted-foreground">Warnings</div><div>{part.warnings ?? 0}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Part Number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Revision</div><div className="font-mono">{part.revision}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Type</div><div>{part.type}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Lifecycle</div><Badge variant={lcBadge(part.lifecycle)}>{part.lifecycle}</Badge></div>
+            <div><div className="type-eyebrow text-quaternary">Owner</div><div>{part.owner}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Serviceable</div><div>{part.serviceable ? "Yes" : "No"}{part.fru ? " · FRU" : ""}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Unit cost</div><div className="tabular-nums">${part.cost.toLocaleString("en-US")}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Lead time</div><div>{part.leadTimeDays} days</div></div>
+            <div><div className="type-eyebrow text-quaternary">UoM</div><div>{part.uom}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Created</div><div>{part.createdAt}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Updated</div><div>{part.updatedAt}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Warnings</div><div>{part.warnings ?? 0}</div></div>
           </div>
           {part.description && (
-            <div className="mt-4 pt-3 border-t border-border text-xs text-muted-foreground leading-relaxed">{part.description}</div>
+            <div className="mt-4 pt-3 border-t border-hairline text-xs text-muted-foreground leading-relaxed">{part.description}</div>
           )}
-        </div>
+        </Panel>
 
         {supplier ? (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
-            <h3 className="text-sm font-semibold">Supplier</h3>
+          <Panel title="Supplier">
             <p className="text-sm font-semibold mt-2">{supplier.name}</p>
-            <p className="text-[11px] text-muted-foreground">{supplier.country} · Tier {supplier.tier}</p>
+            <p className="type-body-sm text-muted-foreground">{supplier.country} · Tier {supplier.tier}</p>
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <div><div className="text-[10px] uppercase text-muted-foreground">Financial</div><div>{supplier.financialRating}</div></div>
-              <div><div className="text-[10px] uppercase text-muted-foreground">Geo risk</div><div>{supplier.geoRisk}</div></div>
-              <div><div className="text-[10px] uppercase text-muted-foreground">On-time</div><div>{supplier.onTimePct}%</div></div>
-              <div><div className="text-[10px] uppercase text-muted-foreground">Defect PPM</div><div>{supplier.pPMDefects}</div></div>
-              {supplier.singleSource && <div className="col-span-2"><Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]">Single-source</Badge></div>}
+              <div><div className="type-eyebrow text-quaternary">Financial</div><div>{supplier.financialRating}</div></div>
+              <div><div className="type-eyebrow text-quaternary">Geo risk</div><div>{supplier.geoRisk}</div></div>
+              <div><div className="type-eyebrow text-quaternary">On-time</div><div>{supplier.onTimePct}%</div></div>
+              <div><div className="type-eyebrow text-quaternary">Defect PPM</div><div>{supplier.pPMDefects}</div></div>
+              {supplier.singleSource && <div className="col-span-2"><Badge variant="warning">Single-source</Badge></div>}
             </div>
-          </div>
+          </Panel>
         ) : (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card text-xs text-muted-foreground">No supplier assigned (in-house or TBD).</div>
+          <div className="rounded-lg border border-hairline bg-container p-4 text-xs text-muted-foreground">No supplier assigned (in-house or TBD).</div>
         )}
       </div>
 
       {/* Where-used + Uses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-border bg-card p-5 shadow-card">
+        <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
             <GitBranch className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-semibold">Where-Used (parents)</h3>
+            <h3 className="type-eyebrow text-quaternary">Where-Used (parents)</h3>
           </div>
-          <p className="text-[11px] text-muted-foreground mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
+          <p className="type-body-sm text-muted-foreground mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
           <div className="space-y-2">
-            {whereUsed.length === 0 && <p className="text-[11px] italic text-muted-foreground">Top-level vehicle — no parents.</p>}
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">Top-level vehicle — no parents.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (
-                <button key={i} onClick={() => navigate(`/parts/${e.parentPN}`)} className="w-full flex items-center justify-between rounded-md border border-border p-2 hover:bg-muted/30">
+                <button key={i} onClick={() => navigate(`/parts/${e.parentPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
                   <div className="text-left">
                     <div className="text-xs font-semibold">{parent?.name}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
+                    <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
                   </div>
                   <ExternalLink className="h-3 w-3 opacity-50" />
                 </button>
@@ -226,21 +224,21 @@ const PartDetail = ({ pn }: { pn: string }) => {
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-5 shadow-card">
+        <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
             <Boxes className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-semibold">Uses (children)</h3>
+            <h3 className="type-eyebrow text-quaternary">Uses (children)</h3>
           </div>
-          <p className="text-[11px] text-muted-foreground mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
+          <p className="type-body-sm text-muted-foreground mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
           <div className="space-y-2">
-            {children.length === 0 && <p className="text-[11px] italic text-muted-foreground">Leaf part — no children.</p>}
+            {children.length === 0 && <p className="type-body-sm italic text-muted-foreground">Leaf part — no children.</p>}
             {children.map((e, i) => {
               const child = getPart(e.childPN);
               return (
-                <button key={i} onClick={() => navigate(`/parts/${e.childPN}`)} className="w-full flex items-center justify-between rounded-md border border-border p-2 hover:bg-muted/30">
+                <button key={i} onClick={() => navigate(`/parts/${e.childPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
                   <div className="text-left">
                     <div className="text-xs font-semibold">{child?.name}</div>
-                    <div className="text-[10px] font-mono text-muted-foreground">{e.childPN} · qty {e.qty}</div>
+                    <div className="type-caption font-mono text-muted-foreground">{e.childPN} · qty {e.qty}</div>
                   </div>
                   <ExternalLink className="h-3 w-3 opacity-50" />
                 </button>
@@ -253,85 +251,76 @@ const PartDetail = ({ pn }: { pn: string }) => {
       {/* Extras: routing / kits / software / ECNs / history */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {routing.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
-            <h3 className="text-sm font-semibold">Manufacturing Routing</h3>
+          <Panel title="Manufacturing Routing">
             <div className="mt-2 space-y-2">
               {routing.map(op => {
                 const plant = plants.find(p => p.id === op.plantId);
                 return (
-                  <div key={op.id} className="rounded-md border border-border p-2 text-xs">
+                  <div key={op.id} className="rounded-md border border-hairline p-2 text-xs">
                     <div className="font-semibold">{op.operation}</div>
-                    <div className="text-[10px] text-muted-foreground">{plant?.name} · {op.line} · {op.station} · {op.takeTimeSec}s</div>
+                    <div className="type-caption text-muted-foreground">{plant?.name} · {op.line} · {op.station} · {op.takeTimeSec}s</div>
                   </div>
                 );
               })}
             </div>
-          </div>
+          </Panel>
         )}
 
         {kits.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
-            <h3 className="text-sm font-semibold">Service Kits that include this part</h3>
+          <Panel title="Service Kits that include this part">
             <div className="mt-2 flex flex-wrap gap-1.5">
-              {kits.map(k => <Badge key={k.id} variant="outline" className="text-[10px] font-mono">{k.id} · {k.name}</Badge>)}
+              {kits.map(k => <Badge key={k.id} variant="outline" className="type-caption font-mono">{k.id} · {k.name}</Badge>)}
             </div>
-          </div>
+          </Panel>
         )}
 
         {softOnMe.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
-            <h3 className="text-sm font-semibold">Software running on this ECU</h3>
+          <Panel title="Software running on this ECU">
             <div className="mt-2 space-y-1.5">
               {softOnMe.map(s => (
-                <div key={s.id} className="flex items-center justify-between rounded-md border border-border p-2 text-xs">
+                <div key={s.id} className="flex items-center justify-between rounded-md border border-hairline p-2 text-xs">
                   <div>
                     <div className="font-semibold">{s.name} <span className="font-mono text-muted-foreground">{s.version}</span></div>
-                    <div className="text-[10px] text-muted-foreground">{s.license} · {s.supplier}</div>
+                    <div className="type-caption text-muted-foreground">{s.license} · {s.supplier}</div>
                   </div>
                   {s.cves.length > 0
-                    ? <Badge className="bg-critical/15 text-critical border-critical/30 text-[10px]">{s.cves.length} CVE</Badge>
-                    : <Badge className="bg-success/15 text-success border-success/30 text-[10px]">Clean</Badge>}
+                    ? <Badge variant="error">{s.cves.length} CVE</Badge>
+                    : <Badge variant="success">Clean</Badge>}
                 </div>
               ))}
             </div>
-          </div>
+          </Panel>
         )}
 
         {affectingEcns.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
-            <h3 className="text-sm font-semibold">ECNs affecting this part</h3>
+          <Panel title="ECNs affecting this part">
             <div className="mt-2 space-y-1.5">
               {affectingEcns.map(e => (
-                <button key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="w-full flex items-center justify-between rounded-md border border-border p-2 hover:bg-muted/30 text-left">
+                <button key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left">
                   <div>
                     <div className="font-mono text-xs">{e.id}</div>
                     <div className="text-xs font-semibold">{e.title}</div>
                   </div>
-                  <Badge className={cn("text-[10px] border",
-                    e.state === "Released" ? "bg-success/15 text-success border-success/30" :
-                    e.state === "Approved" ? "bg-accent/15 text-accent border-accent/30" :
-                    e.state === "In Review" ? "bg-warning/15 text-warning border-warning/30" :
-                    "bg-muted text-muted-foreground border-border")}>{e.state}</Badge>
+                  <Badge variant={e.state === "Released" ? "success" : e.state === "Approved" ? "info" : e.state === "In Review" ? "warning" : "neutral"}>{e.state}</Badge>
                 </button>
               ))}
             </div>
-          </div>
+          </Panel>
         )}
 
         {history.length > 0 && (
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card lg:col-span-2">
-            <h3 className="text-sm font-semibold">Revision History</h3>
-            <div className="mt-3 relative pl-4 space-y-3 border-l border-border">
+          <Panel title="Revision History" className="lg:col-span-2">
+            <div className="mt-3 relative pl-4 space-y-3 border-l border-hairline">
               {history.map((h, i) => (
                 <div key={i} className="relative">
                   <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-primary" />
                   <div className="text-xs font-semibold">rev {h.revision} {h.ecnId && <span className="text-primary font-mono">· {h.ecnId}</span>}</div>
-                  <div className="text-[11px]">{h.note}</div>
-                  <div className="text-[10px] text-muted-foreground">{h.date} · {h.by}</div>
+                  <div className="type-body-sm">{h.note}</div>
+                  <div className="type-caption text-muted-foreground">{h.date} · {h.by}</div>
                 </div>
               ))}
             </div>
-          </div>
+          </Panel>
         )}
       </div>
     </PageHeader>
