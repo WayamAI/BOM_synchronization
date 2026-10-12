@@ -197,7 +197,7 @@ export const SystemHealthMatrix = () => {
         })}
       </div>
 
-      <div className="mt-4 hidden grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] type-eyebrow gap-3 px-2 text-quaternary lg:grid">
+      <div className="mt-4 hidden grid-cols-[minmax(160px,1.7fr)_56px_repeat(4,minmax(84px,1fr))_72px] type-eyebrow gap-3 px-2 text-quaternary lg:grid">
         <div>System</div>
         <div className="text-center">Parts</div>
         {dims.map(d => (
@@ -214,7 +214,7 @@ export const SystemHealthMatrix = () => {
               key={row.pn}
               className="rounded-lg border border-hairline bg-raised px-4 py-3 transition-colors duration-150 hover:border-strong"
             >
-              <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] lg:items-center lg:gap-3">
+              <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(160px,1.7fr)_56px_repeat(4,minmax(84px,1fr))_72px] lg:items-center lg:gap-3">
                 <button onClick={() => navigate(`/parts/${row.pn}`)} className="min-w-0 text-left">
                   <div className="flex items-center gap-3">
                     <div

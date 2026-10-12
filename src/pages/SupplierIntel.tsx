@@ -118,11 +118,11 @@ const SupplierIntel = () => {
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">
                 <td className="px-3 py-2 font-semibold">{s.name}</td>
                 <td className="px-3 py-2 text-muted-foreground flex items-center gap-1.5"><MapPin className="h-3 w-3" />{s.country} · {s.region}</td>
-                <td className="px-3 py-2"><Badge variant="outline" className="type-caption">T{s.tier}</Badge></td>
+                <td className="px-3 py-2 tabular text-tertiary">T{s.tier}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>
                 <td className="px-3 py-2">{s.singleSource ? <Badge variant="warning">Yes</Badge> : <span className="text-muted-foreground">—</span>}</td>
-                <td className="px-3 py-2"><Badge variant="secondary" className="type-caption font-mono">{s.financialRating}</Badge></td>
-                <td className="px-3 py-2"><Badge variant="secondary" className="type-caption">{s.geoRisk}</Badge></td>
+                <td className="px-3 py-2 tabular text-tertiary">{s.financialRating}</td>
+                <td className="px-3 py-2 text-tertiary">{s.geoRisk}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.onTimePct}%</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.pPMDefects}</td>
                 <td className={cn("px-3 py-2 text-right font-semibold tabular-nums", riskTone(s.riskScore))}>{s.riskScore}</td>

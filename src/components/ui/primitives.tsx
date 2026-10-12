@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { Badge } from "./badge";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
@@ -105,6 +106,22 @@ export const KpiTile = ({
 export const StatusDot = ({ tone = "neutral", className }: { tone?: Tone; className?: string }) => (
   <span aria-hidden className={cn("inline-block size-1.5 shrink-0 rounded-full", toneDot[tone], className)} />
 );
+
+/** Normal states are quiet: a status dot and plain text. Reserve solid Badges for states that need attention. */
+export const QuietStatus = ({ tone = "success", children, className }: { tone?: Tone; children: ReactNode; className?: string }) => (
+  <span className={cn("type-body-sm inline-flex items-center gap-1.5 whitespace-nowrap text-tertiary", className)}>
+    <StatusDot tone={tone} />
+    {children}
+  </span>
+);
+
+/** BOM lifecycle state. Released and In Work are quiet; In Review and Obsolete get a solid badge. */
+export const LifecycleStatus = ({ status }: { status?: string }) => {
+  if (!status) return <span className="type-body-sm text-quaternary">—</span>;
+  if (status === "In Review") return <Badge variant="warning">{status}</Badge>;
+  if (status === "Obsolete") return <Badge variant="neutral">{status}</Badge>;
+  return <QuietStatus tone={status === "In Work" ? "info" : "success"}>{status}</QuietStatus>;
+};
 
 /** Plain statement, no illustration, no call to action. */
 export const EmptyState = ({ title = "Nothing to show", detail, className }: { title?: string; detail?: string; className?: string }) => (

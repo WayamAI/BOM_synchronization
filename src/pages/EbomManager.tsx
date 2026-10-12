@@ -1,4 +1,4 @@
-import { EmptyState, KpiTile } from "@/components/ui/primitives";
+import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -10,7 +10,7 @@ import {
   ChevronDown, ChevronRight, Plus, Link2, Search, Filter, X,
   GitBranch, Boxes, ShieldAlert, GitCompare, ExternalLink,
 } from "lucide-react";
-import { Badge, type BadgeVariant } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -20,17 +20,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import GraphView from "@/components/EbomGraphView";
-
-const dotCls = (h?: string) =>
-  h === "critical" ? "bg-error" :
-  h === "warning"  ? "bg-warning" : "bg-success";
-
-const lcBadge = (lc?: string): BadgeVariant => {
-  if (lc === "In Review") return "warning";
-  if (lc === "In Work")   return "info";
-  if (lc === "Obsolete")  return "neutral";
-  return "success"; // Released
-};
 
 const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
   node: EbomNode; depth?: number; onSelect: (n: EbomNode) => void;
@@ -51,21 +40,22 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
       <div
         onClick={() => { onSelect(node); if (has) setOpen(!open); }}
         className={cn(
-          "group flex items-center gap-2 py-2 px-2 rounded-md cursor-pointer hover:bg-raised transition-colors",
-          isSel && "bg-raised ring-1 ring-active"
+          "group flex min-h-9 items-center gap-2 border-b border-hairline px-2 py-2 cursor-pointer hover:bg-raised transition-colors",
+          isSel && "bg-raised ring-1 ring-inset ring-active"
         )}
         style={{ paddingLeft: 8 + depth * 16 }}
       >
         {has ? (open ? <ChevronDown className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
-        <span className={cn("h-2 w-2 rounded-full shrink-0", dotCls(node.health))} />
-        <span className="text-sm font-semibold">{node.name}</span>
-        <span className="type-caption font-mono text-muted-foreground">{node.partNumber}</span>
-        {node.qty && node.qty > 1 && <Badge variant="outline" className="type-caption h-5 px-1.5">×{node.qty}</Badge>}
-        {node.version && <Badge variant="outline" className="font-mono type-caption h-5 px-1.5">{node.version}</Badge>}
-        {node.status && <Badge variant={lcBadge(node.status)}>{node.status}</Badge>}
-        {!!node.cves && <Badge variant="error">{node.cves} CVE</Badge>}
-        {!!node.warnings && <Badge variant="warning">{node.warnings} warn</Badge>}
-        <span className="ml-auto type-caption text-muted-foreground">{node.type}</span>
+        <span className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
+        <span className="type-body-sm tabular truncate text-tertiary">
+          {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
+        </span>
+        <span className="ml-auto flex shrink-0 items-center gap-3">
+          {!!node.cves && <Badge variant="error">{node.cves} CVE</Badge>}
+          {!!node.warnings && <Badge variant="warning">{node.warnings} warn</Badge>}
+          <span className="hidden w-24 items-center sm:flex">{node.status && <LifecycleStatus status={node.status} />}</span>
+          <span className="type-body-sm hidden w-20 justify-end text-quaternary sm:flex">{node.type}</span>
+        </span>
       </div>
       {open && has && node.children!.map(c => (
         <TreeRow key={c.id} node={c} depth={depth + 1} onSelect={onSelect} selected={selected} filter={filter} />
@@ -107,7 +97,7 @@ const getChildCount = (node: EbomNode): number => {
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
     <p className="type-eyebrow text-quaternary">{label}</p>
-    <p className="text-xs">{value}</p>
+    <div className="text-xs">{value}</div>
   </div>
 );
 
@@ -129,16 +119,14 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
         <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="type-display-lg truncate text-foreground">{node.name}</h3>
-            <Badge variant="outline" className="type-caption">{node.type}</Badge>
-            {node.version && <Badge variant="default">{node.version}</Badge>}
           </div>
-          <p className="type-body-sm text-muted-foreground mt-1 font-mono">{node.partNumber}</p>
-          <p className="type-body-sm text-muted-foreground">{node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
+          <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>
+          <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}><X className="h-4 w-4" /></Button>
       </div>
 
-      <div className="flex gap-1 p-2 border-b border-hairline overflow-x-auto scrollbar-thin">
+      <div className="flex flex-wrap gap-1.5 p-3 border-b border-hairline">
         {tabs.map(t => (
           <button key={t}
             onClick={() => setTab(t)}
@@ -156,7 +144,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
             <Field label="Part number" value={<span className="font-mono">{node.partNumber}</span>} />
             <Field label="Revision" value={node.revision ?? "—"} />
             <Field label="Type" value={node.type} />
-            <Field label="Lifecycle" value={<Badge variant={lcBadge(node.status)}>{node.status ?? "—"}</Badge>} />
+            <Field label="Lifecycle" value={<LifecycleStatus status={node.status} />} />
             <Field label="Owner team" value={node.owner ?? "—"} />
             <Field label="Supplier" value={node.supplier ?? "—"} />
             <Field label="Unit cost" value={part?.cost ? `$${part.cost.toLocaleString("en-US")}` : "—"} />
@@ -204,7 +192,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
                   <div className="type-body-sm text-muted-foreground mt-1">{plant?.name} · {op.line} · {op.station}</div>
                   <div className="flex items-center justify-between type-caption mt-2">
                     <span className="text-muted-foreground">{op.takeTimeSec}s takt · {op.workInstructionId}</span>
-                    <Badge variant={op.status === "ready" ? "success" : op.status === "warning" ? "warning" : op.status === "blocked" ? "error" : "neutral"}>{op.status}</Badge>
+                    {op.status === "ready" ? <QuietStatus tone="success">{op.status}</QuietStatus> : <Badge variant={op.status === "warning" ? "warning" : op.status === "blocked" ? "error" : "neutral"}>{op.status}</Badge>}
                   </div>
                 </div>
               );
@@ -224,7 +212,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
                 </div>
                 {c.cves.length > 0
                   ? <Badge variant="error">{c.cves.length} CVE</Badge>
-                  : <Badge variant="success">Clean</Badge>}
+                  : <QuietStatus tone="success">Clean</QuietStatus>}
               </div>
             ))}
           </div>
@@ -349,20 +337,19 @@ const EbomManager = () => {
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 rounded-lg border border-hairline bg-container p-2 min-h-[520px]">
+            <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} parts`} padded={false} className="flex-1 min-h-[520px]">
               <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
-            </div>
+            </Panel>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
           </div>
         </TabsContent>
         <TabsContent value="table" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 rounded-lg border border-hairline bg-container p-2 min-h-[520px]">
+            <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} padded={false} className="flex-1 min-h-[520px]">
               <div className="overflow-x-auto">
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap"></th>
                       <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
                       <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                       <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
@@ -375,25 +362,24 @@ const EbomManager = () => {
                   </thead>
                   <tbody>
                     {filteredRows.length === 0 && (
-                      <tr><td colSpan={9}><EmptyState title="No components match this search" /></td></tr>
+                      <tr><td colSpan={8}><EmptyState title="No components match this search" /></td></tr>
                     )}
                     {filteredRows.map(n => (
                       <tr key={n.id + Math.random()} className="border-b border-hairline hover:bg-raised cursor-pointer" onClick={() => setSelected(n)}>
-                        <td className="px-3 py-2"><span className={cn("inline-block h-2 w-2 rounded-full", dotCls(n.health))} /></td>
-                        <td className="px-3 py-2 font-mono">{n.partNumber}</td>
-                        <td className="px-3 py-2 font-semibold">{n.name}</td>
-                        <td className="px-3 py-2 text-muted-foreground">{n.type}</td>
-                        <td className="px-3 py-2 font-mono">{n.revision}</td>
-                        <td className="px-3 py-2 tabular-nums">{n.qty}</td>
-                        <td className="px-3 py-2 tabular-nums text-right">{n.cost ? `$${n.cost.toLocaleString("en-US")}` : "—"}</td>
-                        <td className="px-3 py-2 text-muted-foreground">{n.supplier ?? "—"}</td>
-                        <td className="px-3 py-2"><Badge variant={lcBadge(n.status)}>{n.status}</Badge></td>
+                        <td className="px-3 py-2 tabular text-tertiary">{n.partNumber}</td>
+                        <td className="type-body-md px-3 py-2 font-medium text-foreground">{n.name}</td>
+                        <td className="type-body-sm px-3 py-2 text-quaternary">{n.type}</td>
+                        <td className="px-3 py-2 tabular text-tertiary">{n.revision}</td>
+                        <td className="px-3 py-2 tabular text-tertiary">{n.qty}</td>
+                        <td className="px-3 py-2 tabular text-right">{n.cost ? `$${n.cost.toLocaleString("en-US")}` : "—"}</td>
+                        <td className="px-3 py-2 text-tertiary">{n.supplier ?? "—"}</td>
+                        <td className="px-3 py-2"><LifecycleStatus status={n.status} /></td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
+            </Panel>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
           </div>
         </TabsContent>

@@ -1,4 +1,4 @@
-import { Panel, KpiTile } from "@/components/ui/primitives";
+import { Panel, KpiTile, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -84,14 +84,14 @@ const Variants = () => {
                     selectedVariant === v.code && "bg-raised")}>
                 <td className="px-3 py-2 font-mono">{v.code}</td>
                 <td className="px-3 py-2 font-semibold">{v.name}</td>
-                <td className="px-3 py-2"><Badge variant="outline" className="type-caption">{v.powertrain}</Badge></td>
-                <td className="px-3 py-2"><Badge variant="outline" className="type-caption">{v.trim}</Badge></td>
+                <td className="px-3 py-2 text-tertiary">{v.powertrain}</td>
+                <td className="px-3 py-2 text-tertiary">{v.trim}</td>
                 <td className="px-3 py-2 text-muted-foreground">{v.market}</td>
                 <td className="px-3 py-2 font-mono">{v.startEffectivity}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{v.unitsPlanned.toLocaleString("en-US")}</td>
                 <td className="px-3 py-2">{v.conflicts > 0
                   ? <Badge variant="warning"><AlertTriangle className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
-                  : <Badge variant="success"><Check className="h-3 w-3 mr-1" />Clean</Badge>}</td>
+                  : <QuietStatus tone="success">Clean</QuietStatus>}</td>
               </tr>
             ))}
           </tbody>

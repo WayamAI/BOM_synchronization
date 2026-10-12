@@ -1,4 +1,4 @@
-import { EmptyState, Panel } from "@/components/ui/primitives";
+import { EmptyState, Panel, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -6,7 +6,7 @@ import {
   softwareComponents, ecns, revisions, mbomOps, serviceKits, plants, products,
 } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
-import { Badge, type BadgeVariant } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -15,13 +15,6 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Search, ArrowLeft, GitBranch, Boxes, ExternalLink, FileEdit } from "lucide-react";
-
-const lcBadge = (lc?: string): BadgeVariant => {
-  if (lc === "In Review") return "warning";
-  if (lc === "In Work")   return "info";
-  if (lc === "Obsolete")  return "neutral";
-  return "success";
-};
 
 const PartList = () => {
   const navigate = useNavigate();
@@ -110,7 +103,7 @@ const PartList = () => {
                   <td className="px-3 py-2 text-muted-foreground type-body-sm">{prog?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
                   <td className="px-3 py-2 font-mono">{p.revision}</td>
-                  <td className="px-3 py-2"><Badge variant={lcBadge(p.lifecycle)}>{p.lifecycle}</Badge></td>
+                  <td className="px-3 py-2"><LifecycleStatus status={p.lifecycle} /></td>
                   <td className="px-3 py-2">{p.owner}</td>
                   <td className="px-3 py-2 text-muted-foreground">{p.supplierId ?? "—"}</td>
                   <td className="px-3 py-2 text-right tabular-nums">${p.cost.toLocaleString("en-US")}</td>
@@ -167,7 +160,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
             <div><div className="type-eyebrow text-quaternary">Part Number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
             <div><div className="type-eyebrow text-quaternary">Revision</div><div className="font-mono">{part.revision}</div></div>
             <div><div className="type-eyebrow text-quaternary">Type</div><div>{part.type}</div></div>
-            <div><div className="type-eyebrow text-quaternary">Lifecycle</div><Badge variant={lcBadge(part.lifecycle)}>{part.lifecycle}</Badge></div>
+            <div><div className="type-eyebrow text-quaternary">Lifecycle</div><LifecycleStatus status={part.lifecycle} /></div>
             <div><div className="type-eyebrow text-quaternary">Owner</div><div>{part.owner}</div></div>
             <div><div className="type-eyebrow text-quaternary">Serviceable</div><div>{part.serviceable ? "Yes" : "No"}{part.fru ? " · FRU" : ""}</div></div>
             <div><div className="type-eyebrow text-quaternary">Unit cost</div><div className="tabular-nums">${part.cost.toLocaleString("en-US")}</div></div>
@@ -285,7 +278,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
                   </div>
                   {s.cves.length > 0
                     ? <Badge variant="error">{s.cves.length} CVE</Badge>
-                    : <Badge variant="success">Clean</Badge>}
+                    : <QuietStatus tone="success">Clean</QuietStatus>}
                 </div>
               ))}
             </div>
@@ -301,7 +294,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
                     <div className="font-mono text-xs">{e.id}</div>
                     <div className="text-xs font-semibold">{e.title}</div>
                   </div>
-                  <Badge variant={e.state === "Released" ? "success" : e.state === "Approved" ? "info" : e.state === "In Review" ? "warning" : "neutral"}>{e.state}</Badge>
+                  {e.state === "In Review" ? <Badge variant="warning">{e.state}</Badge> : e.state === "Rejected" || e.state === "Cancelled" ? <Badge variant="neutral">{e.state}</Badge> : <QuietStatus tone={e.state === "Released" ? "success" : e.state === "Approved" ? "info" : "neutral"}>{e.state}</QuietStatus>}
                 </button>
               ))}
             </div>

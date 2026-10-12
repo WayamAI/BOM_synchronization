@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { HealthArc } from "@/components/dashboard/HealthArc";
 import { SystemHealthMatrix } from "@/components/dashboard/SystemHealthMatrix";
 import { PageHeader } from "@/components/layout/PageHeader";
-import { Panel, KpiTile, EmptyState, StatusDot } from "@/components/ui/primitives";
+import { Panel, KpiTile, EmptyState, StatusDot, QuietStatus } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
 import { Sparkles, FileEdit, ShieldAlert, FileBarChart, AlertTriangle, ArrowRight } from "lucide-react";
 import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
@@ -103,9 +103,9 @@ const Dashboard = () => {
                 <div className="type-label-md truncate text-foreground">{prog.name}</div>
                 <div className="type-caption truncate text-quaternary">{prog.category}</div>
               </div>
-              <Badge variant="outline" className="shrink-0 tabular">{prog.modelYear}</Badge>
+              <span className="type-body-sm tabular shrink-0 text-quaternary">{prog.modelYear}</span>
             </div>
-            <Badge variant={stageBadge(prog.stage)}>{prog.stage}</Badge>
+            <QuietStatus tone={stageBadge(prog.stage)}>{prog.stage}</QuietStatus>
             <div className="type-body-sm mt-2 grid grid-cols-2 gap-x-2">
               <div className="text-tertiary">Health</div>
               <div className="tabular text-right text-foreground">{prog.healthScore}%</div>
@@ -159,7 +159,7 @@ const Dashboard = () => {
                   <div key={prog.id}>
                     <div className="mb-1 flex items-center justify-between gap-2">
                       <span className={cn("type-label-sm truncate", activeProgram.id === prog.id ? "text-foreground" : "text-tertiary")}>{prog.name}</span>
-                      <Badge variant={stageBadge(prog.stage)}>{prog.stage}</Badge>
+                      <QuietStatus tone={stageBadge(prog.stage)}>{prog.stage}</QuietStatus>
                     </div>
                     <div className="h-1.5 overflow-hidden rounded-full bg-raised-2">
                       <div className="h-full rounded-full bg-action-primary" style={{ width: `${pct}%` }} />
