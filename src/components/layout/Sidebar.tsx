@@ -87,9 +87,10 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
         >
           <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
           <img src={wayamMarkDark} alt="" className="hidden h-auto w-8 shrink-0 dark:block" />
-          <span className={cn("flex shrink-0 items-center", railOnly)}>
-            <img src={wayamWordmarkLight} alt="" className="h-5 w-auto dark:hidden" />
-            <img src={wayamWordmarkDark} alt="" className="hidden h-5 w-auto dark:block" />
+          <span className={cn("flex min-w-0 flex-col gap-0.5", railOnly)}>
+            <img src={wayamWordmarkLight} alt="" className="h-5 w-auto self-start dark:hidden" />
+            <img src={wayamWordmarkDark} alt="" className="hidden h-5 w-auto self-start dark:block" />
+            <span className="type-eyebrow block truncate text-quaternary">BOM Synchronization</span>
           </span>
         </Link>
       </div>
