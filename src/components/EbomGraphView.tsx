@@ -44,22 +44,24 @@ const NODE_H = 100;
 
 // ─── Type colours per BOM type ────────────────────────────────────────────────
 const TYPE_CFG: Record<string, { ring: string; bg: string; badge: string; dot: string }> = {
-  Vehicle:       { ring: 'border-violet-400', bg: 'from-violet-500/10 to-purple-500/5',   badge: 'bg-violet-100 text-violet-700',  dot: 'bg-violet-500' },
-  System:        { ring: 'border-blue-400',   bg: 'from-blue-500/10 to-indigo-500/5',     badge: 'bg-blue-100 text-blue-700',      dot: 'bg-blue-500' },
-  Assembly:      { ring: 'border-cyan-400',   bg: 'from-cyan-500/10 to-sky-500/5',        badge: 'bg-cyan-100 text-cyan-700',      dot: 'bg-cyan-500' },
-  'Sub-Assembly':{ ring: 'border-teal-400',   bg: 'from-teal-500/10 to-emerald-500/5',    badge: 'bg-teal-100 text-teal-700',      dot: 'bg-teal-500' },
-  ECU:           { ring: 'border-amber-400',  bg: 'from-amber-500/10 to-orange-500/5',    badge: 'bg-amber-100 text-amber-700',    dot: 'bg-amber-500' },
-  Harness:       { ring: 'border-lime-400',   bg: 'from-lime-500/10 to-green-500/5',      badge: 'bg-lime-100 text-lime-700',      dot: 'bg-lime-500' },
-  Part:          { ring: 'border-slate-300',  bg: 'from-slate-500/5 to-gray-500/3',       badge: 'bg-slate-100 text-slate-600',    dot: 'bg-slate-400' },
-  Fastener:      { ring: 'border-stone-300',  bg: 'from-stone-500/5 to-neutral-500/3',    badge: 'bg-stone-100 text-stone-600',    dot: 'bg-stone-400' },
-  Consumable:    { ring: 'border-orange-300', bg: 'from-orange-500/8 to-yellow-500/5',    badge: 'bg-orange-100 text-orange-700',  dot: 'bg-orange-400' },
-  Software:      { ring: 'border-pink-400',   bg: 'from-pink-500/10 to-rose-500/5',       badge: 'bg-pink-100 text-pink-700',      dot: 'bg-pink-500' },
+  // Colour is reserved for status in Chronus, so nodes stay neutral and the type is the label.
+  // Only the legend dot uses a chart series colour.
+  Vehicle:       { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-6' },
+  System:        { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-1' },
+  Assembly:      { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-2' },
+  'Sub-Assembly':{ ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-2' },
+  ECU:           { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-3' },
+  Harness:       { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-5' },
+  Part:          { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-quaternary' },
+  Fastener:      { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-quaternary' },
+  Consumable:    { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-quaternary' },
+  Software:      { ring: 'border-hairline', bg: '', badge: 'bg-raised-2 text-secondary-foreground', dot: 'bg-series-6' },
 };
 const tc = (type: string) => TYPE_CFG[type] ?? TYPE_CFG['Part'];
 
 const healthDot = (h?: string) =>
-  h === 'critical' ? 'bg-red-500 shadow-[0_0_6px_2px_rgba(239,68,68,0.5)] animate-pulse' :
-  h === 'warning'  ? 'bg-amber-400' : 'bg-emerald-500';
+  h === 'critical' ? 'bg-error' :
+  h === 'warning'  ? 'bg-warning' : 'bg-success';
 
 // ─── Dagre auto-layout ────────────────────────────────────────────────────────
 function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
@@ -105,13 +107,12 @@ const BomNode = ({ data }: { data: any }) => {
     <div
       onClick={() => onNodeClick(node)}
       className={cn(
-        'relative rounded-xl border-2 bg-white cursor-pointer select-none',
-        `bg-gradient-to-br ${cfg.bg}`,
+        'relative rounded-lg border bg-container cursor-pointer select-none',
         cfg.ring,
-        isSelected  && 'ring-2 ring-primary ring-offset-2 border-primary/60 shadow-[0_0_16px_2px_hsl(239_84%_60%/0.3)]',
-        isHighlighted && !isSelected && 'border-primary/40 shadow-md',
+        isSelected  && 'border-strong ring-2 ring-active',
+        isHighlighted && !isSelected && 'border-strong',
         isDimmed    && 'opacity-25 grayscale pointer-events-none',
-        'transition-all duration-200 hover:shadow-lg hover:scale-[1.02]',
+        'transition-colors duration-150 hover:border-strong',
       )}
       style={{ width: NODE_W, minHeight: NODE_H }}
     >
@@ -120,38 +121,38 @@ const BomNode = ({ data }: { data: any }) => {
       {/* Type bar + health dot */}
       <div className="px-4 pt-3 flex items-center gap-2">
         <span className={cn('h-2.5 w-2.5 rounded-full shrink-0', healthDot(node.health))} />
-        <span className={cn('text-[11px] font-bold uppercase tracking-widest', cfg.badge.replace('bg-', 'text-').replace(/text-\w+-\d+/, m => m))}>
-          <span className={cn('inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider', cfg.badge)}>
+        <span>
+          <span className={cn('type-eyebrow inline-flex items-center rounded-full px-2 py-0.5 text-[10px]', cfg.badge)}>
             {node.type}
           </span>
         </span>
         {!!node.cves && (
-          <span className="ml-auto text-[10px] bg-red-100 text-red-700 border border-red-200 rounded px-1.5 py-0.5 font-bold">{node.cves} CVE</span>
+          <span className="ml-auto rounded-full bg-error-badge px-2 py-0.5 text-[10px] font-medium text-badge">{node.cves} CVE</span>
         )}
         {!!node.warnings && !node.cves && (
-          <span className="ml-auto text-[10px] bg-amber-100 text-amber-700 border border-amber-200 rounded px-1.5 py-0.5 font-bold">{node.warnings}⚠</span>
+          <span className="ml-auto rounded-full bg-warning-badge px-2 py-0.5 text-[10px] font-medium text-badge">{node.warnings}⚠</span>
         )}
       </div>
 
       {/* Name + PN */}
       <div className="px-4 pt-1.5 pb-2">
-        <div className="text-[14px] font-bold text-gray-900 leading-snug line-clamp-1">{node.name}</div>
-        <div className="text-[11px] font-mono text-gray-500 mt-0.5">{node.partNumber}</div>
+        <div className="text-[14px] font-medium text-foreground leading-snug line-clamp-1">{node.name}</div>
+        <div className="text-[11px] font-mono text-tertiary mt-0.5">{node.partNumber}</div>
       </div>
 
       {/* Footer */}
       <div className="px-4 pb-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           {node.revision && (
-            <span className="text-[10px] font-mono bg-gray-100 text-gray-500 rounded px-1.5 border border-gray-200">{node.revision}</span>
+            <span className="text-[10px] font-mono bg-action text-tertiary rounded-full px-2 border border-hairline">{node.revision}</span>
           )}
           {node.status && (
             <span className={cn(
-              'text-[10px] px-1.5 rounded border font-medium',
-              node.status === 'Released'  ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-              node.status === 'In Review' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-              node.status === 'Obsolete'  ? 'bg-gray-100 text-gray-500 border-gray-200' :
-                                            'bg-blue-50 text-blue-700 border-blue-200'
+              'text-[10px] px-2 rounded-full font-medium text-badge',
+              node.status === 'Released'  ? 'bg-success-badge' :
+              node.status === 'In Review' ? 'bg-warning-badge' :
+              node.status === 'Obsolete'  ? 'bg-neutral-badge' :
+                                            'bg-info-badge'
             )}>{node.status}</span>
           )}
         </div>
@@ -161,8 +162,8 @@ const BomNode = ({ data }: { data: any }) => {
           <div className={cn(
             'flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.5 rounded-full border',
             isExpanded
-              ? 'bg-primary/10 text-primary border-primary/30'
-              : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-primary/10 hover:text-primary hover:border-primary/30',
+              ? 'bg-action-primary text-on-color border-transparent'
+              : 'bg-action text-tertiary border-hairline hover:border-strong hover:text-foreground',
             'transition-colors',
           )}>
             {isExpanded
@@ -289,13 +290,13 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           type: 'smoothstep',
           animated: edgeHighlighted,
           style: {
-            stroke: edgeHighlighted ? 'hsl(239 84% 60%)' : isDimmed ? 'hsl(220 13% 88%)' : 'hsl(220 13% 78%)',
+            stroke: edgeHighlighted ? 'var(--text-primary)' : isDimmed ? 'var(--stroke-muted)' : 'var(--stroke-default)',
             strokeWidth: edgeHighlighted ? 2.5 : isDimmed ? 0.8 : 1.5,
             opacity: isDimmed ? 0.25 : 1,
           },
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: edgeHighlighted ? 'hsl(239 84% 60%)' : 'hsl(220 13% 72%)',
+            color: edgeHighlighted ? 'var(--text-primary)' : 'var(--stroke-default)',
             width: 14, height: 14,
           },
         });
@@ -412,10 +413,10 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           </span>
         ))}
         <span className="flex items-center gap-1 text-[10px] text-muted-foreground ml-2">
-          <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />Critical
+          <span className="h-2 w-2 rounded-full bg-error" />Critical
         </span>
         <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
-          <span className="h-2 w-2 rounded-full bg-amber-400" />Warning
+          <span className="h-2 w-2 rounded-full bg-warning" />Warning
         </span>
         <span className="ml-auto text-[10px] text-muted-foreground font-medium">
           {nodes.length} visible · {lookup.size > 0 ? lookup.size : '?'} total
@@ -443,17 +444,17 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           zoomOnPinch
           defaultEdgeOptions={{ type: 'smoothstep' }}
         >
-          <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="hsl(220 13% 88%)" />
+          <Background variant={BackgroundVariant.Dots} gap={18} size={1} color="var(--stroke-default)" />
           <Controls position="bottom-right" showZoom={false} showFitView={false}
-            className="!border-border !bg-card !shadow-card !rounded-lg !overflow-hidden" />
+            className="!border-hairline !bg-container !shadow-none !rounded-lg !overflow-hidden" />
 
           {/* Status bar */}
           <Panel position="bottom-left">
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-card/90 border border-border shadow-card text-[10px] backdrop-blur">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-container border border-hairline text-[10px]">
               {selected ? (
                 <>
-                  <GitBranch className="h-3 w-3 text-primary" />
-                  <span className="font-semibold text-primary">{selected.name}</span>
+                  <GitBranch className="h-3 w-3 text-tertiary" />
+                  <span className="font-medium text-foreground">{selected.name}</span>
                   <span className="text-border">·</span>
                   <span className="text-muted-foreground">{selected.type}</span>
                 </>
@@ -466,7 +467,7 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           {/* Empty filter state */}
           {nodes.length === 0 && (
             <Panel position="top-center">
-              <div className="flex flex-col items-center gap-2 mt-20 p-5 rounded-xl bg-card border border-border shadow-card">
+              <div className="flex flex-col items-center gap-2 mt-20 p-5 rounded-lg bg-container border border-hairline">
                 <AlertTriangle className="h-7 w-7 text-warning" />
                 <p className="text-sm font-semibold">No matching nodes</p>
                 <Button variant="outline" size="sm" onClick={() => setSearch('')}>Clear search</Button>

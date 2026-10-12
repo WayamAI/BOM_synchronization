@@ -11,19 +11,19 @@ import {
 } from "lucide-react";
 
 const SYSTEM_VISUAL: Record<string, { icon: typeof Zap; color: string; short: string }> = {
-  PWT: { icon: Zap,       color: "hsl(239 84% 60%)", short: "PWT" },
-  BAT: { icon: Battery,   color: "hsl(172 76% 38%)", short: "BAT" },
-  CHS: { icon: CircleDot, color: "hsl(32 95% 50%)",  short: "CHS" },
-  BDY: { icon: Box,       color: "hsl(199 89% 48%)", short: "BDY" },
-  INT: { icon: Armchair,  color: "hsl(280 75% 60%)", short: "INT" },
-  ELE: { icon: Cpu,       color: "hsl(350 89% 60%)", short: "ELE" },
+  PWT: { icon: Zap,       color: "var(--analytics-series-1)", short: "PWT" },
+  BAT: { icon: Battery,   color: "var(--analytics-series-2)", short: "BAT" },
+  CHS: { icon: CircleDot, color: "var(--analytics-series-3)", short: "CHS" },
+  BDY: { icon: Box,       color: "var(--analytics-series-4)", short: "BDY" },
+  INT: { icon: Armchair,  color: "var(--analytics-series-5)", short: "INT" },
+  ELE: { icon: Cpu,       color: "var(--analytics-series-6)", short: "ELE" },
 };
 
 const getSystemVisual = (pn: string) => {
   for (const [key, val] of Object.entries(SYSTEM_VISUAL)) {
     if (pn.toUpperCase().includes(key)) return val;
   }
-  return { icon: Box, color: "hsl(200 70% 50%)", short: pn.slice(0, 3) };
+  return { icon: Box, color: "var(--analytics-series-5)", short: pn.slice(0, 3) };
 };
 
 // BFS over the BOM graph starting from a system root
@@ -212,14 +212,14 @@ export const SystemHealthMatrix = () => {
           return (
             <div
               key={row.pn}
-              className="rounded-xl border border-border bg-background px-4 py-3 transition-colors hover:bg-muted/20"
+              className="rounded-lg border border-hairline bg-raised px-4 py-3 transition-colors duration-150 hover:border-strong"
             >
               <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(220px,1.7fr)_70px_repeat(4,minmax(110px,1fr))_84px] lg:items-center lg:gap-3">
                 <button onClick={() => navigate(`/parts/${row.pn}`)} className="min-w-0 text-left">
                   <div className="flex items-center gap-3">
                     <div
                       className="grid h-10 w-10 shrink-0 place-items-center rounded-xl ring-1 ring-inset"
-                      style={{ background: `${row.color}12`, color: row.color, boxShadow: `inset 0 0 0 1px ${row.color}25` }}
+                      style={{ background: `color-mix(in srgb, ${row.color} 8%, transparent)`, color: row.color, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${row.color} 18%, transparent)` }}
                     >
                       <Icon className="h-4 w-4" strokeWidth={2.1} />
                     </div>

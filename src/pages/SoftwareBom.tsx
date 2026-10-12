@@ -13,7 +13,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { ShieldAlert, Search, Download, Cpu } from "lucide-react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
 const sevCls = (s: string) =>
   s === "Critical" ? "bg-critical/15 text-critical border-critical/30" :
@@ -115,15 +116,14 @@ const SoftwareBom = () => {
           <div className="h-[220px] mt-2">
             <ResponsiveContainer>
               <BarChart data={cveTimeline} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="week" stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={10} />
-                <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 11 }} />
-                <Legend wrapperStyle={{ fontSize: 10 }} iconSize={8} />
-                <Bar dataKey="critical" stackId="a" fill="hsl(var(--critical))" />
-                <Bar dataKey="high"     stackId="a" fill="hsl(25 95% 55%)" />
-                <Bar dataKey="medium"   stackId="a" fill="hsl(var(--warning))" />
-                <Bar dataKey="low"      stackId="a" fill="hsl(var(--muted-foreground))" />
+                <XAxis dataKey="week" axisLine={false} tickLine={false} tick={axisTick} />
+                <YAxis axisLine={false} tickLine={false} tick={axisTick} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} itemStyle={chartTooltipLabelStyle} cursor={{ fill: "var(--surface-raised)" }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: "var(--text-tertiary)" }} iconType="circle" iconSize={8} />
+                <Bar dataKey="critical" stackId="a" fill="var(--analytics-series-4)" isAnimationActive={false} />
+                <Bar dataKey="high"     stackId="a" fill="var(--analytics-series-3)" isAnimationActive={false} />
+                <Bar dataKey="medium"   stackId="a" fill="var(--analytics-series-1)" isAnimationActive={false} />
+                <Bar dataKey="low"      stackId="a" fill="var(--analytics-series-5)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>

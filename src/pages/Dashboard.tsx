@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { HealthArc } from "@/components/dashboard/HealthArc";
 import { SystemHealthMatrix } from "@/components/dashboard/SystemHealthMatrix";
 import { Sparkles, FileEdit, ShieldAlert, FileBarChart, AlertTriangle, ArrowRight, TrendingUp, Factory } from "lucide-react";
-import { Bar, Line, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
 const STAGES = ["Concept", "Design", "Engineering", "Pre-Production", "SOP"] as const;
 
@@ -289,13 +290,12 @@ const Dashboard = () => {
             <div className="h-[220px]">
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart data={activeProgram.changeVelocity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                  <XAxis dataKey="week" axisLine={false} tickLine={false} stroke="hsl(var(--muted-foreground))" fontSize={9} />
-                  <YAxis axisLine={false} tickLine={false} stroke="hsl(var(--muted-foreground))" fontSize={9} />
-                  <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 10 }} />
-                  <Bar dataKey="approved" stackId="a" fill="hsl(var(--success))" barSize={12} />
-                  <Bar dataKey="rejected" stackId="a" fill="hsl(var(--critical))" barSize={12} />
-                  <Line type="monotone" dataKey="cycle" stroke="hsl(var(--accent))" strokeWidth={2} dot={{ r: 1.5 }} />
+                  <XAxis dataKey="week" axisLine={false} tickLine={false} tick={axisTick} />
+                  <YAxis axisLine={false} tickLine={false} tick={axisTick} />
+                  <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} itemStyle={chartTooltipLabelStyle} cursor={{ fill: "var(--surface-raised)" }} />
+                  <Bar dataKey="approved" stackId="a" fill="var(--analytics-series-2)" barSize={12} isAnimationActive={false} />
+                  <Bar dataKey="rejected" stackId="a" fill="var(--analytics-series-4)" barSize={12} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                  <Line type="monotone" dataKey="cycle" stroke="var(--analytics-series-1)" strokeWidth={2} dot={false} isAnimationActive={false} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>

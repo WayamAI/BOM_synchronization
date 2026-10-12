@@ -2,11 +2,11 @@ import { sankeyNodes, sankeyLinks } from "@/lib/mockData";
 import { useMemo, useState } from "react";
 
 const groupColor: Record<string, string> = {
-  cat:     "hsl(280 80% 60%)",
-  ebom:    "hsl(var(--primary))",
-  mbom:    "hsl(var(--accent))",
-  sbom:    "hsl(var(--success))",
-  service: "hsl(var(--success))",
+  cat:     "var(--analytics-series-6)",
+  ebom:    "var(--analytics-series-1)",
+  mbom:    "var(--analytics-series-3)",
+  sbom:    "var(--analytics-series-2)",
+  service: "var(--analytics-series-2)",
 };
 const groupOrder = ["cat", "ebom", "mbom", "service"] as const;
 
@@ -42,32 +42,32 @@ export const SankeyFlow = () => {
   }, []);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 shadow-card h-full">
+    <div className="h-full rounded-lg border border-hairline bg-container p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-semibold">Cross-BOM Flow — Variants → EBOM → MBOM → Service</h3>
-          <p className="text-xs text-muted-foreground">Meridian SUV · variants flowing through engineering, plants and service</p>
+          <h3 className="type-eyebrow text-quaternary">Cross-BOM Flow — Variants → EBOM → MBOM → Service</h3>
+          <p className="type-body-sm mt-1 text-tertiary">Meridian SUV · variants flowing through engineering, plants and service</p>
         </div>
-        <div className="flex items-center gap-3 text-[10px] uppercase tracking-wider">
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{background:"hsl(280 80% 60%)"}} />Variants</span>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" />EBOM</span>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-accent" />MBOM</span>
-          <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-success" />Service</span>
+        <div className="type-caption flex items-center gap-3 text-tertiary">
+          <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-series-6" />Variants</span>
+          <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-series-1" />EBOM</span>
+          <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-series-3" />MBOM</span>
+          <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-series-2" />Service</span>
         </div>
       </div>
       <svg viewBox={`0 0 ${layout.W} ${layout.H}`} className="w-full h-[360px]">
         <defs>
           <linearGradient id="flow-0" x1="0" x2="1">
-            <stop offset="0%" stopColor="hsl(280 80% 60%)" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="var(--analytics-series-6)" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="var(--analytics-series-1)" stopOpacity="0.4" />
           </linearGradient>
           <linearGradient id="flow-1" x1="0" x2="1">
-            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="var(--analytics-series-1)" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="var(--analytics-series-3)" stopOpacity="0.4" />
           </linearGradient>
           <linearGradient id="flow-2" x1="0" x2="1">
-            <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="hsl(var(--success))" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="var(--analytics-series-3)" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="var(--analytics-series-2)" stopOpacity="0.4" />
           </linearGradient>
         </defs>
         {sankeyLinks.map((l, i) => {
@@ -107,7 +107,7 @@ export const SankeyFlow = () => {
           return (
             <g key={i}>
               <rect x={p.x} y={p.y} width={layout.nodeW} height={p.h} rx={6} fill={groupColor[n.group]} opacity={0.9} />
-              <text x={p.x + layout.nodeW / 2} y={p.y + p.h / 2 + 4} textAnchor="middle" fontSize="10" fontWeight="600" fill="hsl(var(--background))">
+              <text x={p.x + layout.nodeW / 2} y={p.y + p.h / 2 + 4} textAnchor="middle" fontSize="11" fontWeight="500" fill="var(--feedback-badge-content)">
                 {n.name.length > 12 ? n.name.slice(0, 12) + "…" : n.name}
               </text>
             </g>
