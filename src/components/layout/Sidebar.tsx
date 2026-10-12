@@ -205,7 +205,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
           style={{ top: flyout.top }}
           className="pointer-events-none fixed left-[76px] z-50 hidden -translate-y-1/2 rounded-xl border border-hairline bg-container px-3 py-2 shadow-lg lg:block"
         >
-          <div className="type-eyebrow text-quaternary">{flyout.group}</div>
+          <div className="type-eyebrow whitespace-nowrap text-quaternary">{flyout.group}</div>
           <div className="type-label-md whitespace-nowrap text-foreground">{flyout.label}</div>
         </div>
       )}

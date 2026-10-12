@@ -38,7 +38,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
         </Button>
         {/* The visible page title is the PageHeader h2; this h1 keeps one h1 per page for assistive tech. */}
         <h1 className="sr-only">{title}</h1>
-        {group && <div className="type-eyebrow truncate text-quaternary" aria-hidden>{group}</div>}
+        {group && <div className="type-eyebrow hidden truncate text-quaternary sm:block" aria-hidden>{group}</div>}
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
