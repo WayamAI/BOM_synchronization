@@ -60,7 +60,7 @@ const Dashboard = () => {
     : 0;
 
   return (
-    <div className="relative flex flex-col gap-3 animate-fade-in-up pb-6">
+    <div className="relative flex flex-col gap-3 animate-fade-in-up p-4 pb-6 sm:p-5">
       {/* Dynamic HUD Frames */}
       <div className="pointer-events-none absolute -left-10 -top-10 h-64 w-64 rounded-full bg-primary/10 blur-[120px]" />
       <div className="pointer-events-none absolute -right-10 top-1/2 h-80 w-80 rounded-full bg-accent/10 blur-[120px]" />

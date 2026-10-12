@@ -1,45 +1,14 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard, Layers, GitBranch, Factory, Wrench, ShieldAlert, FileEdit, GitCompare,
-  Boxes, Truck, AlertOctagon, FileBarChart, ChevronRight, ChevronDown, Pin, X,
-} from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { ChevronRight, ChevronDown, Pin, X, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { useState, useMemo } from "react";
 import { ebomTree, type EbomNode } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
-
-const nav = [
-  { section: "Overview", items: [
-    { to: "/",           label: "Command Center",  icon: LayoutDashboard, end: true },
-  ]},
-  { section: "BOM Views", items: [
-    { to: "/variants",   label: "Variants & Config", icon: Layers },
-    { to: "/ebom",       label: "Engineering BOM",   icon: GitBranch },
-    { to: "/mbom",       label: "Manufacturing BOM", icon: Factory },
-    { to: "/service",    label: "Service BOM",       icon: Wrench },
-    { to: "/software",   label: "Software BOM",      icon: ShieldAlert },
-  ]},
-  { section: "Change & Compare", items: [
-    { to: "/changes",    label: "Change Management", icon: FileEdit },
-    { to: "/compare",    label: "BOM Compare",       icon: GitCompare },
-  ]},
-  { section: "Parts & Supply", items: [
-    { to: "/parts",      label: "Part Master",       icon: Boxes },
-    { to: "/suppliers",  label: "Supplier Intel",    icon: Truck },
-    { to: "/field",      label: "Field Quality",     icon: AlertOctagon },
-  ]},
-  { section: "reports", items: [
-    { to: "/reports",    label: "Reports & Exports", icon: FileBarChart },
-  ]},
-];
-
-const pinned = [
-  { id: "ecn",  label: "ECN-2241 · cell tab",       to: "/changes/ECN-2241" },
-  { id: "pn",   label: "BAT-PCK-8500 · HV Pack",    to: "/parts/BAT-PCK-8500" },
-  { id: "sup",  label: "Anonymous PCB · Taiwan",    to: "/suppliers" },
-];
+import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
+import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
+import { navGroups, pinnedItems } from "./nav";
 
 const healthDot = (h?: string) => {
-  if (h === "critical") return "bg-critical shadow-glow-danger";
+  if (h === "critical") return "bg-critical";
   if (h === "warning")  return "bg-warning";
   return "bg-success";
 };
@@ -52,16 +21,16 @@ const TreeBranch = ({ node, depth = 0, onPick }: { node: EbomNode; depth?: numbe
       <button
         onClick={() => hasChildren ? setOpen(!open) : onPick(node.partNumber)}
         onDoubleClick={() => onPick(node.partNumber)}
-        className="group flex w-full items-center gap-1.5 rounded-md py-1 pr-2 text-xs transition-colors hover:bg-sidebar-accent text-sidebar-foreground"
+        className="group flex w-full items-center gap-1.5 rounded-lg py-1 pr-2 text-xs text-secondary-foreground outline-none transition-colors duration-150 hover:bg-action hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
         style={{ paddingLeft: 8 + depth * 12 }}
         title={node.partNumber}
       >
         {hasChildren ? (
-          open ? <ChevronDown className="h-3 w-3 shrink-0 opacity-60" /> : <ChevronRight className="h-3 w-3 shrink-0 opacity-60" />
+          open ? <ChevronDown className="size-3 shrink-0 text-quaternary" aria-hidden /> : <ChevronRight className="size-3 shrink-0 text-quaternary" aria-hidden />
         ) : (
           <span className="w-3" />
         )}
-        <span className={cn("h-1.5 w-1.5 rounded-full shrink-0", healthDot(node.health))} />
+        <span className={cn("size-1.5 rounded-full shrink-0", healthDot(node.health))} />
         <span className="truncate text-left">{node.name}</span>
       </button>
       {open && hasChildren && (
@@ -71,90 +40,150 @@ const TreeBranch = ({ node, depth = 0, onPick }: { node: EbomNode; depth?: numbe
   );
 };
 
-export const Sidebar = () => {
+interface SidebarProps {
+  expanded: boolean;
+  onToggleExpanded: () => void;
+  mobileOpen: boolean;
+}
+
+export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps) => {
   const navigate = useNavigate();
   const [pinnedOpen, setPinnedOpen] = useState(true);
   const tree = useMemo(() => ebomTree, []);
 
+  // Below lg the sidebar is an off-canvas drawer and always shows its full
+  // layout. From lg it is a 68px rail that expands to 252px; labels, the
+  // program tree and Pinned are shown only when expanded.
+  const railOnly = expanded ? "" : "lg:hidden";
+
   return (
-    <aside className="hidden md:flex flex-col border-r border-sidebar-border bg-sidebar/40 backdrop-blur-md h-full">
-      {/* Scrollable primary navigation and tree */}
+    <aside
+      className={cn(
+        "z-50 flex h-full shrink-0 flex-col border-r border-hairline bg-container",
+        "transition-[width,transform,visibility] duration-200 ease-out",
+        "fixed inset-y-0 left-0 w-[252px] -translate-x-full lg:static lg:translate-x-0",
+        mobileOpen ? "translate-x-0" : "max-lg:invisible",
+        expanded ? "lg:w-[252px]" : "lg:w-[68px]",
+      )}
+    >
+      {/* Brand */}
+      <div className={cn("flex h-14 shrink-0 items-center gap-2.5 border-b border-hairline px-3", !expanded && "lg:px-[18px]")}>
+        <Link
+          to="/"
+          aria-label="Wayam AI, BOM Synchronization"
+          className="flex min-w-0 items-center gap-2.5 rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-active"
+        >
+          <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
+          <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
+          <span className={cn("min-w-0 leading-tight", railOnly)}>
+            <span className="type-label-md block truncate text-foreground">Wayam AI</span>
+            <span className="type-eyebrow block truncate text-quaternary">BOM Synchronization</span>
+          </span>
+        </Link>
+      </div>
+
+      {/* Navigation + program tree */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
-        <nav className="p-2 space-y-1">
-          {nav.map(group => (
-            <div key={group.section} className="mb-2">
-              <div className="px-2 pt-1 pb-1 text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">
-                {group.section}
-              </div>
-              <div className="space-y-0.5">
-                {group.items.map(({ to, label, icon: Icon, end }) => (
-                  <NavLink
-                    key={to}
-                    to={to}
-                    end={end}
-                    className={({ isActive }) =>
-                      cn(
-                        "group relative flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all",
-                        "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-                        isActive && "bg-sidebar-accent text-sidebar-foreground"
-                      )
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-0.5 rounded-r bg-gradient-primary" />}
-                        <Icon className={cn("h-3.5 w-3.5", isActive && "text-primary")} />
-                        <span>{label}</span>
-                      </>
-                    )}
-                  </NavLink>
-                ))}
-              </div>
+        <nav aria-label="Primary" className={cn("flex flex-col gap-1.5 py-3 px-3", !expanded && "lg:px-[14px]")}>
+          {navGroups.map((group, gi) => (
+            <div key={group.section} className="flex flex-col gap-1.5">
+              {gi > 0 && <div className={cn("mx-1 my-1 border-t border-hairline", expanded ? "" : "lg:mx-2")} />}
+              <div className={cn("type-eyebrow px-1 pt-1 text-quaternary", railOnly)}>{group.section}</div>
+              {group.items.map(({ to, label, icon: Icon, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  title={label}
+                  className="group flex items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
+                >
+                  {({ isActive }) => (
+                    <>
+                      <span
+                        className={cn(
+                          "grid size-9 shrink-0 place-items-center rounded-full transition-colors duration-[180ms] ease-out",
+                          isActive
+                            ? "bg-action-primary text-on-color"
+                            : "bg-action text-tertiary group-hover:bg-raised-2 group-hover:text-secondary-foreground",
+                        )}
+                      >
+                        <Icon className="size-[17px]" aria-hidden />
+                      </span>
+                      <span
+                        className={cn(
+                          "type-label-sm truncate transition-colors duration-[180ms]",
+                          isActive ? "text-foreground" : "text-tertiary group-hover:text-secondary-foreground",
+                          railOnly,
+                        )}
+                      >
+                        {label}
+                      </span>
+                    </>
+                  )}
+                </NavLink>
+              ))}
             </div>
           ))}
         </nav>
 
-        <div className="mx-3 my-1 border-t border-sidebar-border" />
-
-        <div className="px-3 pb-1">
-          <div className="flex items-center justify-between px-1 mb-1">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Live Program Tree</span>
-            <span className="text-[10px] text-muted-foreground">rev 2.4</span>
+        <div className={cn("border-t border-hairline px-3 pt-3", railOnly)}>
+          <div className="mb-1 flex items-center justify-between px-1">
+            <span className="type-eyebrow text-quaternary">Program tree</span>
+            <span className="type-caption tabular text-quaternary">rev 2.4</span>
           </div>
-          <div className="px-2 pb-6">
+          <div className="pb-4">
             <TreeBranch node={tree} onPick={(pn) => navigate(`/parts/${pn}`)} />
           </div>
         </div>
       </div>
 
-      {/* Collapsible Docked Pinned Section */}
-      <div className="flex-none bg-sidebar/5 border-t border-sidebar-border">
-        <button 
+      {/* Pinned (docked, expanded only) */}
+      <div className={cn("shrink-0 border-t border-hairline", railOnly)}>
+        <button
           onClick={() => setPinnedOpen(!pinnedOpen)}
-          className="flex w-full items-center justify-between p-3 transition-colors hover:bg-sidebar-accent/50"
+          aria-expanded={pinnedOpen}
+          className="flex w-full items-center justify-between px-4 py-3 outline-none transition-colors duration-150 hover:bg-raised focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-active"
         >
           <div className="flex items-center gap-2">
-            <Pin className={cn("h-3 w-3 transition-colors", pinnedOpen ? "text-primary" : "text-muted-foreground")} />
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Pinned Hub</span>
+            <Pin className="size-3 text-quaternary" aria-hidden />
+            <span className="type-eyebrow text-quaternary">Pinned</span>
           </div>
-          <ChevronDown className={cn("h-3 w-3 transition-transform duration-300", !pinnedOpen && "-rotate-90")} />
+          <ChevronDown className={cn("size-3 text-quaternary transition-transform duration-150", !pinnedOpen && "-rotate-90")} aria-hidden />
         </button>
-        
+
         {pinnedOpen && (
-          <div className="px-2 pb-2 animate-in slide-in-from-bottom-1 fade-in duration-200">
-            {pinned.map(pn => (
+          <div className="px-2 pb-2">
+            {pinnedItems.map(pn => (
               <button
                 key={pn.id}
                 onClick={() => navigate(pn.to)}
-                className="group flex w-full items-center gap-1.5 rounded-md px-2 py-2 text-[10px] hover:bg-sidebar-accent text-sidebar-foreground/75"
+                className="group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-secondary-foreground outline-none transition-colors duration-150 hover:bg-action hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
               >
-                <div className="h-1 w-1 rounded-full bg-primary/40 group-hover:bg-primary transition-colors" />
-                <span className="truncate text-left flex-1">{pn.label}</span>
-                <X className="h-2.5 w-2.5 opacity-0 group-hover:opacity-40" />
+                <span className="size-1 shrink-0 rounded-full bg-quaternary" />
+                <span className="flex-1 truncate text-left">{pn.label}</span>
+                <X className="size-3 text-quaternary opacity-0 group-hover:opacity-100" aria-hidden />
               </button>
             ))}
           </div>
         )}
+      </div>
+
+      {/* Footer: collapse / expand (desktop rail only) */}
+      <div className={cn("hidden shrink-0 border-t border-hairline py-3 lg:block", expanded ? "px-3" : "px-[14px]")}>
+        <button
+          type="button"
+          onClick={onToggleExpanded}
+          aria-expanded={expanded}
+          title={expanded ? "Collapse sidebar" : "Expand sidebar"}
+          className="group flex w-full items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
+        >
+          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-action text-tertiary transition-colors duration-[180ms] ease-out group-hover:bg-raised-2 group-hover:text-secondary-foreground">
+            {expanded ? <PanelLeftClose className="size-[17px]" aria-hidden /> : <PanelLeftOpen className="size-[17px]" aria-hidden />}
+          </span>
+          <span className={cn("type-label-sm text-tertiary group-hover:text-secondary-foreground", railOnly)}>
+            {expanded ? "Collapse sidebar" : "Expand sidebar"}
+          </span>
+        </button>
       </div>
     </aside>
   );

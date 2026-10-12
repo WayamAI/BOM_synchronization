@@ -1,34 +1,43 @@
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import { TopNav } from "./TopNav";
 import { Sidebar } from "./Sidebar";
 import { PipelineBar } from "./PipelineBar";
 import { ProgramProvider } from "@/context/ProgramContext";
 
 export const AppShell = () => {
+  const [expanded, setExpanded] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // The off-canvas sidebar closes after navigating.
+  useEffect(() => setMobileOpen(false), [pathname]);
+
   return (
     <ProgramProvider>
-      <div className="min-h-screen bg-background relative overflow-x-hidden">
-        {/* Ambient mesh & grid textures */}
-        <div aria-hidden className="pointer-events-none fixed inset-0 bg-mesh opacity-80" />
-        <div aria-hidden className="pointer-events-none fixed inset-0 pattern-grid opacity-[0.03]" />
-        <div aria-hidden className="pointer-events-none fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-30" />
+      {/* Fixed-viewport shell: the document never scrolls, <main> does. */}
+      <div className="flex h-screen w-full overflow-hidden bg-page">
+        {mobileOpen && (
+          <button
+            type="button"
+            aria-label="Close navigation"
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
 
-        <div className="relative flex flex-col min-h-screen">
-          <div className="fixed top-0 left-0 right-0 z-50 h-16">
-            <TopNav />
-          </div>
-          <div className="fixed top-16 left-0 right-0 z-40 h-16">
-            <PipelineBar />
-          </div>
+        <Sidebar
+          expanded={expanded}
+          onToggleExpanded={() => setExpanded(v => !v)}
+          mobileOpen={mobileOpen}
+        />
 
-          <div className="flex flex-1 pt-32">
-            <div className="fixed top-32 left-0 bottom-0 w-64 z-30">
-              <Sidebar />
-            </div>
-            <main className="flex-1 min-w-0 ml-64 p-4 md:p-6 lg:p-8 w-full max-w-[1920px] mx-auto">
-              <Outlet />
-            </main>
-          </div>
+        <div className="flex min-w-0 flex-1 flex-col">
+          <TopNav onOpenNav={() => setMobileOpen(true)} />
+          <PipelineBar />
+          <main className="min-h-0 flex-1 overflow-y-auto">
+            <Outlet />
+          </main>
         </div>
       </div>
     </ProgramProvider>

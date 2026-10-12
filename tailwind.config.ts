@@ -14,19 +14,6 @@ export default {
         // Chronus has two families only; part numbers use Geist with tabular figures.
         mono: ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
       },
-      // Chronus type roles. Pair with font-display for the display-* sizes.
-      fontSize: {
-        caption: ["12px", { lineHeight: "16px", fontWeight: "500" }],
-        "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
-        "label-md": ["14px", { lineHeight: "20px", fontWeight: "500" }],
-        "body-sm": ["12px", { lineHeight: "16px", letterSpacing: "-0.01em" }],
-        "body-md": ["14px", { lineHeight: "20px", letterSpacing: "-0.01em" }],
-        "body-lg": ["16px", { lineHeight: "24px", letterSpacing: "-0.01em" }],
-        "display-base": ["14px", { lineHeight: "1.4", letterSpacing: "-0.01em" }],
-        "display-lg": ["18px", { lineHeight: "1.25", letterSpacing: "-0.01em" }],
-        "display-xl": ["22px", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
-        "display-2xl": ["28px", { lineHeight: "1.15", letterSpacing: "-0.02em" }],
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

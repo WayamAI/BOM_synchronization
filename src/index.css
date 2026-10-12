@@ -168,6 +168,25 @@
 @layer utilities {
   .tabular { font-variant-numeric: tabular-nums; }
 
+  /* Chronus type roles. Named type-* (not text-*) on purpose: tailwind-merge in
+     cn() reads unknown text-* names as colours and would drop them. Compose with
+     a colour class, e.g. "type-body-sm text-tertiary". */
+  .type-caption    { font-size: 12px; line-height: 16px; font-weight: 500; }
+  .type-eyebrow    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .type-label-sm   { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
+  .type-label-md   { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+  .type-body-sm    { font-size: 12px; line-height: 16px; letter-spacing: -0.01em; }
+  .type-body-md    { font-size: 14px; line-height: 20px; letter-spacing: -0.01em; }
+  .type-body-lg    { font-size: 16px; line-height: 24px; letter-spacing: -0.01em; }
+  .type-display-base,
+  .type-display-lg,
+  .type-display-xl,
+  .type-display-2xl { font-family: Michroma, Geist, sans-serif; font-weight: 400; }
+  .type-display-base { font-size: 14px; line-height: 1.4;  letter-spacing: -0.01em; }
+  .type-display-lg   { font-size: 18px; line-height: 1.25; letter-spacing: -0.01em; }
+  .type-display-xl   { font-size: 22px; line-height: 1.2;  letter-spacing: -0.01em; }
+  .type-display-2xl  { font-size: 28px; line-height: 1.15; letter-spacing: -0.02em; }
+
   /* Legacy helpers, now flat (see the shadow and gradient variables) */
   .bg-mesh { background-image: var(--gradient-mesh); background-attachment: fixed; }
   .bg-gradient-primary { background-image: var(--gradient-primary); }

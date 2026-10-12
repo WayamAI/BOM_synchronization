@@ -7,15 +7,18 @@ interface Props {
   children: ReactNode;
 }
 
+// Chronus page pattern: a header with a hairline underneath, then a padded body.
 export const PageHeader = ({ title, subtitle, actions, children }: Props) => (
-  <div className="space-y-5">
-    <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">{title}</h1>
-        {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
+  <>
+    <header className="sticky top-0 z-10 border-b border-hairline bg-page px-4 py-4 sm:px-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h2 className="type-display-lg sm:type-display-xl text-foreground">{title}</h2>
+          {subtitle && <p className="type-body-md mt-1 max-w-[70ch] text-tertiary">{subtitle}</p>}
+        </div>
+        {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
-    </div>
-    {children}
-  </div>
+    </header>
+    <div className="space-y-4 p-4 sm:p-5">{children}</div>
+  </>
 );
