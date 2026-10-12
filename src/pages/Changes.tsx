@@ -57,9 +57,9 @@ const ChangesList = () => {
 
   return (
     <PageHeader
-      title="Change Management (ECN)"
-      subtitle={`${ecns.length} engineering changes · ${pendingCount} pending approval · ${criticalOpen} critical open`}
-      actions={<Button size="sm" className="gap-1.5"><FileEdit className="h-3.5 w-3.5" />New ECN</Button>}
+      title="Change Management"
+      subtitle={`ECN · ${ecns.length} engineering changes · ${pendingCount} pending approval · ${criticalOpen} critical open`}
+      actions={<Button size="sm" className="gap-1.5"><FileEdit aria-hidden className="h-3.5 w-3.5" />New ECN</Button>}
     >
       {/* State summary */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
@@ -75,7 +75,7 @@ const ChangesList = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={stateFilter} onValueChange={setStateFilter}>
-          <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by states" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All states</SelectItem>
             {STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
@@ -83,7 +83,7 @@ const ChangesList = () => {
           </SelectContent>
         </Select>
         <Select value={reasonFilter} onValueChange={setReasonFilter}>
-          <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by reason" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">Any reason</SelectItem>
             {["Quality", "Cost", "Supplier", "Regulatory", "Cyber", "Field", "Engineering"].map(r => (
@@ -92,8 +92,8 @@ const ChangesList = () => {
           </SelectContent>
         </Select>
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search ECN, title, or PN…" className="h-8 w-72 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input aria-label="Search ECN, title, or PN" value={q} onChange={e => setQ(e.target.value)} placeholder="Search ECN, title, or PN" className="h-8 w-72 pl-8 text-xs" />
         </div>
         <Badge variant="secondary" className="ml-auto">{filtered.length} ECN{filtered.length === 1 ? "" : "s"}</Badge>
       </div>
@@ -103,15 +103,15 @@ const ChangesList = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">ECN</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Title</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">State</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Priority</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Reason</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Affected PNs</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost/veh</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">VINs</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Raised</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">ECN</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Title</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">State</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Priority</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Reason</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Affected PNs</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost/veh</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">VINs</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Raised</th>
             </tr>
           </thead>
           <tbody>
@@ -148,9 +148,9 @@ const ChangesDetail = ({ id }: { id: string }) => {
   const ecn = ecns.find(e => e.id === id);
   if (!ecn) {
     return (
-      <PageHeader title="Change not found" subtitle={`ECN ${id} does not exist in this program`}>
+      <PageHeader title={`No change ${id}`} subtitle="That ECN does not exist in this program">
         <Button variant="outline" size="sm" onClick={() => navigate("/changes")}>
-          <ArrowLeft className="h-3.5 w-3.5 mr-1" />Back to ECN list
+          <ArrowLeft aria-hidden className="h-3.5 w-3.5 mr-1" />Back to ECN list
         </Button>
       </PageHeader>
     );
@@ -165,11 +165,11 @@ const ChangesDetail = ({ id }: { id: string }) => {
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => navigate("/changes")}>
-            <ArrowLeft className="h-3.5 w-3.5 mr-1" />All ECNs
+            <ArrowLeft aria-hidden className="h-3.5 w-3.5 mr-1" />All ECNs
           </Button>
           {ecn.state === "In Review" && <>
-            <Button variant="outline" size="sm" className="gap-1.5 border-hairline text-success hover:bg-success-surface"><Check className="h-3.5 w-3.5" />Approve</Button>
-            <Button variant="outline" size="sm" className="gap-1.5 border-hairline text-error hover:bg-error-surface"><XIcon className="h-3.5 w-3.5" />Reject</Button>
+            <Button variant="outline" size="sm" className="gap-1.5 border-hairline text-success hover:bg-success-surface"><Check aria-hidden className="h-3.5 w-3.5" />Approve</Button>
+            <Button variant="outline" size="sm" className="gap-1.5 border-hairline text-error hover:bg-error-surface"><XIcon aria-hidden className="h-3.5 w-3.5" />Reject</Button>
           </>}
         </>
       }
@@ -188,7 +188,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
                   current ? "bg-primary text-primary-foreground" :
                   "bg-muted text-muted-foreground",
                 )}>
-                  {done ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                  {done ? <Check aria-hidden className="h-3.5 w-3.5" /> : i + 1}
                 </div>
                 <div className="min-w-0">
                   <div className={cn("text-xs font-semibold", current && "text-primary")}>{s}</div>
@@ -218,7 +218,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
         {/* Impact */}
         <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
-            <Workflow className="h-4 w-4 text-primary" />
+            <Workflow aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="type-eyebrow text-quaternary">Impact Analysis</h3>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
@@ -248,7 +248,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
       <div className="rounded-lg border border-hairline bg-container p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Clock className="h-4 w-4 text-primary" />
+            <Clock aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="type-eyebrow text-quaternary">Timeline · People & Rationale</h3>
           </div>
           <Badge variant="secondary" className="type-caption">{ecn.timeline.length} event{ecn.timeline.length === 1 ? "" : "s"}</Badge>
@@ -261,8 +261,8 @@ const ChangesDetail = ({ id }: { id: string }) => {
             return (
               <div key={i} className="relative">
                 <span className={cn("absolute -left-[30px] top-1 h-4 w-4 rounded-full grid place-items-center", accent)}>
-                  {isApproval ? <Check className="h-2.5 w-2.5 text-success-foreground" /> :
-                   isRaise    ? <FileEdit className="h-2.5 w-2.5 text-primary-foreground" /> :
+                  {isApproval ? <Check aria-hidden className="h-2.5 w-2.5 text-success-foreground" /> :
+                   isRaise    ? <FileEdit aria-hidden className="h-2.5 w-2.5 text-primary-foreground" /> :
                                 <span className="h-1.5 w-1.5 rounded-full bg-background" />}
                 </span>
 
@@ -281,13 +281,13 @@ const ChangesDetail = ({ id }: { id: string }) => {
                   </div>
                   <div className="leading-tight text-xs min-w-0">
                     <div className="font-semibold flex items-center gap-1">
-                      <UserCircle2 className="h-3 w-3 opacity-60" />
+                      <UserCircle2 aria-hidden className="h-3 w-3 opacity-60" />
                       {t.by}
                     </div>
                     {t.role && <div className="type-body-sm text-muted-foreground">{t.role}</div>}
                     {t.department && (
                       <div className="type-caption text-muted-foreground flex items-center gap-1">
-                        <Building2 className="h-2.5 w-2.5" />
+                        <Building2 aria-hidden className="h-2.5 w-2.5" />
                         {t.department}
                       </div>
                     )}
@@ -317,12 +317,12 @@ const ChangesDetail = ({ id }: { id: string }) => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Current Rev</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Unit Cost</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Current Rev</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Unit Cost</th>
             </tr>
           </thead>
           <tbody>
@@ -348,7 +348,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
       <div className="rounded-lg border border-hairline bg-container">
         <div className="p-4 border-b border-hairline flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <History className="h-4 w-4 text-primary" />
+            <History aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="type-eyebrow text-quaternary">Revision Lineage</h3>
           </div>
           <span className="type-caption text-muted-foreground">History of each affected part across prior ECNs</span>
@@ -387,7 +387,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
                             "absolute -left-[23px] top-1 h-3.5 w-3.5 rounded-full grid place-items-center",
                             isCurrent ? "" : "bg-muted border border-hairline"
                           )}>
-                            <GitCommit className={cn("h-2 w-2", isCurrent ? "text-primary-foreground" : "text-muted-foreground")} />
+                            <GitCommit aria-hidden className={cn("h-2 w-2", isCurrent ? "text-primary-foreground" : "text-muted-foreground")} />
                           </span>
                           <div className="flex items-center gap-2 flex-wrap">
                             <Badge className={cn("type-caption border", isCurrent ? "bg-raised text-primary border-strong" : "bg-muted text-muted-foreground")}>
@@ -418,7 +418,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
 
       {ecn.priority === "Critical" && (
         <div className="rounded-lg border border-hairline bg-error-surface p-3 flex items-center gap-3">
-          <AlertTriangle className="h-4 w-4 text-error" />
+          <AlertTriangle aria-hidden className="h-4 w-4 text-error" />
           <span className="text-xs font-semibold text-error">Critical change</span>
           <span className="text-xs text-muted-foreground">Escalate if not actioned within 48h · notify CCB chair and program manager.</span>
         </div>

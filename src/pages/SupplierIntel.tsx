@@ -42,7 +42,7 @@ const SupplierIntel = () => {
     <PageHeader
       title="Supplier & Risk Intelligence"
       subtitle={`${totals.suppliers} active suppliers · ${totals.singleSource} single-source parts · automated risk scoring`}
-      actions={<Button size="sm" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" />Predict disruptions</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Predict disruptions</Button>}
     >
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -74,7 +74,7 @@ const SupplierIntel = () => {
                   <Badge variant="warning">{s.riskScore}%</Badge>
                 </div>
                 <p className="type-body-sm text-muted-foreground mt-0.5 flex items-center gap-1">
-                  <AlertTriangle className="h-2.5 w-2.5" />
+                  <AlertTriangle aria-hidden className="h-2.5 w-2.5" />
                   {s.financialRating === "B" ? "Financial pressure" : "Geopolitical exposure"} · {s.singleSource ? "single-source" : "dual-source"}
                 </p>
               </li>
@@ -87,8 +87,8 @@ const SupplierIntel = () => {
       {/* Filter */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search suppliers…" className="h-8 w-80 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input aria-label="Search suppliers" value={q} onChange={e => setQ(e.target.value)} placeholder="Search suppliers" className="h-8 w-80 pl-8 text-xs" />
         </div>
         <Badge variant="secondary" className="ml-auto">{filtered.length} of {supplierRollup.length}</Badge>
       </div>
@@ -98,16 +98,16 @@ const SupplierIntel = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Country / Region</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Tier</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Parts</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Single-source</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Financial</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Geo risk</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">On-time</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Defects PPM</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Risk</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Country / Region</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Tier</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Parts</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Single-source</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Financial</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Geo risk</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">On-time</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Defects PPM</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Risk</th>
             </tr>
           </thead>
           <tbody>
@@ -117,7 +117,7 @@ const SupplierIntel = () => {
             {filtered.map(s => (
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">
                 <td className="px-3 py-2 font-semibold">{s.name}</td>
-                <td className="px-3 py-2 text-muted-foreground flex items-center gap-1.5"><MapPin className="h-3 w-3" />{s.country} · {s.region}</td>
+                <td className="px-3 py-2 text-muted-foreground flex items-center gap-1.5"><MapPin aria-hidden className="h-3 w-3" />{s.country} · {s.region}</td>
                 <td className="px-3 py-2 tabular text-tertiary">T{s.tier}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>
                 <td className="px-3 py-2">{s.singleSource ? <Badge variant="warning">Yes</Badge> : <span className="text-muted-foreground">—</span>}</td>
@@ -134,7 +134,7 @@ const SupplierIntel = () => {
 
       <div className="rounded-lg border border-hairline bg-container p-3 flex items-center gap-3 flex-wrap">
         <span className="type-body-sm text-muted-foreground">Click any part in Part Master to see which supplier it comes from.</span>
-        <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground" />
+        <ExternalLink aria-hidden className="h-3 w-3 ml-auto text-muted-foreground" />
         <button className="type-body-sm text-muted-foreground hover:text-foreground" onClick={() => navigate("/parts")}>Open Part Master</button>
       </div>
     </PageHeader>

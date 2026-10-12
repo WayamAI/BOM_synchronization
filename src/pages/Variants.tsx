@@ -45,9 +45,9 @@ const Variants = () => {
 
   return (
     <PageHeader
-      title="Variants & Configuration (CAT BOM)"
-      subtitle={`${totals.variants} variants across 3 powertrains × 3 trims × global markets`}
-      actions={<Button size="sm" className="gap-1.5"><Plus className="h-3.5 w-3.5" />New variant</Button>}
+      title="Variants & Configuration"
+      subtitle={`CAT BOM · ${totals.variants} variants across 3 powertrains × 3 trims × global markets`}
+      actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />New variant</Button>}
     >
       {/* KPI */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -66,14 +66,14 @@ const Variants = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">SKU</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant Name</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Powertrain</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Trim</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Market</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">SOP</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Planned / yr</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Conflicts</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">SKU</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant Name</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Powertrain</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Trim</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Market</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">SOP</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Planned / yr</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Conflicts</th>
             </tr>
           </thead>
           <tbody>
@@ -90,7 +90,7 @@ const Variants = () => {
                 <td className="px-3 py-2 font-mono">{v.startEffectivity}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{v.unitsPlanned.toLocaleString("en-US")}</td>
                 <td className="px-3 py-2">{v.conflicts > 0
-                  ? <Badge variant="warning"><AlertTriangle className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
+                  ? <Badge variant="warning"><AlertTriangle aria-hidden className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
                   : <QuietStatus tone="success">Clean</QuietStatus>}</td>
               </tr>
             ))}
@@ -102,7 +102,7 @@ const Variants = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="rounded-lg border border-hairline bg-container p-4 lg:col-span-1">
           <div className="flex items-center gap-2">
-            <Layers className="h-4 w-4 text-primary" />
+            <Layers aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-semibold">{variant.name}</h3>
           </div>
           <p className="type-body-sm text-muted-foreground font-mono mt-0.5">{variant.code}</p>
@@ -125,9 +125,9 @@ const Variants = () => {
             <table className="tabular w-full text-xs">
               <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                 <tr className="border-b border-hairline">
-                  <th className="text-left px-3 py-2 sticky left-0 bg-container font-medium whitespace-nowrap">Part</th>
+                  <th scope="col" className="text-left px-3 py-2 sticky left-0 bg-container font-medium whitespace-nowrap">Part</th>
                   {variants.map(v => (
-                    <th key={v.code} className="text-center px-3 py-2 font-mono font-medium whitespace-nowrap">
+                    <th scope="col" key={v.code} className="text-center px-3 py-2 font-mono font-medium whitespace-nowrap">
                       {v.code.split("-").slice(1).join("-")}
                     </th>
                   ))}
@@ -143,8 +143,8 @@ const Variants = () => {
                     {row.cells.map(c => (
                       <td key={c.variantCode} className={cn("text-center px-3 py-2", c.variantCode === selectedVariant && "bg-raised")}>
                         {c.included
-                          ? <Check className="inline h-3.5 w-3.5 text-success" />
-                          : <XIcon className="inline h-3.5 w-3.5 text-muted-foreground opacity-40" />}
+                          ? <Check aria-hidden className="inline h-3.5 w-3.5 text-success" />
+                          : <XIcon aria-hidden className="inline h-3.5 w-3.5 text-muted-foreground opacity-40" />}
                       </td>
                     ))}
                   </tr>

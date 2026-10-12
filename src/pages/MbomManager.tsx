@@ -50,8 +50,8 @@ const MbomManager = () => {
       subtitle={`Meridian MY2026 · ${totals.mbomOps} routing operations across ${totals.plants} plants`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><ArrowDownToLine className="h-3.5 w-3.5" />Sync from EBOM</Button>
-          <Button size="sm" className="gap-1.5"><Factory className="h-3.5 w-3.5" />Release to MES</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><ArrowDownToLine aria-hidden className="h-3.5 w-3.5" />Sync from EBOM</Button>
+          <Button size="sm" className="gap-1.5"><Factory aria-hidden className="h-3.5 w-3.5" />Release to MES</Button>
         </>
       }
     >
@@ -62,7 +62,7 @@ const MbomManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <Factory className="h-4 w-4 text-primary" />
+                  <Factory aria-hidden className="h-4 w-4 text-primary" />
                   <h3 className="text-sm font-semibold">{r.plant.name}</h3>
                 </div>
                 <p className="type-body-sm text-muted-foreground">{r.plant.country} · {r.plant.capacityPerDay} units/day</p>
@@ -117,14 +117,14 @@ const MbomManager = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={plantFilter} onValueChange={setPlantFilter}>
-          <SelectTrigger className="h-8 w-48 text-xs"><SelectValue placeholder="All plants" /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by plants" className="h-8 w-48 text-xs"><SelectValue placeholder="All plants" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All plants</SelectItem>
             {plants.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="h-8 w-36 text-xs"><SelectValue placeholder="All status" /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by status" className="h-8 w-36 text-xs"><SelectValue placeholder="All status" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All status</SelectItem>
             <SelectItem value="ready">Ready</SelectItem>
@@ -134,11 +134,11 @@ const MbomManager = () => {
           </SelectContent>
         </Select>
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input aria-label="Search routing by PN, station, operation"
             value={q}
             onChange={e => setQ(e.target.value)}
-            placeholder="Search routing by PN, station, operation…"
+            placeholder="Search routing by PN, station, operation"
             className="h-8 w-72 pl-8 text-xs"
           />
         </div>
@@ -150,15 +150,15 @@ const MbomManager = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Op ID</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Produces</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Operation</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Plant</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Line</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Station</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Takt</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Work Instr.</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Status</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Op ID</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Produces</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Operation</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Plant</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Line</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Station</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Takt</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Work Instr.</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -198,7 +198,7 @@ const MbomManager = () => {
             <h3 className="type-eyebrow text-quaternary">Consumables & Phantom Items</h3>
             <p className="type-body-sm text-muted-foreground">Fluids, adhesives and commodity items rolled up per vehicle — not tracked in EBOM</p>
           </div>
-          <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          <AlertTriangle aria-hidden className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-2">
           {mbomConsumables.map(c => (
@@ -216,11 +216,11 @@ const MbomManager = () => {
 
       {/* Footer */}
       <div className="rounded-lg border border-hairline bg-container p-3 flex items-center gap-3 flex-wrap">
-        <CheckCircle2 className="h-4 w-4 text-success" />
+        <CheckCircle2 aria-hidden className="h-4 w-4 text-success" />
         <span className="text-xs">{mbomOps.filter(o => o.status === "ready").length} ready</span>
-        <AlertTriangle className="h-4 w-4 text-warning" />
+        <AlertTriangle aria-hidden className="h-4 w-4 text-warning" />
         <span className="text-xs">{mbomOps.filter(o => o.status !== "ready").length} need attention</span>
-        <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground" />
+        <ExternalLink aria-hidden className="h-3 w-3 ml-auto text-muted-foreground" />
         <button className="type-body-sm text-muted-foreground hover:text-foreground" onClick={() => navigate("/compare")}>Compare with EBOM</button>
       </div>
     </PageHeader>

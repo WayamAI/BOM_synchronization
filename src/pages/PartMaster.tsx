@@ -40,29 +40,29 @@ const PartList = () => {
     <PageHeader
       title="Part Master"
       subtitle={`Canonical registry · ${allParts.length} total parts across ${products.length} programs · single source of truth`}
-      actions={<Button size="sm" className="gap-1.5"><Boxes className="h-3.5 w-3.5" />New part</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="h-3.5 w-3.5" />New part</Button>}
     >
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search by PN, name, supplier…" className="h-8 w-80 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input aria-label="Search by PN, name, supplier" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by PN, name, supplier" className="h-8 w-80 pl-8 text-xs" />
         </div>
         <Select value={programFilter} onValueChange={setProgramFilter}>
-          <SelectTrigger className="h-8 w-44 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by programs" className="h-8 w-44 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Programs</SelectItem>
             {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by types" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All types</SelectItem>
             {types.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={lcFilter} onValueChange={setLcFilter}>
-          <SelectTrigger className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by lifecycle" className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">Any lifecycle</SelectItem>
             <SelectItem value="In Work">In Work</SelectItem>
@@ -78,16 +78,16 @@ const PartList = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Program</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Lifecycle</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Owner</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost</th>
-              <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Lead</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Program</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Lifecycle</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Owner</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Lead</th>
             </tr>
           </thead>
           <tbody>
@@ -123,9 +123,9 @@ const PartDetail = ({ pn }: { pn: string }) => {
   const part = getPart(pn);
   if (!part) {
     return (
-      <PageHeader title="Part not found" subtitle={`Part number ${pn} does not exist`}>
+      <PageHeader title={`No part ${pn}`} subtitle="That part number does not exist">
         <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
-          <ArrowLeft className="h-3.5 w-3.5 mr-1" />Back to Part Master
+          <ArrowLeft aria-hidden className="h-3.5 w-3.5 mr-1" />Back to Part Master
         </Button>
       </PageHeader>
     );
@@ -147,9 +147,9 @@ const PartDetail = ({ pn }: { pn: string }) => {
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
-            <ArrowLeft className="h-3.5 w-3.5 mr-1" />All parts
+            <ArrowLeft aria-hidden className="h-3.5 w-3.5 mr-1" />All parts
           </Button>
-          <Button size="sm" className="gap-1.5"><FileEdit className="h-3.5 w-3.5" />Propose change</Button>
+          <Button size="sm" className="gap-1.5"><FileEdit aria-hidden className="h-3.5 w-3.5" />Propose change</Button>
         </>
       }
     >
@@ -196,7 +196,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
-            <GitBranch className="h-4 w-4 text-primary" />
+            <GitBranch aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="type-eyebrow text-quaternary">Where-Used (parents)</h3>
           </div>
           <p className="type-body-sm text-muted-foreground mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
@@ -210,7 +210,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
                     <div className="text-xs font-semibold">{parent?.name}</div>
                     <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
                   </div>
-                  <ExternalLink className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
                 </button>
               );
             })}
@@ -219,7 +219,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
 
         <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
-            <Boxes className="h-4 w-4 text-primary" />
+            <Boxes aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="type-eyebrow text-quaternary">Uses (children)</h3>
           </div>
           <p className="type-body-sm text-muted-foreground mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
@@ -233,7 +233,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
                     <div className="text-xs font-semibold">{child?.name}</div>
                     <div className="type-caption font-mono text-muted-foreground">{e.childPN} · qty {e.qty}</div>
                   </div>
-                  <ExternalLink className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
                 </button>
               );
             })}

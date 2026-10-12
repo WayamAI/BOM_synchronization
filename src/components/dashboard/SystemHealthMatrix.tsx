@@ -263,7 +263,7 @@ export const SystemHealthMatrix = () => {
                           {d.label}
                         </div>
                         <div className={cn("type-display-lg tabular leading-none", style.fg)}>
-                          {s.value === null ? "N/A" : <>{s.value}<Unit>%</Unit></>}
+                          {s.value === null ? "—" : <>{s.value}<Unit>%</Unit></>}
                         </div>
                       </div>
                       <div className="mt-2 h-1 rounded-full bg-raised-2">

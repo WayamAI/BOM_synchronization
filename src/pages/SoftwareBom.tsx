@@ -50,12 +50,12 @@ const SoftwareBom = () => {
 
   return (
     <PageHeader
-      title="Software BOM (Cyber)"
-      subtitle={`CycloneDX-compatible software inventory · ${totals.softwareComponents} packages across ${ecuParts.length} ECUs`}
+      title="Software BOM"
+      subtitle={`Cyber · CycloneDX-compatible software inventory · ${totals.softwareComponents} packages across ${ecuParts.length} ECUs`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" />Export CycloneDX</Button>
-          <Button size="sm" className="gap-1.5"><ShieldAlert className="h-3.5 w-3.5" />Run vulnerability scan</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="h-3.5 w-3.5" />Export CycloneDX</Button>
+          <Button size="sm" className="gap-1.5"><ShieldAlert aria-hidden className="h-3.5 w-3.5" />Run vulnerability scan</Button>
         </>
       }
     >
@@ -89,7 +89,7 @@ const SoftwareBom = () => {
                 className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <Cpu className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <Cpu aria-hidden className="h-3.5 w-3.5 text-primary shrink-0" />
                   <div className="min-w-0">
                     <div className="text-xs font-semibold truncate">{r.ecu.name}</div>
                     <div className="type-caption font-mono text-muted-foreground">{r.ecu.partNumber} · {r.ecu.revision}</div>
@@ -130,14 +130,14 @@ const SoftwareBom = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={ecuFilter} onValueChange={setEcuFilter}>
-          <SelectTrigger className="h-8 w-56 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by ecus" className="h-8 w-56 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All ECUs</SelectItem>
             {ecuParts.map(e => <SelectItem key={e.partNumber} value={e.partNumber}>{e.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={sevFilter} onValueChange={setSevFilter}>
-          <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by severity" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">Any severity</SelectItem>
             <SelectItem value="Critical">Critical</SelectItem>
@@ -148,8 +148,8 @@ const SoftwareBom = () => {
           </SelectContent>
         </Select>
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder="Search package or vendor…" className="h-8 w-64 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input aria-label="Search package or vendor" value={q} onChange={e => setQ(e.target.value)} placeholder="Search package or vendor" className="h-8 w-64 pl-8 text-xs" />
         </div>
         <Badge variant="secondary" className="ml-auto">{filtered.length} package{filtered.length === 1 ? "" : "s"}</Badge>
       </div>
@@ -159,13 +159,13 @@ const SoftwareBom = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Package</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Version</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">License</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Runs on (ECU)</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Safety-critical</th>
-              <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Vulnerabilities</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Package</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Version</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">License</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Runs on (ECU)</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Safety-critical</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Vulnerabilities</th>
             </tr>
           </thead>
           <tbody>

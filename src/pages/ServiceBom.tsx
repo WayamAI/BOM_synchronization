@@ -73,8 +73,8 @@ const ServiceBom = () => {
       subtitle={`Spare parts, service kits & field-replaceable units · labor rate ${money(SERVICE_LABOR_RATE_USD_PER_HOUR)}/hr`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><BookOpen className="h-3.5 w-3.5" />Service manual</Button>
-          <Button size="sm" className="gap-1.5"><Package className="h-3.5 w-3.5" />New service kit</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><BookOpen aria-hidden className="h-3.5 w-3.5" />Service manual</Button>
+          <Button size="sm" className="gap-1.5"><Package aria-hidden className="h-3.5 w-3.5" />New service kit</Button>
         </>
       }
     >
@@ -96,7 +96,7 @@ const ServiceBom = () => {
         </div>
         {tab === "kits" && (
           <Select value={cat} onValueChange={setCat}>
-            <SelectTrigger className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Filter by categories" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All categories</SelectItem>
               <SelectItem value="Routine">Routine</SelectItem>
@@ -108,8 +108,8 @@ const ServiceBom = () => {
           </Select>
         )}
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input value={q} onChange={e => setQ(e.target.value)} placeholder={tab === "kits" ? "Search kits…" : "Search FRUs…"} className="h-8 w-64 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Input aria-label={tab === "kits" ? "Search kits" : "Search FRUs"} value={q} onChange={e => setQ(e.target.value)} placeholder={tab === "kits" ? "Search kits" : "Search FRUs"} className="h-8 w-64 pl-8 text-xs" />
         </div>
       </div>
 
@@ -147,14 +147,14 @@ const ServiceBom = () => {
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="rounded-md bg-container p-2 border border-hairline">
                     <div className="type-eyebrow text-quaternary flex items-center gap-1">
-                      <Tag className="h-2.5 w-2.5" />Replacement cost
+                      <Tag aria-hidden className="h-2.5 w-2.5" />Replacement cost
                     </div>
                     <div className="text-base font-semibold tabular-nums text-success mt-0.5">{money(costs.partsSubtotal)}</div>
                     <div className="type-caption text-muted-foreground">parts only · DIY</div>
                   </div>
                   <div className="rounded-md bg-container p-2 border border-hairline">
                     <div className="type-eyebrow text-quaternary flex items-center gap-1">
-                      <Receipt className="h-2.5 w-2.5" />Service cost
+                      <Receipt aria-hidden className="h-2.5 w-2.5" />Service cost
                     </div>
                     <div className="text-base font-semibold tabular-nums text-primary mt-0.5">{money(costs.serviceCost)}</div>
                     <div className="type-caption text-muted-foreground">parts + labor · dealer</div>
@@ -196,14 +196,14 @@ const ServiceBom = () => {
           <table className="tabular w-full text-xs">
             <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Replacement<br/><span className="font-normal normal-case type-caption">parts only</span></th>
-                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Labor</th>
-                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Service<br/><span className="font-normal normal-case type-caption">parts + labor</span></th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">In Kits</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+                <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Replacement<br/><span className="font-normal normal-case type-caption">parts only</span></th>
+                <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Labor</th>
+                <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Service<br/><span className="font-normal normal-case type-caption">parts + labor</span></th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">In Kits</th>
               </tr>
             </thead>
             <tbody>
@@ -239,7 +239,7 @@ const ServiceBom = () => {
 
       {/* Coverage footer */}
       <div className="rounded-lg border border-hairline bg-warning-surface p-3 flex items-center gap-3 flex-wrap">
-        <Wrench className="h-4 w-4 text-warning" />
+        <Wrench aria-hidden className="h-4 w-4 text-warning" />
         <span className="text-xs font-semibold text-warning">Service coverage</span>
         <span className="text-xs text-muted-foreground">
           {partsCoveredByKits.size} of {frus.length} FRUs covered by a kit · {uncoveredFrus.length} FRUs need a kit assignment

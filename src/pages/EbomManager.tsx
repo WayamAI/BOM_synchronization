@@ -58,7 +58,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
         )}
         style={{ paddingLeft: 8 + depth * 16 }}
       >
-        {has ? (open ? <ChevronDown className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
+        {has ? (open ? <ChevronDown aria-hidden className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight aria-hidden className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
         <HealthDot health={node.health} />
         <span className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
         <span className="type-body-sm tabular truncate text-tertiary">
@@ -137,7 +137,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
           <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>
           <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}><X className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Close details" onClick={onClose}><X aria-hidden className="h-4 w-4" /></Button>
       </div>
 
       <div className="flex flex-wrap gap-1.5 p-3 border-b border-hairline">
@@ -188,7 +188,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
                     <div className="text-xs font-semibold">{parent?.name ?? e.parentPN}</div>
                     <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}</div>
                   </div>
-                  <ExternalLink className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
                 </div>
               );
             })}
@@ -297,9 +297,9 @@ const EbomManager = () => {
       subtitle={`${activeProgram.name} ${activeProgram.modelYear} · ${variantLabel} · ${activeProgram.globalRevision}`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><GitCompare className="h-3.5 w-3.5" />Compare</Button>
-          <Button variant="outline" size="sm" className="gap-1.5"><Link2 className="h-3.5 w-3.5" />Add relationship</Button>
-          <Button size="sm" className="gap-1.5"><Plus className="h-3.5 w-3.5" />Add component</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><GitCompare aria-hidden className="h-3.5 w-3.5" />Compare</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><Link2 aria-hidden className="h-3.5 w-3.5" />Add relationship</Button>
+          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />Add component</Button>
         </>
       }
     >
@@ -313,7 +313,7 @@ const EbomManager = () => {
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-2">
           <Select value={variantCode} onValueChange={setVariantCode}>
-            <SelectTrigger className="h-8 w-56 text-xs">
+            <SelectTrigger aria-label="Filter by variants" className="h-8 w-56 text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -323,13 +323,13 @@ const EbomManager = () => {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" className="gap-1.5 h-8"><Filter className="h-3.5 w-3.5" />Filter</Button>
+          <Button variant="outline" size="sm" className="gap-1.5 h-8"><Filter aria-hidden className="h-3.5 w-3.5" />Filter</Button>
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
+            <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Input aria-label="Search EBOM by name or PN"
               value={filter}
               onChange={e => setFilter(e.target.value)}
-              placeholder="Search EBOM by name or PN…"
+              placeholder="Search EBOM by name or PN"
               className="h-8 w-72 pl-8 text-xs"
             />
           </div>
@@ -364,15 +364,15 @@ const EbomManager = () => {
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap"><span className="sr-only">Health</span></th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Qty</th>
-                      <th className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Lifecycle</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap"><span className="sr-only">Health</span></th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Qty</th>
+                      <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Cost</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Lifecycle</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -410,13 +410,13 @@ const EbomManager = () => {
 
         {/* Validation footer */}
         <div className="rounded-lg border border-hairline bg-warning-surface p-3 flex items-center gap-3 flex-wrap">
-          <GitBranch className="h-4 w-4 text-warning" />
+          <GitBranch aria-hidden className="h-4 w-4 text-warning" />
           <span className="text-xs font-semibold text-warning">Validation</span>
           <span className="text-xs text-muted-foreground">
             {activeProgram.bomEdges.length} parent-child edges · {all.filter(n => !n.owner).length} parts without owner · {all.filter(n => n.health === "warning" || n.health === "critical").length} health issues open
           </span>
-          <Boxes className="h-4 w-4 ml-auto text-muted-foreground" />
-          <ShieldAlert className="h-4 w-4 text-muted-foreground" />
+          <Boxes aria-hidden className="h-4 w-4 ml-auto text-muted-foreground" />
+          <ShieldAlert aria-hidden className="h-4 w-4 text-muted-foreground" />
         </div>
       </Tabs>
     </PageHeader>

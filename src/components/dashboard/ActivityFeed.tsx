@@ -32,7 +32,7 @@ export const ActivityFeed = () => {
               style={{ animationDelay: `${i * 40}ms` }}
             >
               <div className={`h-8 w-8 rounded-lg grid place-items-center shrink-0 ${cls}`}>
-                <Icon className="h-4 w-4" />
+                <Icon aria-hidden className="h-4 w-4" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs leading-snug">{e.text}</p>

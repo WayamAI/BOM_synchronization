@@ -362,10 +362,10 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
         {/* Search */}
         <div className="relative flex-1 min-w-44 max-w-60">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-          <Input
+          <Input aria-label="Search nodes"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Search nodes…"
+            placeholder="Search nodes"
             className="h-7 pl-8 pr-7 text-xs bg-muted/30"
           />
           {search && (

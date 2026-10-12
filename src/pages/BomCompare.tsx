@@ -60,7 +60,7 @@ const BomCompare = () => {
     <PageHeader
       title="BOM Compare"
       subtitle="Side-by-side diff across variants, or between EBOM and MBOM"
-      actions={<Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" />Export diff (CSV)</Button>}
+      actions={<Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="h-3.5 w-3.5" />Export diff (CSV)</Button>}
     >
       {/* Mode toggle */}
       <div className="inline-flex gap-1.5">
@@ -72,19 +72,19 @@ const BomCompare = () => {
         <>
           <div className="flex items-center gap-3 flex-wrap">
             <Select value={a} onValueChange={setA}>
-              <SelectTrigger className="h-9 w-72 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger aria-label="Variant A" className="h-9 w-72 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {variants.map(v => <SelectItem key={v.code} value={v.code}>{v.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <ArrowRight className="h-4 w-4 text-muted-foreground" />
+            <ArrowRight aria-hidden className="h-4 w-4 text-muted-foreground" />
             <Select value={b} onValueChange={setB}>
-              <SelectTrigger className="h-9 w-72 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger aria-label="Variant B" className="h-9 w-72 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {variants.map(v => <SelectItem key={v.code} value={v.code}>{v.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Badge variant="outline" className="ml-auto"><GitCompare className="h-3 w-3 mr-1" />{variantResult.onlyA.length + variantResult.onlyB.length} differences</Badge>
+            <Badge variant="outline" className="ml-auto"><GitCompare aria-hidden className="h-3 w-3 mr-1" />{variantResult.onlyA.length + variantResult.onlyB.length} differences</Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -150,10 +150,10 @@ const BomCompare = () => {
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
-                      <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
                     </tr>
                   </thead>
                   <tbody>

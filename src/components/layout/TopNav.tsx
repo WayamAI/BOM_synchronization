@@ -95,7 +95,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
           <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-quaternary" aria-hidden />
           <Input
             aria-label="Search"
-            placeholder="Search parts, ECNs, suppliers…"
+            placeholder="Search parts, ECNs, suppliers"
             className="h-8 w-72 rounded-full border-hairline bg-action pl-9 pr-14 text-xs"
           />
           <kbd className="absolute right-2.5 top-1/2 inline-flex h-5 -translate-y-1/2 items-center gap-0.5 rounded-full border border-hairline bg-container px-1.5 text-[10px] text-quaternary">

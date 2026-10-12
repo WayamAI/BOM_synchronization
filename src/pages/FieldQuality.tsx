@@ -28,7 +28,7 @@ const FieldQuality = () => {
     <PageHeader
       title="Field Quality & Recall Scoping"
       subtitle="Warranty clusters · VIN population scoping · root-cause linkage to Part Master"
-      actions={<Button size="sm" className="gap-1.5"><Sparkles className="h-3.5 w-3.5" />Scope recall (AI)</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Scope recall (AI)</Button>}
     >
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -81,15 +81,15 @@ const FieldQuality = () => {
           <table className="tabular w-full text-xs">
             <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">ID</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Severity</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Event</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Linked part</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant</th>
-                <th className="text-right px-3 py-2 font-medium whitespace-nowrap">VINs</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Age</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap">Status</th>
-                <th className="text-left px-3 py-2 font-medium whitespace-nowrap"></th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">ID</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Severity</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Event</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Linked part</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant</th>
+                <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">VINs</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Age</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Status</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap"></th>
               </tr>
             </thead>
             <tbody>
@@ -113,7 +113,7 @@ const FieldQuality = () => {
                     <td className="px-3 py-2 text-muted-foreground">{e.ageHours < 24 ? `${e.ageHours}h` : `${Math.round(e.ageHours / 24)}d`}</td>
                     <td className="px-3 py-2">{e.status === "Investigating" ? <Badge variant="warning">{e.status}</Badge> : <span className="type-body-sm text-tertiary">{e.status}</span>}</td>
                     <td className="px-3 py-2">
-                      <Button size="sm" variant="ghost" className="h-6 type-body-sm gap-1 text-primary"><MapPin className="h-3 w-3" />Trace</Button>
+                      <Button size="sm" variant="ghost" className="h-6 type-body-sm gap-1 text-primary"><MapPin aria-hidden className="h-3 w-3" />Trace</Button>
                     </td>
                   </tr>
                 );
@@ -124,7 +124,7 @@ const FieldQuality = () => {
       </div>
 
       <div className="rounded-lg border border-hairline bg-warning-surface p-4 flex items-start gap-3">
-        <AlertTriangle className="h-5 w-5 text-warning shrink-0 mt-0.5" />
+        <AlertTriangle aria-hidden className="h-5 w-5 text-warning shrink-0 mt-0.5" />
         <div className="text-xs">
           <p className="font-semibold text-warning">UNECE R155 reportability check</p>
           <p className="text-muted-foreground mt-1">
