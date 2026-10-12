@@ -188,7 +188,24 @@ Known concerns:
 - **field-event looks like a warning sign.** It is used only in the Field Quality header, never in rows or next to warning badges. A test checks that no other page renders it.
 - **Unused sizes:** `EmptyState` accepts a `mark` prop for the 72px size, and the 36px KPI/card size is defined in the design system, but neither is used yet. Field Quality has no empty state, and no KPI tile or card needed a mark.
 - **Provenance:** the icons were AI-generated (Google Flow) from a single sheet, so there is no editable vector source.
-- **Sidebar mismatches:** a few entity icons in the mapping differ from the sidebar icon for the same page (Service BOM, Software BOM, Part Master, Reports). The nav is unchanged; see the review notes.
+- **Sidebar consistency:** see the table below.
+
+Sidebar vs mapping (lucide icons), checked where both show the same concept:
+
+| Page | Sidebar icon | Mapping icon | Decision |
+|---|---|---|---|
+| Variants | Layers | variant: Layers | match |
+| Engineering BOM | GitBranch | ebom: GitBranch | match |
+| Manufacturing BOM | Factory | mbom: Factory | match |
+| Change Management | FileEdit | ecn: FileEdit | match |
+| Supplier Intel | Truck | supplier: Truck | match |
+| Field Quality | AlertOctagon | field-event: AlertOctagon | match |
+| Service BOM | Wrench | service-kit: Wrench, fru: Cog | mapping changed to follow the sidebar; the two chips stay distinct |
+| Reports | FileBarChart | report: FileBarChart | mapping changed to follow the sidebar |
+| Part Master | Boxes | part: Box (assembly: Boxes) | accepted mismatch, no change |
+| Software BOM | ShieldAlert | software: Cpu | accepted mismatch (ShieldAlert reads as cyber risk), no change |
+
+BOM Compare (GitCompare) has no entity in the mapping. The nav is unchanged.
 
 ## Questions for reviewer
 

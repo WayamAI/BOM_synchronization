@@ -1,6 +1,6 @@
 import {
-  Box, Boxes, Layers, GitBranch, Factory, Package, Wrench, Cpu, FileEdit, Truck,
-  AlertOctagon, FileText, type LucideIcon,
+  Box, Boxes, Layers, GitBranch, Factory, Wrench, Cog, Cpu, FileEdit, Truck,
+  AlertOctagon, FileBarChart, Cog, type LucideIcon,
 } from "lucide-react";
 
 // Single source of truth for entity icons: id -> { lucide, mark }.
@@ -18,13 +18,13 @@ export const entityIcons = {
   "variant":      { lucide: Layers,       mark: "variant" },
   "ebom":         { lucide: GitBranch,    mark: "ebom" },
   "mbom":         { lucide: Factory,      mark: "mbom" },
-  "service-kit":  { lucide: Package,      mark: "service-kit" },
-  "fru":          { lucide: Wrench,       mark: "fru" },
+  "service-kit":  { lucide: Wrench,       mark: "service-kit" },
+  "fru":          { lucide: Cog,          mark: "fru" },
   "software":     { lucide: Cpu,          mark: "software" },
   "ecn":          { lucide: FileEdit,     mark: "ecn" },
   "supplier":     { lucide: Truck,        mark: "supplier" },
   "field-event":  { lucide: AlertOctagon, mark: "field-event" },
-  "report":       { lucide: FileText,     mark: "report" },
+  "report":       { lucide: FileBarChart,    mark: "report" },
 } as const satisfies Record<string, EntityIcon>;
 
 export type EntityId = keyof typeof entityIcons;
