@@ -1,4 +1,5 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -60,8 +61,9 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
       >
         {has ? (open ? <ChevronDown aria-hidden className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight aria-hidden className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
         <HealthDot health={node.health} />
-        <span className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
-        <span className="type-body-sm tabular truncate text-tertiary">
+        <EntityIcon id={has ? "assembly" : "part"} />
+        <span title={node.name} className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
+        <span className="type-body-sm tabular truncate text-tertiary" title={[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}>
           {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
         </span>
         <span className="ml-auto flex shrink-0 items-center gap-3">
@@ -294,6 +296,7 @@ const EbomManager = () => {
   return (
     <PageHeader
       title="Engineering BOM"
+      mark="ebom"
       subtitle={`${activeProgram.name} ${activeProgram.modelYear} · ${variantLabel} · ${activeProgram.globalRevision}`}
       actions={
         <>

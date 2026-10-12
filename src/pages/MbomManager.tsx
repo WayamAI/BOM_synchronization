@@ -47,6 +47,7 @@ const MbomManager = () => {
   return (
     <PageHeader
       title="Manufacturing BOM"
+      mark="mbom"
       subtitle={`Meridian MY2026 · ${totals.mbomOps} routing operations across ${totals.plants} plants`}
       actions={
         <>

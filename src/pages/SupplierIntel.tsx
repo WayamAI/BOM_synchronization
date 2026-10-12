@@ -1,4 +1,5 @@
 import { EmptyState } from "@/components/ui/primitives";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { suppliers, parts as allParts, totals } from "@/lib/mockData";
@@ -41,6 +42,7 @@ const SupplierIntel = () => {
   return (
     <PageHeader
       title="Supplier & Risk Intelligence"
+      mark="supplier"
       subtitle={`${totals.suppliers} active suppliers · ${totals.singleSource} single-source parts · automated risk scoring`}
       actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Predict disruptions</Button>}
     >
@@ -116,7 +118,7 @@ const SupplierIntel = () => {
             )}
             {filtered.map(s => (
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">
-                <td className="px-3 py-2 font-semibold">{s.name}</td>
+                <td className="px-3 py-2 font-semibold"><span className="inline-flex items-center gap-1.5"><EntityIcon id="supplier" />{s.name}</span></td>
                 <td className="px-3 py-2 text-muted-foreground flex items-center gap-1.5"><MapPin aria-hidden className="h-3 w-3" />{s.country} · {s.region}</td>
                 <td className="px-3 py-2 tabular text-tertiary">T{s.tier}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>

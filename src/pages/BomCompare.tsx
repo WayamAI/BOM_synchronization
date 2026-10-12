@@ -1,4 +1,5 @@
 import { Panel } from "@/components/ui/primitives";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import {
   variants, buildEbomTree, type EbomNode, mbomOps, parts as allParts, getPart,
@@ -65,7 +66,7 @@ const BomCompare = () => {
       {/* Mode toggle */}
       <div className="inline-flex gap-1.5">
         <button onClick={() => setMode("variants")} aria-pressed={mode === "variants"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "variants" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>Variant A vs Variant B</button>
-        <button onClick={() => setMode("ebom-mbom")} aria-pressed={mode === "ebom-mbom"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "ebom-mbom" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>EBOM vs MBOM</button>
+        <button onClick={() => setMode("ebom-mbom")} aria-pressed={mode === "ebom-mbom"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "ebom-mbom" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="ebom" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />EBOM vs MBOM</button>
       </div>
 
       {mode === "variants" ? (

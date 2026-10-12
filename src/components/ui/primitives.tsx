@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
+import { EntityMark } from "@/components/icons/EntityIcon";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
@@ -124,8 +125,9 @@ export const LifecycleStatus = ({ status }: { status?: string }) => {
 };
 
 /** Plain statement, no illustration, no call to action. */
-export const EmptyState = ({ title = "Nothing to show", detail, className }: { title?: string; detail?: string; className?: string }) => (
+export const EmptyState = ({ title = "Nothing to show", detail, className, mark }: { title?: string; detail?: string; className?: string; mark?: string }) => (
   <div className={cn("flex min-h-[160px] flex-col items-center justify-center gap-1.5 px-6 text-center", className)}>
+    {mark && <EntityMark id={mark} size={72} />}
     <p className="type-body-md text-tertiary">{title}</p>
     {detail && <p className="type-body-sm text-quaternary">{detail}</p>}
   </div>

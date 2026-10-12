@@ -1,4 +1,5 @@
 import { EmptyState, Panel, KpiTile } from "@/components/ui/primitives";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -58,6 +59,7 @@ const ChangesList = () => {
   return (
     <PageHeader
       title="Change Management"
+      mark="ecn"
       subtitle={`ECN · ${ecns.length} engineering changes · ${pendingCount} pending approval · ${criticalOpen} critical open`}
       actions={<Button size="sm" className="gap-1.5"><FileEdit aria-hidden className="h-3.5 w-3.5" />New ECN</Button>}
     >
@@ -120,7 +122,7 @@ const ChangesList = () => {
             )}
             {filtered.map(e => (
               <tr key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
-                <td className="px-3 py-2 font-mono font-semibold">{e.id}</td>
+                <td className="px-3 py-2 font-mono font-semibold"><span className="inline-flex items-center gap-1.5"><EntityIcon id="ecn" />{e.id}</span></td>
                 <td className="px-3 py-2">{e.title}</td>
                 <td className="px-3 py-2"><EcnState state={e.state} /></td>
                 <td className="px-3 py-2">{prioCls(e.priority) === "neutral" ? <span className="type-body-sm text-tertiary">{e.priority}</span> : <Badge variant={prioCls(e.priority)}>{e.priority}</Badge>}</td>

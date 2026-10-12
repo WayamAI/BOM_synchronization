@@ -51,6 +51,7 @@ const SoftwareBom = () => {
   return (
     <PageHeader
       title="Software BOM"
+      mark="software"
       subtitle={`Cyber · CycloneDX-compatible software inventory · ${totals.softwareComponents} packages across ${ecuParts.length} ECUs`}
       actions={
         <>

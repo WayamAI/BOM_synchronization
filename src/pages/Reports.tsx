@@ -105,6 +105,7 @@ const reports = [
 const Reports = () => (
   <PageHeader
     title="Reports & Exports"
+      mark="report"
     subtitle={`${reports.length} report types · regulatory, executive, operational and engineering deliverables for ${program.name} ${program.modelYear}`}
     actions={<Button size="sm" className="gap-1.5"><Calendar aria-hidden className="h-3.5 w-3.5" />Schedule report</Button>}
   >

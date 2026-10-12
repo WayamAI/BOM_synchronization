@@ -1,4 +1,5 @@
 import { EmptyState, KpiTile } from "@/components/ui/primitives";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -70,6 +71,7 @@ const ServiceBom = () => {
   return (
     <PageHeader
       title="Service BOM"
+      mark="service-kit"
       subtitle={`Spare parts, service kits & field-replaceable units · labor rate ${money(SERVICE_LABOR_RATE_USD_PER_HOUR)}/hr`}
       actions={
         <>
@@ -91,8 +93,8 @@ const ServiceBom = () => {
       {/* Tabs + filters */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="inline-flex gap-1.5">
-          <button onClick={() => setTab("kits")} aria-pressed={tab === "kits"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "kits" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>Service Kits</button>
-          <button onClick={() => setTab("frus")} aria-pressed={tab === "frus"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "frus" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>Field-Replaceable Units</button>
+          <button onClick={() => setTab("kits")} aria-pressed={tab === "kits"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "kits" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="service-kit" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />Service Kits</button>
+          <button onClick={() => setTab("frus")} aria-pressed={tab === "frus"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "frus" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="fru" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />Field-Replaceable Units</button>
         </div>
         {tab === "kits" && (
           <Select value={cat} onValueChange={setCat}>

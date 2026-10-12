@@ -1,4 +1,5 @@
 import { EmptyState, Panel, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -39,6 +40,7 @@ const PartList = () => {
   return (
     <PageHeader
       title="Part Master"
+      mark="part"
       subtitle={`Canonical registry · ${allParts.length} total parts across ${products.length} programs · single source of truth`}
       actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="h-3.5 w-3.5" />New part</Button>}
     >
@@ -98,7 +100,7 @@ const PartList = () => {
               const prog = products.find(pr => pr.id === p.programId);
               return (
                 <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
-                  <td className="px-3 py-2 font-mono">{p.partNumber}</td>
+                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-1.5"><EntityIcon id="part" />{p.partNumber}</span></td>
                   <td className="px-3 py-2 font-semibold">{p.name}</td>
                   <td className="px-3 py-2 text-muted-foreground type-body-sm">{prog?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
@@ -143,6 +145,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
   return (
     <PageHeader
       title={part.name}
+      mark="part"
       subtitle={`${pn} · rev ${part.revision} · ${part.type} · ${part.lifecycle}`}
       actions={
         <>

@@ -27,6 +27,7 @@ const FieldQuality = () => {
   return (
     <PageHeader
       title="Field Quality & Recall Scoping"
+      mark="field-event"
       subtitle="Warranty clusters · VIN population scoping · root-cause linkage to Part Master"
       actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Scope recall (AI)</Button>}
     >
