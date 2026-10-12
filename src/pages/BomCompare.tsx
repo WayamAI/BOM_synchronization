@@ -1,3 +1,4 @@
+import { Panel } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import {
   variants, buildEbomTree, type EbomNode, mbomOps, parts as allParts, getPart,
@@ -62,9 +63,9 @@ const BomCompare = () => {
       actions={<Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" />Export diff (CSV)</Button>}
     >
       {/* Mode toggle */}
-      <div className="inline-flex rounded-md border border-border bg-card p-0.5">
-        <button onClick={() => setMode("variants")} className={cn("px-3 py-1 text-xs rounded transition-colors", mode === "variants" ? "bg-primary text-primary-foreground font-semibold" : "text-muted-foreground hover:text-foreground")}>Variant A vs Variant B</button>
-        <button onClick={() => setMode("ebom-mbom")} className={cn("px-3 py-1 text-xs rounded transition-colors", mode === "ebom-mbom" ? "bg-primary text-primary-foreground font-semibold" : "text-muted-foreground hover:text-foreground")}>EBOM vs MBOM</button>
+      <div className="inline-flex gap-1.5">
+        <button onClick={() => setMode("variants")} aria-pressed={mode === "variants"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "variants" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>Variant A vs Variant B</button>
+        <button onClick={() => setMode("ebom-mbom")} aria-pressed={mode === "ebom-mbom"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "ebom-mbom" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>EBOM vs MBOM</button>
       </div>
 
       {mode === "variants" ? (
@@ -87,32 +88,32 @@ const BomCompare = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 shadow-card">
-              <div className="text-[11px] text-primary font-semibold uppercase tracking-wider mb-2">Only in A — {variants.find(v => v.code === a)?.name}</div>
-              <div className="text-2xl font-bold mb-2">{variantResult.onlyA.length}</div>
+            <div className="rounded-lg border border-hairline bg-container p-4">
+              <div className="type-eyebrow text-quaternary mb-2">Only in A — {variants.find(v => v.code === a)?.name}</div>
+              <div className="type-display-xl tabular text-foreground mb-2">{variantResult.onlyA.length}</div>
               <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
                 {variantResult.onlyA.map(pn => (
                   <div key={pn} className="text-xs">
-                    <span className="font-mono text-[10px] text-muted-foreground">{pn}</span>
+                    <span className="font-mono type-caption text-muted-foreground">{pn}</span>
                     <div>{getPart(pn)?.name}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-card p-4 shadow-card">
-              <div className="text-[11px] text-success font-semibold uppercase tracking-wider mb-2">In Both</div>
-              <div className="text-2xl font-bold mb-2">{variantResult.both.length}</div>
+            <div className="rounded-lg border border-hairline bg-container p-4">
+              <div className="type-eyebrow text-quaternary mb-2">In Both</div>
+              <div className="type-display-xl tabular text-foreground mb-2">{variantResult.both.length}</div>
               <div className="text-xs text-muted-foreground">Common carryover structure across both variants. These parts participate in shared manufacturing and service flows.</div>
             </div>
 
-            <div className="rounded-xl border border-accent/30 bg-accent/5 p-4 shadow-card">
-              <div className="text-[11px] text-accent font-semibold uppercase tracking-wider mb-2">Only in B — {variants.find(v => v.code === b)?.name}</div>
-              <div className="text-2xl font-bold mb-2">{variantResult.onlyB.length}</div>
+            <div className="rounded-lg border border-hairline bg-container p-4">
+              <div className="type-eyebrow text-quaternary mb-2">Only in B — {variants.find(v => v.code === b)?.name}</div>
+              <div className="type-display-xl tabular text-foreground mb-2">{variantResult.onlyB.length}</div>
               <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
                 {variantResult.onlyB.map(pn => (
                   <div key={pn} className="text-xs">
-                    <span className="font-mono text-[10px] text-muted-foreground">{pn}</span>
+                    <span className="font-mono type-caption text-muted-foreground">{pn}</span>
                     <div>{getPart(pn)?.name}</div>
                   </div>
                 ))}
@@ -126,26 +127,25 @@ const BomCompare = () => {
             Reconciliation between Engineering BOM (design intent) and Manufacturing BOM (routing of assemblies through plants). Any EBOM assembly without a routing is a mapping gap; any MBOM op without an EBOM assembly is a phantom that needs investigation.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div className="rounded-xl border border-success/30 bg-success/5 p-4 shadow-card">
-              <div className="text-[11px] text-success font-semibold uppercase tracking-wider mb-2">Mapped both ways</div>
-              <div className="text-2xl font-bold">{ebomVsMbom.matched.length}</div>
-              <p className="text-[11px] text-muted-foreground mt-1">Assemblies with a live MBOM routing.</p>
+            <div className="rounded-lg border border-hairline bg-container p-4">
+              <div className="type-eyebrow text-quaternary mb-2">Mapped both ways</div>
+              <div className="type-display-xl tabular text-foreground">{ebomVsMbom.matched.length}</div>
+              <p className="type-body-sm text-muted-foreground mt-1">Assemblies with a live MBOM routing.</p>
             </div>
-            <div className="rounded-xl border border-warning/30 bg-warning/5 p-4 shadow-card">
-              <div className="text-[11px] text-warning font-semibold uppercase tracking-wider mb-2">EBOM only (no routing)</div>
-              <div className="text-2xl font-bold">{ebomVsMbom.onlyEbom.length}</div>
-              <p className="text-[11px] text-muted-foreground mt-1">Needs a manufacturing process decision.</p>
+            <div className="rounded-lg border border-hairline bg-warning-surface p-4">
+              <div className="type-eyebrow text-warning mb-2">EBOM only (no routing)</div>
+              <div className="type-display-xl tabular text-foreground">{ebomVsMbom.onlyEbom.length}</div>
+              <p className="type-body-sm text-muted-foreground mt-1">Needs a manufacturing process decision.</p>
             </div>
-            <div className="rounded-xl border border-critical/30 bg-critical/5 p-4 shadow-card">
-              <div className="text-[11px] text-critical font-semibold uppercase tracking-wider mb-2">MBOM only (phantom)</div>
-              <div className="text-2xl font-bold">{ebomVsMbom.onlyMbom.length}</div>
-              <p className="text-[11px] text-muted-foreground mt-1">Routing exists for a part not in EBOM — investigate.</p>
+            <div className="rounded-lg border border-hairline bg-error-surface p-4">
+              <div className="type-eyebrow text-error mb-2">MBOM only (phantom)</div>
+              <div className="type-display-xl tabular text-foreground">{ebomVsMbom.onlyMbom.length}</div>
+              <p className="type-body-sm text-muted-foreground mt-1">Routing exists for a part not in EBOM — investigate.</p>
             </div>
           </div>
 
           {ebomVsMbom.onlyEbom.length > 0 && (
-            <div className="rounded-xl border border-border bg-card p-4 shadow-card">
-              <h3 className="text-sm font-semibold mb-2">Unmapped EBOM Assemblies</h3>
+            <Panel title="Unmapped EBOM Assemblies">
               <div className="overflow-x-auto">
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
@@ -171,7 +171,7 @@ const BomCompare = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </Panel>
           )}
         </>
       )}
