@@ -28,29 +28,38 @@ const Login = () => {
   return (
     <div className="flex min-h-screen w-full bg-page">
       {/* Brand panel (large screens) */}
-      <div className="relative hidden flex-[1.4] flex-col justify-between overflow-hidden bg-action-primary p-10 text-white lg:flex">
-        <picture data-testid="login-hero">
-          <source srcSet={loginHeroWebp} type="image/webp" />
-          <img
-            src={loginHeroJpg}
-            alt=""
-            aria-hidden="true"
-            width={2400}
-            height={1200}
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover object-right"
-          />
-        </picture>
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-tr from-black/85 via-black/40 to-transparent" />
-        <div className="relative flex items-center gap-2.5">
-          <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
-          <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
-          <span className="type-label-md">Wayam AI</span>
+      <div className="relative hidden flex-[1.4] overflow-hidden bg-[#0a0c0b] text-white lg:block">
+        {/* Hero image: whole car, upper-right; edges fade into the panel colour */}
+        <div aria-hidden="true" className="absolute right-0 top-0 aspect-[2/1] w-full">
+          <picture data-testid="login-hero">
+            <source srcSet={loginHeroWebp} type="image/webp" />
+            <img
+              src={loginHeroJpg}
+              alt=""
+              aria-hidden="true"
+              width={2400}
+              height={1200}
+              loading="eager"
+              decoding="async"
+              className="h-full w-full object-contain object-right-top"
+            />
+          </picture>
+          <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-[#0a0c0b] to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[#0a0c0b] to-transparent" />
         </div>
-        <div className="relative max-w-xl">
-          <p className="type-eyebrow opacity-70">BOM Synchronization</p>
-          <p className="type-display-2xl mt-3">One bill of materials across engineering, manufacturing, service and software.</p>
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-tr from-black/85 via-black/40 to-transparent" />
+
+        {/* Content */}
+        <div className="relative z-10 flex h-full min-h-screen flex-col justify-between p-10">
+          <div className="flex items-center gap-2.5">
+            <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
+            <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
+            <span className="type-label-md">Wayam AI</span>
+          </div>
+          <div className="max-w-xl">
+            <p className="type-eyebrow opacity-70">BOM Synchronization</p>
+            <p className="type-display-2xl mt-3">One bill of materials across engineering, manufacturing, service and software.</p>
+          </div>
         </div>
       </div>
 
