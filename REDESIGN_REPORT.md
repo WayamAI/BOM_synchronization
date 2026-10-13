@@ -212,3 +212,11 @@ BOM Compare (GitCompare) has no entity in the mapping. The nav is unchanged.
 1. Should Medium stay blue (info), or go back to orange (warning)?
 2. Should the unused files be deleted?
 3. Do the pre-existing bugs need separate tickets?
+
+## Login hero image
+
+- **Source:** AI-generated with Google Flow (exploded-view SUV on a dark background); original kept at `design/login-hero-source.jpg` (2752×1536), outside the build.
+- **Corner mark:** the generator's sparkle (✦) in the bottom-right was removed by cropping, not painting. Crop box `(0, 0, 2752, 1376)` — 160 px trimmed from the bottom; the car stays fully in frame.
+- **Outputs:** `src/assets/brand/login-hero.webp` (q80, 88 KB) and `login-hero.jpg` (q82, 169 KB), both 2400×1200.
+- **Script:** `python scripts/prepare-login-hero.py` (Pillow only) regenerates both from the source.
+- **Login:** shown as a full-bleed `<picture>` behind the left panel (decorative, `object-right`), with a bottom-left black gradient overlay for headline legibility. Same in light and dark.
