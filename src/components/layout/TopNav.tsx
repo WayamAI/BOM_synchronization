@@ -1,7 +1,5 @@
-import { Bell, ChevronDown, Download, Search, Command, MapPin } from "lucide-react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
-import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
+import { Bell, ChevronDown, Download, Search, Command, MapPin, Menu } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,56 +12,46 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { products, notifications } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
 import { logout } from "@/lib/auth";
+import { locate } from "./nav";
 
-const routeLabels: Record<string, string> = {
-  "": "Command Center",
-  variants: "Variants & Configuration",
-  ebom: "Engineering BOM",
-  mbom: "Manufacturing BOM",
-  service: "Service BOM",
-  software: "Software BOM",
-  changes: "Change Management",
-  compare: "BOM Compare",
-  parts: "Part Master",
-  suppliers: "Supplier Intelligence",
-  field: "Field Quality",
-  reports: "Reports & Exports",
-};
+const pill = "h-8 gap-1.5 rounded-full border-hairline bg-action px-3 text-xs font-medium text-tertiary hover:border-strong hover:bg-raised-2 hover:text-foreground";
+const iconBtn = "size-8 rounded-full bg-action text-tertiary hover:bg-raised-2 hover:text-secondary-foreground";
 
-export const TopNav = () => {
+export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
   const { activeProgram, setActiveProgramId } = useProgramContext();
   const location = useLocation();
   const navigate = useNavigate();
-  const segments = location.pathname.split("/").filter(Boolean);
-  const crumbs = segments.length === 0
-    ? [{ label: "Command Center", path: "/" }]
-    : [{ label: "Command Center", path: "/" }, ...segments.map((s, i) => ({
-        label: routeLabels[s] || s, path: "/" + segments.slice(0, i + 1).join("/")
-      }))];
+  const { group, title } = locate(location.pathname);
 
   return (
-    <header className="sticky top-0 z-40 h-16 border-b border-border bg-background/85 backdrop-blur-xl">
-      <div className="flex h-full items-center gap-3 px-5">
-        {/* Logo mark */}
-        <Link to="/" className="flex items-center gap-2.5 pr-3 border-r border-border mr-1">
-          <img src={wayamLogoLight} alt="Wayam AI" className="h-8 w-auto dark:hidden" />
-          <img src={wayamLogoDark} alt="Wayam AI" className="hidden h-8 w-auto dark:block" />
-          <div className="leading-tight border-l border-border pl-2.5 ml-0.5">
-            <div className="font-semibold text-base tracking-tight text-gradient-primary">Wayam AI</div>
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground">BOM Synchronization</div>
-          </div>
-        </Link>
+    <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-hairline bg-page px-4 sm:px-5">
+      {/* Location: group eyebrow + page title (no breadcrumbs in Chronus) */}
+      <div className="flex min-w-0 items-center gap-3">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Open navigation"
+          className={`${iconBtn} lg:hidden`}
+          onClick={onOpenNav}
+        >
+          <Menu className="size-4" aria-hidden />
+        </Button>
+        {/* The visible page title is the PageHeader h2; this h1 keeps one h1 per page for assistive tech. */}
+        <h1 className="sr-only">{title}</h1>
+        {group && <div className="type-eyebrow hidden truncate text-quaternary sm:block" aria-hidden>{group}</div>}
+      </div>
 
+      <div className="flex shrink-0 items-center gap-2">
         {/* Program switcher */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-2 h-9 rounded-lg">
-              <span className="text-xs font-medium">{activeProgram.name}</span>
-              <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-mono">{activeProgram.modelYear}</Badge>
-              <ChevronDown className="h-3 w-3 opacity-60" />
+            <Button variant="outline" size="sm" className={pill}>
+              <span className="max-w-[9rem] truncate text-foreground">{activeProgram.name}</span>
+              <Badge variant="secondary" className="hidden h-5 px-1.5 text-[10px] font-mono sm:inline-flex">{activeProgram.modelYear}</Badge>
+              <ChevronDown className="size-3 text-quaternary" aria-hidden />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-72">
+          <DropdownMenuContent align="end" className="w-72">
             <DropdownMenuLabel>Switch vehicle program</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {products.map(p => (
@@ -73,24 +61,24 @@ export const TopNav = () => {
                   <span className="text-[10px] text-muted-foreground">{p.category} · {p.stage}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-muted-foreground">{p.modelYear}</span>
-                  {activeProgram.id === p.id && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
+                  <span className="text-xs font-mono tabular text-muted-foreground">{p.modelYear}</span>
+                  {activeProgram.id === p.id && <span className="size-1.5 rounded-full bg-action-primary" />}
                 </div>
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Scope chip */}
+        {/* Scope */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5 h-9 rounded-lg text-xs">
-              <MapPin className="h-3.5 w-3.5 text-primary" />
-              <span className="hidden lg:inline">Program scope</span>
-              <ChevronDown className="h-3 w-3 opacity-60" />
+            <Button variant="outline" size="sm" className={`${pill} hidden lg:inline-flex`}>
+              <MapPin className="size-3.5" aria-hidden />
+              <span>Program scope</span>
+              <ChevronDown className="size-3 text-quaternary" aria-hidden />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-72" align="start">
+          <PopoverContent className="w-72" align="end">
             <p className="text-xs font-semibold mb-2">VIN scope</p>
             <p className="text-[11px] text-muted-foreground mb-2">Default: aggregate across all produced VINs.</p>
             <div className="space-y-1.5 text-xs">
@@ -102,92 +90,84 @@ export const TopNav = () => {
           </PopoverContent>
         </Popover>
 
-        {/* Breadcrumbs */}
-        <nav className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground ml-1">
-          {crumbs.map((c, i) => (
-            <span key={c.path} className="flex items-center gap-1.5">
-              {i > 0 && <span className="opacity-50">/</span>}
-              <Link to={c.path} className="hover:text-foreground transition-colors">{c.label}</Link>
-            </span>
-          ))}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-2">
-          {/* Universal search */}
-          <div className="relative hidden lg:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              placeholder="Search parts, ECNs, suppliers…"
-              className="h-9 w-80 pl-9 pr-16 text-xs rounded-lg bg-muted/50 border-border focus-visible:ring-primary/30"
-            />
-            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 hidden xl:inline-flex h-5 items-center gap-1 rounded border border-border bg-background px-1.5 text-[10px] font-mono text-muted-foreground">
-              <Command className="h-3 w-3" />K
-            </kbd>
-          </div>
-
-          {/* Notifications */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative h-9 w-9 rounded-lg">
-                <Bell className="h-4 w-4" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-critical ring-2 ring-background" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0">
-              <div className="p-3 border-b border-border flex items-center justify-between">
-                <span className="text-sm font-semibold">Notifications</span>
-                <Badge variant="secondary" className="text-[10px]">{notifications.length} new</Badge>
-              </div>
-              <div className="max-h-80 overflow-y-auto scrollbar-thin">
-                {notifications.map(n => (
-                  <div key={n.id} className="p-3 border-b border-border/50 last:border-0 hover:bg-muted/40 cursor-pointer">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-semibold">{n.title}</span>
-                      <span className="text-[10px] text-muted-foreground shrink-0">{n.time}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">{n.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </PopoverContent>
-          </Popover>
-
-          <ThemeToggle />
-
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg" aria-label="Export">
-            <Download className="h-4 w-4" />
-          </Button>
-
-          {/* User */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 rounded-full pl-1 pr-2.5 py-1 hover:bg-secondary transition-colors">
-                <div className="h-8 w-8 rounded-full bg-gradient-accent grid place-items-center text-xs font-semibold text-accent-foreground ring-2 ring-background">
-                  RK
-                </div>
-                <div className="hidden sm:flex flex-col items-start leading-tight">
-                  <span className="text-xs font-medium">Ravi Kumar</span>
-                  <span className="text-[9px] uppercase tracking-wider text-muted-foreground">Program Manager</span>
-                </div>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile settings</DropdownMenuItem>
-              <DropdownMenuItem>Switch organization</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => {
-                  logout();
-                  navigate("/login", { replace: true });
-                }}
-              >
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {/* Universal search */}
+        <div className="relative hidden xl:block">
+          <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-quaternary" aria-hidden />
+          <Input
+            aria-label="Search"
+            placeholder="Search parts, ECNs, suppliers"
+            className="h-8 w-72 rounded-full border-hairline bg-action pl-9 pr-14 text-xs"
+          />
+          <kbd className="absolute right-2.5 top-1/2 inline-flex h-5 -translate-y-1/2 items-center gap-0.5 rounded-full border border-hairline bg-container px-1.5 text-[10px] text-quaternary">
+            <Command className="size-3" aria-hidden />K
+          </kbd>
         </div>
+
+        {/* Notifications */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label="Notifications" className={`${iconBtn} relative`}>
+              <Bell className="size-4" aria-hidden />
+              <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-error-surface text-[10px] font-medium leading-none text-error tabular">
+                {notifications.length}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-80 p-0">
+            <div className="flex h-11 items-center justify-between border-b border-hairline px-4">
+              <span className="type-eyebrow text-quaternary">Notifications</span>
+              <span className="type-caption tabular text-quaternary">{notifications.length} new</span>
+            </div>
+            <div className="max-h-80 overflow-y-auto scrollbar-thin">
+              {notifications.map(n => (
+                <div key={n.id} className="cursor-pointer border-b border-hairline px-4 py-3 last:border-0 hover:bg-raised">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="type-body-md text-foreground">{n.title}</span>
+                    <span className="type-caption shrink-0 text-quaternary">{n.time}</span>
+                  </div>
+                  <p className="type-body-sm mt-0.5 text-tertiary">{n.desc}</p>
+                </div>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <ThemeToggle />
+
+        <Button variant="ghost" size="icon" className={`${iconBtn} hidden md:inline-flex`} aria-label="Export">
+          <Download className="size-4" aria-hidden />
+        </Button>
+
+        {/* User */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              aria-label="Account menu"
+              className="flex items-center gap-2 rounded-full py-0.5 pl-0.5 pr-0.5 outline-none transition-colors duration-[180ms] hover:bg-action focus-visible:ring-2 focus-visible:ring-active xl:pr-3"
+            >
+              <span className="grid size-8 place-items-center rounded-full bg-raised-2 text-xs font-medium text-foreground">RK</span>
+              <span className="hidden flex-col items-start leading-tight xl:flex">
+                <span className="text-xs font-medium text-foreground">Ravi Kumar</span>
+                <span className="type-eyebrow text-[10px] text-quaternary">Program Manager</span>
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>My account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile settings</DropdownMenuItem>
+            <DropdownMenuItem>Switch organization</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                logout();
+                navigate("/login", { replace: true });
+              }}
+            >
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

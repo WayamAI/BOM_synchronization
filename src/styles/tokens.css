@@ -1,0 +1,92 @@
+/* =============================================================================
+   Chronus semantic tokens (light default, dark via [data-theme="dark"] or .dark)
+   Source: CHRONUS_DESIGN_SYSTEM.md section 6.3. Components use these through
+   the Tailwind names mapped in tailwind.config.ts, never raw hex values.
+   ============================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* surface */
+  --surface-page-background: #f2f2f2;
+  --surface-container: #ffffff;
+  --surface-raised: #fafafa;
+  --surface-raised-x2: #f2f2f2;
+  --surface-action: #f2f2f2;
+  --surface-scroll-bar: #d4d4d4;
+
+  /* text and icon */
+  --text-primary: #101010;
+  --text-secondary: #464646;
+  --text-tertiary: #737373;
+  --text-quaternary: #8a8a8a;
+  --text-on-color: #ffffff;
+
+  /* stroke */
+  --stroke-muted: rgba(0, 0, 0, 0.08);
+  --stroke-default: rgba(0, 0, 0, 0.14);
+  --stroke-active: rgba(0, 0, 0, 0.24);
+
+  /* action */
+  --action-primary-default: #101010;
+  --action-primary-hover: #232323;
+  --action-primary-disabled: #d4d4d4;
+  --action-primary-content: #ffffff;
+  --action-secondary-default: #f2f2f2;
+  --action-secondary-hover: #e5e5e5;
+  --action-tertiary-hover: rgba(0, 0, 0, 0.06);
+
+  /* feedback */
+  --feedback-success-content: #2b7046; --feedback-success-background: rgba(63, 174, 105, 0.12); --feedback-success-badge: #2b7046;
+  --feedback-info-content:    #1e61a0; --feedback-info-background:    rgba(44, 150, 219, 0.12); --feedback-info-badge:    #1e61a0;
+  --feedback-warning-content: #c1460f; --feedback-warning-background: rgba(255, 123, 28, 0.12); --feedback-warning-badge: #c1460f;
+  --feedback-error-content:   #c62830; --feedback-error-background:   rgba(255, 65, 73, 0.12);  --feedback-error-badge:   #c62830;
+  --feedback-neutral-content: #464646; --feedback-neutral-background: rgba(0, 0, 0, 0.06);      --feedback-neutral-badge: #464646;
+  --feedback-badge-content: #ffffff;
+
+  /* chart series */
+  --analytics-series-1: #2179be;
+  --analytics-series-2: #318c54;
+  --analytics-series-3: #e95d0f;
+  --analytics-series-4: #e9343c;
+  --analytics-series-5: #626262;
+  --analytics-series-6: #862aa3;
+}
+
+[data-theme="dark"],
+.dark {
+  color-scheme: dark;
+
+  --surface-page-background: #000000;
+  --surface-container: #101010;
+  --surface-raised: #191919;
+  --surface-raised-x2: #232323;
+  --surface-action: #191919;
+  --surface-scroll-bar: #3b3b3b;
+
+  --text-primary: #fafafa;
+  --text-secondary: #d4d4d4;
+  --text-tertiary: #8a8a8a;
+  --text-quaternary: #626262;
+  --text-on-color: #000000;
+
+  --stroke-muted: rgba(255, 255, 255, 0.08);
+  --stroke-default: rgba(255, 255, 255, 0.14);
+  --stroke-active: rgba(255, 255, 255, 0.24);
+
+  --action-primary-default: #fafafa;
+  --action-primary-hover: #e5e5e5;
+  --action-primary-disabled: #464646;
+  --action-primary-content: #000000;
+  --action-secondary-default: #232323;
+  --action-secondary-hover: #323232;
+  --action-tertiary-hover: rgba(255, 255, 255, 0.06);
+
+  --feedback-success-content: #8ed8a9; --feedback-success-badge: #275a3b;
+  --feedback-info-content:    #88cef4; --feedback-info-badge:    #1c5083;
+  --feedback-warning-content: #ffb365; --feedback-warning-badge: #9a3814;
+  --feedback-error-content:   #ff969b; --feedback-error-badge:   #a62329;
+  --feedback-neutral-content: #d4d4d4; --feedback-neutral-background: rgba(255, 255, 255, 0.06); --feedback-neutral-badge: #464646;
+
+  --analytics-series-6: #b65bd8;
+}

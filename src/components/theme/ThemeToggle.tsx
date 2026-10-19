@@ -14,10 +14,10 @@ export const ThemeToggle = () => {
       size="icon"
       aria-label="Toggle theme"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="relative"
+      className="relative size-8 rounded-full bg-action text-tertiary hover:bg-raised-2 hover:text-secondary-foreground"
     >
-      <Sun className={`h-4 w-4 transition-all ${isDark ? "scale-0 rotate-90" : "scale-100 rotate-0"}`} />
-      <Moon className={`absolute h-4 w-4 transition-all ${isDark ? "scale-100 rotate-0" : "scale-0 -rotate-90"}`} />
+      <Sun aria-hidden className={`size-4 transition-all ${isDark ? "scale-0 rotate-90" : "scale-100 rotate-0"}`} />
+      <Moon aria-hidden className={`absolute size-4 transition-all ${isDark ? "scale-100 rotate-0" : "scale-0 -rotate-90"}`} />
     </Button>
   );
 };

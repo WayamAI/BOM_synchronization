@@ -1,3 +1,4 @@
+import { Panel, KpiTile, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -44,63 +45,54 @@ const Variants = () => {
 
   return (
     <PageHeader
-      title="Variants & Configuration (CAT BOM)"
-      subtitle={`${totals.variants} variants across 3 powertrains × 3 trims × global markets`}
-      actions={<Button size="sm" className="gap-1.5 bg-gradient-primary border-0"><Plus className="h-3.5 w-3.5" />New Variant</Button>}
+      title="Variants & Configuration"
+      mark="variant"
+      subtitle={`CAT BOM · ${totals.variants} variants across 3 powertrains × 3 trims × global markets`}
+      actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />New variant</Button>}
     >
       {/* KPI */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Variants</div>
-          <div className="text-lg font-bold">{totals.variants}</div>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Planned units (yr 1)</div>
-          <div className="text-lg font-bold">{totalUnitsPlanned.toLocaleString()}</div>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Configuration rules</div>
-          <div className="text-lg font-bold">{allOptionalPNs.length} effectivity-gated parts</div>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-3">
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Conflicts</div>
-          <div className={cn("text-lg font-bold tabular-nums", variants.some(v => v.conflicts > 0) ? "text-warning" : "text-success")}>
-            {variants.reduce((s, v) => s + v.conflicts, 0)}
-          </div>
-        </div>
+        <KpiTile label="Variants" value={<>{totals.variants}</>} />
+        <KpiTile label="Planned units (yr 1)" value={<>{totalUnitsPlanned.toLocaleString("en-US")}</>} />
+        <KpiTile label="Configuration rules" value={<>{allOptionalPNs.length}</>} hint="effectivity-gated parts" />
+        <KpiTile
+          label="Conflicts"
+          value={<>{variants.reduce((s, v) => s + v.conflicts, 0)}</>}
+          valueClassName={variants.some(v => v.conflicts > 0) ? "text-warning" : "text-success"}
+        />
       </div>
 
       {/* Variant table */}
-      <div className="rounded-xl border border-border bg-card shadow-card overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead className="text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/40">
+      <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
+        <table className="tabular w-full text-xs">
+          <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th className="text-left p-3">SKU</th>
-              <th className="text-left p-3">Variant Name</th>
-              <th className="text-left p-3">Powertrain</th>
-              <th className="text-left p-3">Trim</th>
-              <th className="text-left p-3">Market</th>
-              <th className="text-left p-3">SOP</th>
-              <th className="text-right p-3">Planned / yr</th>
-              <th className="text-left p-3">Conflicts</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">SKU</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant Name</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Powertrain</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Trim</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Market</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">SOP</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Planned / yr</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Conflicts</th>
             </tr>
           </thead>
           <tbody>
             {variants.map(v => (
               <tr key={v.code}
                   onClick={() => setSelectedVariant(v.code)}
-                  className={cn("border-t border-border/40 cursor-pointer hover:bg-muted/30",
-                    selectedVariant === v.code && "bg-primary/5")}>
-                <td className="p-3 font-mono">{v.code}</td>
-                <td className="p-3 font-semibold">{v.name}</td>
-                <td className="p-3"><Badge variant="outline" className="text-[10px]">{v.powertrain}</Badge></td>
-                <td className="p-3"><Badge variant="outline" className="text-[10px]">{v.trim}</Badge></td>
-                <td className="p-3 text-muted-foreground">{v.market}</td>
-                <td className="p-3 font-mono">{v.startEffectivity}</td>
-                <td className="p-3 text-right tabular-nums">{v.unitsPlanned.toLocaleString()}</td>
-                <td className="p-3">{v.conflicts > 0
-                  ? <Badge className="bg-warning/15 text-warning border-warning/30 text-[10px]"><AlertTriangle className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
-                  : <Badge className="bg-success/15 text-success border-success/30 text-[10px]"><Check className="h-3 w-3 mr-1" />Clean</Badge>}</td>
+                  className={cn("border-t border-hairline cursor-pointer hover:bg-raised",
+                    selectedVariant === v.code && "bg-raised")}>
+                <td className="px-3 py-2 font-mono">{v.code}</td>
+                <td className="px-3 py-2 font-semibold">{v.name}</td>
+                <td className="px-3 py-2 text-tertiary">{v.powertrain}</td>
+                <td className="px-3 py-2 text-tertiary">{v.trim}</td>
+                <td className="px-3 py-2 text-muted-foreground">{v.market}</td>
+                <td className="px-3 py-2 font-mono">{v.startEffectivity}</td>
+                <td className="px-3 py-2 text-right tabular-nums">{v.unitsPlanned.toLocaleString("en-US")}</td>
+                <td className="px-3 py-2">{v.conflicts > 0
+                  ? <Badge variant="warning"><AlertTriangle aria-hidden className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
+                  : <QuietStatus tone="success">Clean</QuietStatus>}</td>
               </tr>
             ))}
           </tbody>
@@ -109,35 +101,34 @@ const Variants = () => {
 
       {/* Selected variant detail */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-border bg-card p-5 shadow-card lg:col-span-1">
+        <div className="rounded-lg border border-hairline bg-container p-4 lg:col-span-1">
           <div className="flex items-center gap-2">
-            <Layers className="h-4 w-4 text-primary" />
+            <Layers aria-hidden className="h-4 w-4 text-primary" />
             <h3 className="text-sm font-semibold">{variant.name}</h3>
           </div>
-          <p className="text-[11px] text-muted-foreground font-mono mt-0.5">{variant.code}</p>
+          <p className="type-body-sm text-muted-foreground font-mono mt-0.5">{variant.code}</p>
           <div className="mt-4 space-y-2 text-xs">
             <div className="flex justify-between"><span className="text-muted-foreground">Powertrain</span><span className="font-semibold">{variant.powertrain}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Trim</span><span className="font-semibold">{variant.trim}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Market</span><span className="font-semibold">{variant.market}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">Start effectivity</span><span className="font-semibold">{variant.startEffectivity}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Planned volume</span><span className="font-semibold">{variant.unitsPlanned.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Planned volume</span><span className="font-semibold">{variant.unitsPlanned.toLocaleString("en-US")}</span></div>
             <div className="flex justify-between"><span className="text-muted-foreground">EBOM parts in variant</span><span className="font-semibold">{variantPartsCount}</span></div>
           </div>
           <Button variant="outline" size="sm" className="w-full mt-4" onClick={() => navigate(`/ebom`)}>
-            Open EBOM filtered to this variant →
+            Open EBOM filtered to this variant
           </Button>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-5 shadow-card lg:col-span-2">
-          <h3 className="text-sm font-semibold">Effectivity Matrix</h3>
-          <p className="text-[11px] text-muted-foreground">Which variants include each optional / powertrain-gated part</p>
+        <Panel title="Effectivity Matrix" className="lg:col-span-2">
+          <p className="type-body-sm text-muted-foreground">Which variants include each optional / powertrain-gated part</p>
           <div className="mt-3 overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border text-[10px] uppercase text-muted-foreground">
-                  <th className="text-left p-2 sticky left-0 bg-card">Part</th>
+            <table className="tabular w-full text-xs">
+              <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
+                <tr className="border-b border-hairline">
+                  <th scope="col" className="text-left px-3 py-2 sticky left-0 bg-container font-medium whitespace-nowrap">Part</th>
                   {variants.map(v => (
-                    <th key={v.code} className="text-center p-2 font-mono whitespace-nowrap">
+                    <th scope="col" key={v.code} className="text-center px-3 py-2 font-mono font-medium whitespace-nowrap">
                       {v.code.split("-").slice(1).join("-")}
                     </th>
                   ))}
@@ -145,16 +136,16 @@ const Variants = () => {
               </thead>
               <tbody>
                 {effectivityMatrix.map(row => (
-                  <tr key={row.pn} className="border-b border-border/30 hover:bg-muted/20">
-                    <td className="p-2 sticky left-0 bg-card">
+                  <tr key={row.pn} className="border-b border-hairline hover:bg-raised">
+                    <td className="px-3 py-2 sticky left-0 bg-container">
                       <div className="font-semibold text-xs">{row.part?.name}</div>
-                      <div className="font-mono text-[10px] text-muted-foreground">{row.pn}</div>
+                      <div className="font-mono type-caption text-muted-foreground">{row.pn}</div>
                     </td>
                     {row.cells.map(c => (
-                      <td key={c.variantCode} className={cn("text-center p-2", c.variantCode === selectedVariant && "bg-primary/5")}>
+                      <td key={c.variantCode} className={cn("text-center px-3 py-2", c.variantCode === selectedVariant && "bg-raised")}>
                         {c.included
-                          ? <Check className="inline h-3.5 w-3.5 text-success" />
-                          : <XIcon className="inline h-3.5 w-3.5 text-muted-foreground opacity-40" />}
+                          ? <Check aria-hidden className="inline h-3.5 w-3.5 text-success" />
+                          : <XIcon aria-hidden className="inline h-3.5 w-3.5 text-muted-foreground opacity-40" />}
                       </td>
                     ))}
                   </tr>
@@ -162,7 +153,7 @@ const Variants = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </Panel>
       </div>
     </PageHeader>
   );

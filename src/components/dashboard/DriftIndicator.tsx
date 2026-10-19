@@ -11,7 +11,7 @@ export const DriftIndicator = () => {
           <p className="text-xs text-muted-foreground">Sync status across stages</p>
         </div>
         <span className="flex items-center gap-1 text-[10px] font-semibold uppercase text-warning">
-          <AlertTriangle className="h-3 w-3" /> Drift detected
+          <AlertTriangle aria-hidden className="h-3 w-3" /> Drift detected
         </span>
       </div>
 
@@ -38,7 +38,7 @@ export const DriftIndicator = () => {
           4 components changed in EBOM have not been reflected in SBOM.
         </p>
         <Button size="sm" className="mt-2 h-7 text-xs gap-1.5 bg-gradient-primary border-0">
-          <RefreshCw className="h-3 w-3" /> Re-generate SBOM
+          <RefreshCw aria-hidden className="h-3 w-3" /> Re-generate SBOM
         </Button>
       </div>
     </div>
