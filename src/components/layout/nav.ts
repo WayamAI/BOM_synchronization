@@ -13,26 +13,24 @@ export interface NavItem {
 // One array drives the sidebar and the top-bar location (group eyebrow + title).
 export const navGroups: { section: string; items: NavItem[] }[] = [
   { section: "Overview", items: [
-    { to: "/",           label: "Command Center",  icon: LayoutDashboard, end: true },
+    { to: "/",           label: "Command Center",         icon: LayoutDashboard, end: true },
   ]},
   { section: "BOM Views", items: [
     { to: "/variants",   label: "Variants & Configuration", icon: Layers },
-    { to: "/ebom",       label: "Engineering BOM",   icon: GitBranch },
-    { to: "/mbom",       label: "Manufacturing BOM", icon: Factory },
-    { to: "/service",    label: "Service BOM",       icon: Wrench },
-    { to: "/software",   label: "Software BOM",      icon: ShieldAlert },
+    { to: "/ebom",       label: "Engineering BOM",        icon: GitBranch },
+    { to: "/mbom",       label: "Manufacturing BOM",      icon: Factory },
+    { to: "/service",    label: "Service BOM",            icon: Wrench },
+    { to: "/software",   label: "Software BOM",           icon: ShieldAlert },
   ]},
-  { section: "Change & Compare", items: [
-    { to: "/changes",    label: "Change Management", icon: FileEdit },
-    { to: "/compare",    label: "BOM Compare",       icon: GitCompare },
+  { section: "Change & Quality", items: [
+    { to: "/changes",    label: "Change Management",      icon: FileEdit },
+    { to: "/compare",    label: "BOM Compare",            icon: GitCompare },
+    { to: "/field",      label: "Field Quality",          icon: AlertOctagon },
   ]},
-  { section: "Parts & Supply", items: [
-    { to: "/parts",      label: "Part Master",       icon: Boxes },
-    { to: "/suppliers",  label: "Supplier Intelligence",    icon: Truck },
-    { to: "/field",      label: "Field Quality",     icon: AlertOctagon },
-  ]},
-  { section: "Reports", items: [
-    { to: "/reports",    label: "Reports & Exports", icon: FileBarChart },
+  { section: "Intelligence", items: [
+    { to: "/parts",      label: "Part Master",            icon: Boxes },
+    { to: "/suppliers",  label: "Supplier Intelligence",  icon: Truck },
+    { to: "/reports",    label: "Reports & Exports",      icon: FileBarChart },
   ]},
 ];
 

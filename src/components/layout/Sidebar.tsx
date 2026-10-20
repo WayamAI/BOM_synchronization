@@ -1,6 +1,6 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { ChevronRight, ChevronDown, Pin, X, PanelLeftClose, PanelLeftOpen } from "lucide-react";
-import { useState, useMemo, type SyntheticEvent } from "react";
+import { useState, useMemo, useEffect, type SyntheticEvent } from "react";
 import { ebomTree, type EbomNode } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
@@ -15,15 +15,13 @@ const healthDot = (h?: string) => {
   return "bg-success";
 };
 
-const TreeBranch = ({ node, depth = 0, onPick }: { node: EbomNode; depth?: number; onPick: (pn: string) => void }) => {
+// Chronus tree: a 1px spine with a tick per child and an L-shaped corner on the last one.
+const TreeBranch = ({ node, onPick, depth = 0 }: { node: EbomNode; onPick: (pn: string) => void; depth?: number }) => {
   const [open, setOpen] = useState(depth < 1);
   const hasChildren = !!node.children?.length;
   return (
     <div>
-      <div
-        className="group flex w-full items-center gap-1 rounded-lg py-0.5 pr-2 text-xs text-secondary-foreground transition-colors duration-150 hover:bg-action hover:text-foreground"
-        style={{ paddingLeft: 4 + depth * 12 }}
-      >
+      <div className="group flex w-full items-center gap-1 rounded-lg py-0.5 pr-2 text-xs text-secondary-foreground transition-colors duration-150 hover:bg-action hover:text-foreground">
         {hasChildren ? (
           <button
             type="button"
@@ -48,7 +46,24 @@ const TreeBranch = ({ node, depth = 0, onPick }: { node: EbomNode; depth?: numbe
         </button>
       </div>
       {open && hasChildren && (
-        <div>{node.children!.map(c => <TreeBranch key={c.id} node={c} depth={depth + 1} onPick={onPick} />)}</div>
+        <div className="ml-[13px]">
+          {node.children!.map((c, i, all) => {
+            const last = i === all.length - 1;
+            return (
+              <div key={c.id} className="relative pl-3">
+                {last ? (
+                  <span aria-hidden className="absolute left-0 top-0 h-[15px] w-3 rounded-bl-[3px] border-b border-l border-strong" />
+                ) : (
+                  <>
+                    <span aria-hidden className="absolute bottom-0 left-0 top-0 border-l border-strong" />
+                    <span aria-hidden className="absolute left-0 top-[14px] w-3 border-t border-strong" />
+                  </>
+                )}
+                <TreeBranch node={c} depth={depth + 1} onPick={onPick} />
+              </div>
+            );
+          })}
+        </div>
       )}
     </div>
   );
@@ -62,7 +77,27 @@ interface SidebarProps {
 
 export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps) => {
   const navigate = useNavigate();
-  const [pinnedOpen, setPinnedOpen] = useState(true);
+  const { pathname } = useLocation();
+  const [pinnedOpen, setPinnedOpen] = useState(false);
+  const [treeOpen, setTreeOpen] = useState(false);
+  // Groups are open by default; the group of the current route is always opened on navigation.
+  const [closedGroups, setClosedGroups] = useState<Set<string>>(() => new Set());
+  const activeGroup = navGroups.find(g => g.items.some(i => (i.end ? pathname === i.to : pathname === i.to || pathname.startsWith(i.to + "/"))))?.section;
+  useEffect(() => {
+    if (!activeGroup) return;
+    setClosedGroups(prev => {
+      if (!prev.has(activeGroup)) return prev;
+      const next = new Set(prev);
+      next.delete(activeGroup);
+      return next;
+    });
+  }, [activeGroup]);
+  const toggleGroup = (section: string) =>
+    setClosedGroups(prev => {
+      const next = new Set(prev);
+      if (next.has(section)) next.delete(section); else next.add(section);
+      return next;
+    });
   const tree = useMemo(() => ebomTree, []);
 
   // Collapsed rail: hovering or focusing a puck shows a label flyout to its right.
@@ -109,60 +144,92 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
 
       {/* Navigation + program tree */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
-        <nav aria-label="Primary" className={cn("flex flex-col gap-1.5 py-3 px-3", !expanded && "lg:px-[14px]")}>
-          {navGroups.map((group, gi) => (
-            <div key={group.section} className="flex flex-col gap-1.5">
-              {gi > 0 && <div className={cn("mx-1 my-1 border-t border-hairline", expanded ? "" : "lg:mx-2")} />}
-              <div className={cn("type-section px-1 pt-1 text-quaternary", railOnly)}>{group.section}</div>
-              {group.items.map(({ to, label, icon: Icon, end }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  end={end}
-                  aria-label={label}
-                  onMouseEnter={(e) => showFlyout(e, group.section, label)}
-                  onFocus={(e) => showFlyout(e, group.section, label)}
-                  onMouseLeave={hideFlyout}
-                  onBlur={hideFlyout}
-                  className="group flex items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
-                >
-                  {({ isActive }) => (
-                    <>
-                      <span
-                        className={cn(
-                          "grid size-9 shrink-0 place-items-center rounded-full transition-colors duration-[180ms] ease-out",
-                          isActive
-                            ? "bg-action-primary text-on-color"
-                            : "bg-action text-tertiary group-hover:bg-raised-2 group-hover:text-secondary-foreground",
-                        )}
-                      >
-                        <Icon className="size-[17px]" aria-hidden />
-                      </span>
-                      <span
-                        className={cn(
-                          "type-label-sm truncate transition-colors duration-[180ms]",
-                          isActive ? "text-foreground" : "text-tertiary group-hover:text-secondary-foreground",
-                          railOnly,
-                        )}
-                      >
-                        {label}
-                      </span>
-                    </>
-                  )}
-                </NavLink>
-              ))}
-            </div>
-          ))}
+        <nav aria-label="Primary" className={cn("flex flex-col gap-1 px-3 py-3", !expanded && "lg:px-[14px]")}>
+          {navGroups.map((group, gi) => {
+            const single = group.items.length === 1;
+            const open = single || !closedGroups.has(group.section);
+            // The rail has no group headers, so it always shows every item.
+            const hideItems = !open && (expanded ? "hidden" : "max-lg:hidden");
+            return (
+              <div key={group.section} className="flex flex-col gap-1">
+                {gi > 0 && <div className={cn("my-1 border-t border-hairline", expanded ? "mx-1" : "lg:mx-2")} />}
+                {!single && (
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.section)}
+                    aria-expanded={open}
+                    className={cn(
+                      "flex items-center justify-between rounded-lg px-1 py-1 text-left outline-none transition-colors duration-150 hover:bg-raised focus-visible:ring-2 focus-visible:ring-active",
+                      railOnly,
+                    )}
+                  >
+                    <span className="type-section text-quaternary">{group.section}</span>
+                    <ChevronDown className={cn("size-3 text-quaternary transition-transform duration-150", !open && "-rotate-90")} aria-hidden />
+                  </button>
+                )}
+                <div className={cn("flex flex-col gap-1", hideItems)}>
+                  {group.items.map(({ to, label, icon: Icon, end }) => (
+                    <NavLink
+                      key={to}
+                      to={to}
+                      end={end}
+                      aria-label={label}
+                      onMouseEnter={(e) => showFlyout(e, group.section, label)}
+                      onFocus={(e) => showFlyout(e, group.section, label)}
+                      onMouseLeave={hideFlyout}
+                      onBlur={hideFlyout}
+                      className="group flex items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <span
+                            className={cn(
+                              "grid size-9 shrink-0 place-items-center rounded-full transition-colors duration-[180ms] ease-out",
+                              isActive
+                                ? "bg-action-primary text-on-color"
+                                : "bg-action text-tertiary group-hover:bg-raised-2 group-hover:text-secondary-foreground",
+                            )}
+                          >
+                            <Icon className="size-[17px]" aria-hidden />
+                          </span>
+                          <span
+                            className={cn(
+                              "type-label-sm truncate transition-colors duration-[180ms]",
+                              isActive ? "text-foreground" : "text-tertiary group-hover:text-secondary-foreground",
+                              railOnly,
+                            )}
+                          >
+                            {label}
+                          </span>
+                        </>
+                      )}
+                    </NavLink>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </nav>
 
-        <div className={cn("border-t border-hairline px-3 pt-3", railOnly)}>
-          <div className="mb-1 flex items-center justify-between px-1">
+        {/* Program tree: collapsed by default, scrolls inside its own box */}
+        <div className={cn("border-t border-hairline", railOnly)}>
+          <button
+            type="button"
+            onClick={() => setTreeOpen(!treeOpen)}
+            aria-expanded={treeOpen}
+            className="flex w-full items-center justify-between px-4 py-3 outline-none transition-colors duration-150 hover:bg-raised focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-active"
+          >
             <span className="type-section text-quaternary">Program Tree</span>
-            <span className="type-caption tabular text-quaternary">rev 2.4</span>
-          </div>
-          <div className="pb-4">
-            <TreeBranch node={tree} onPick={(pn) => navigate(`/parts/${pn}`)} />
-          </div>
+            <span className="flex items-center gap-2">
+              <span className="type-caption tabular text-quaternary">rev 2.4</span>
+              <ChevronDown className={cn("size-3 text-quaternary transition-transform duration-150", !treeOpen && "-rotate-90")} aria-hidden />
+            </span>
+          </button>
+          {treeOpen && (
+            <div className="max-h-72 overflow-y-auto px-3 pb-3 scrollbar-thin">
+              <TreeBranch node={tree} onPick={(pn) => navigate(`/parts/${pn}`)} />
+            </div>
+          )}
         </div>
       </div>
 
