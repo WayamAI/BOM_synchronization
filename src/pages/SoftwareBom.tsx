@@ -117,11 +117,11 @@ const SoftwareBom = () => {
                 <XAxis dataKey="week" axisLine={false} tickLine={false} tick={axisTick} />
                 <YAxis axisLine={false} tickLine={false} tick={axisTick} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} itemStyle={chartTooltipLabelStyle} cursor={{ fill: "var(--surface-raised)" }} />
-                <Legend wrapperStyle={{ fontSize: 12, color: "var(--text-tertiary)" }} iconType="circle" iconSize={8} />
-                <Bar dataKey="critical" stackId="a" fill="var(--analytics-series-4)" isAnimationActive={false} />
-                <Bar dataKey="high"     stackId="a" fill="var(--analytics-series-3)" isAnimationActive={false} />
-                <Bar dataKey="medium"   stackId="a" fill="var(--analytics-series-1)" isAnimationActive={false} />
-                <Bar dataKey="low"      stackId="a" fill="var(--analytics-series-5)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Legend formatter={(v: string) => <span style={{ color: "var(--text-tertiary)" }}>{v}</span>} wrapperStyle={{ fontSize: 12, color: "var(--text-tertiary)" }} iconType="circle" iconSize={8} />
+                <Bar name="Critical" dataKey="critical" stackId="a" fill="var(--analytics-series-4)" isAnimationActive={false} />
+                <Bar name="High" dataKey="high"     stackId="a" fill="var(--analytics-series-3)" isAnimationActive={false} />
+                <Bar name="Medium" dataKey="medium"   stackId="a" fill="var(--analytics-series-1)" isAnimationActive={false} />
+                <Bar name="Low" dataKey="low"      stackId="a" fill="var(--analytics-series-5)" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           </div>

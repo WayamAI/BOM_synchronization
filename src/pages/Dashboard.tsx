@@ -10,7 +10,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Panel, KpiTile, EmptyState, StatusDot, QuietStatus } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
 import { Sparkles, FileEdit, ShieldAlert, FileBarChart, AlertTriangle, ArrowRight } from "lucide-react";
-import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
 const STAGES = ["Concept", "Design", "Engineering", "Pre-Production", "SOP"] as const;
@@ -141,10 +141,10 @@ const Dashboard = () => {
 
         {/* Health row */}
         <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <HealthArc value={ebomScore} label="EBOM maturity" tone="success" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
-          <HealthArc value={mbomScore} label="MBOM readiness" tone="warning" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
-          <HealthArc value={100 - supplyScore} label="Supply risk" tone="danger" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />
-          <HealthArc value={serviceScore} label="Service scope" tone="success" micro={[{ label: "Kits", value: String(activeProgram.serviceKits.length) }, { label: "Serviceable", value: `${serviceableParts.length}` }]} />
+          <HealthArc value={ebomScore} label="EBOM maturity" direction="higher-better" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
+          <HealthArc value={mbomScore} label="MBOM readiness" direction="higher-better" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
+          <HealthArc value={100 - supplyScore} label="Supply risk" direction="lower-better" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />
+          <HealthArc value={serviceScore} label="Service scope" direction="higher-better" micro={[{ label: "Kits", value: String(activeProgram.serviceKits.length) }, { label: "Serviceable", value: `${serviceableParts.length}` }]} />
         </div>
 
         <div className="col-span-12 flex flex-col xl:col-span-8">
@@ -216,11 +216,6 @@ const Dashboard = () => {
           <Panel
             title="Security Hub"
             className="flex-none"
-            action={
-              <span className="flex gap-1" aria-hidden>
-                {[...Array(5)].map((_, i) => <span key={i} className="h-1 w-3 rounded-full bg-success" />)}
-              </span>
-            }
           >
             <p className="type-body-sm text-tertiary">No active cybersecurity threats detected in the last <span className="tabular text-foreground">240 hours</span>. SOC status: Normal.</p>
           </Panel>
@@ -268,15 +263,18 @@ const Dashboard = () => {
             className="h-full min-h-[340px]"
             action={<span className="type-caption tabular text-quaternary">{activeProgram.name}</span>}
           >
-            <div className="h-[220px]">
+            <p className="type-body-sm text-tertiary">Changes per week (bars, left axis) and average cycle time in days (line, right axis)</p>
+            <div className="mt-2 h-[240px]">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={activeProgram.changeVelocity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <ComposedChart data={activeProgram.changeVelocity} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
                   <XAxis dataKey="week" axisLine={false} tickLine={false} tick={axisTick} />
-                  <YAxis axisLine={false} tickLine={false} tick={axisTick} />
+                  <YAxis yAxisId="count" width={28} axisLine={false} tickLine={false} tick={axisTick} allowDecimals={false} />
+                  <YAxis yAxisId="days" orientation="right" width={28} axisLine={false} tickLine={false} tick={axisTick} allowDecimals={false} />
                   <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} itemStyle={chartTooltipLabelStyle} cursor={{ fill: "var(--surface-raised)" }} />
-                  <Bar dataKey="approved" stackId="a" fill="var(--analytics-series-2)" barSize={12} isAnimationActive={false} />
-                  <Bar dataKey="rejected" stackId="a" fill="var(--analytics-series-4)" barSize={12} radius={[4, 4, 0, 0]} isAnimationActive={false} />
-                  <Line type="monotone" dataKey="cycle" stroke="var(--analytics-series-1)" strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Legend verticalAlign="bottom" height={28} formatter={(v: string) => <span style={{ color: "var(--text-tertiary)" }}>{v}</span>} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--text-tertiary)" }} />
+                  <Bar yAxisId="count" name="Approved" dataKey="approved" stackId="a" fill="var(--analytics-series-2)" barSize={12} isAnimationActive={false} />
+                  <Bar yAxisId="count" name="Rejected" dataKey="rejected" stackId="a" fill="var(--analytics-series-4)" barSize={12} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                  <Line yAxisId="days" name="Cycle time (days)" type="monotone" dataKey="cycle" stroke="var(--analytics-series-1)" strokeWidth={2} dot={false} isAnimationActive={false} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
@@ -301,7 +299,7 @@ const Dashboard = () => {
                   <div key={e.id} className="flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-2 py-1.5 transition-colors duration-[150ms] hover:border-strong">
                     <StatusDot tone={sevTone(e.severity)} />
                     <div className="min-w-0">
-                      <p className="type-body-sm truncate text-foreground">{e.title}</p>
+                      <p className="type-body-sm line-clamp-2 text-foreground" title={e.title}>{e.title}</p>
                       <p className="type-caption text-quaternary">{e.variant}</p>
                     </div>
                   </div>
