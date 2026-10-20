@@ -53,7 +53,7 @@ export const CveHeatmap = () => {
                   key={s}
                   className="tabular grid h-8 cursor-pointer place-items-center rounded-md border border-hairline text-xs font-medium transition-colors duration-150 hover:border-strong"
                   style={{ backgroundColor: cellColor(s, n), color: n > 0 ? "var(--text-primary)" : "var(--text-quaternary)" }}
-                  title={`${row.region} - ${s}: ${n}`}
+                  title={`${row.region} · ${s}: ${n}`}
                 >
                   {n}
                 </div>
