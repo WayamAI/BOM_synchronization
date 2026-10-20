@@ -135,7 +135,9 @@
   * {
     @apply border-border;
   }
+  /* Fixed-viewport shell (Chronus 2.9): the document never scrolls, regions inside it do. */
   html, body, #root { height: 100%; }
+  html, body { overflow: hidden; overscroll-behavior: none; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--surface-page-background);
