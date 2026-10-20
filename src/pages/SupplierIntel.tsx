@@ -66,7 +66,7 @@ const SupplierIntel = () => {
       {/* Heatmap + AI forecast */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2"><CveHeatmap /></div>
-        <Panel title="AI Disruption Forecast" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
+        <Panel title="AI Disruption Forecast" icon="supplier" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
           <p className="type-body-sm text-tertiary">{disruptions.length} high-confidence signals · next 90 days</p>
           <ul className="mt-3 space-y-3 text-xs relative">
             {disruptions.map((s, i) => (
@@ -114,7 +114,7 @@ const SupplierIntel = () => {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={10}><EmptyState title="No suppliers match this search" /></td></tr>
+              <tr><td colSpan={10}><EmptyState title="No suppliers match this search" mark="supplier" /></td></tr>
             )}
             {filtered.map(s => (
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">

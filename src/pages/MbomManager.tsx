@@ -1,3 +1,4 @@
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { EmptyState, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -164,14 +165,14 @@ const MbomManager = () => {
           </thead>
           <tbody>
             {filteredOps.length === 0 && (
-              <tr><td colSpan={9}><EmptyState title="No operations match this filter" /></td></tr>
+              <tr><td colSpan={9}><EmptyState title="No operations match this filter" mark="mbom" /></td></tr>
             )}
             {filteredOps.map(o => {
               const plant = plants.find(p => p.id === o.plantId);
               const part = getPart(o.partNumber);
               return (
                 <tr key={o.id} className="border-t border-hairline hover:bg-raised">
-                  <td className="px-3 py-2 font-mono">{o.id}</td>
+                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityIcon id="mbom" />{o.id}</span></td>
                   <td className="px-3 py-2">
                     <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${o.partNumber}`)}>
                       <div className="font-semibold">{part?.name ?? o.partNumber}</div>

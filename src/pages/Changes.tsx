@@ -119,7 +119,7 @@ const ChangesList = () => {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={9}><EmptyState title="No changes match this filter" /></td></tr>
+              <tr><td colSpan={9}><EmptyState title="No changes match this filter" mark="ecn" /></td></tr>
             )}
             {filtered.map(e => (
               <tr key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
@@ -206,7 +206,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Core facts */}
-        <Panel title="Change Summary">
+        <Panel title="Change Summary" icon="ecn">
           <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{ecn.description}</p>
           <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
             <div><div className="type-eyebrow text-quaternary">State</div><EcnState state={ecn.state} /></div>

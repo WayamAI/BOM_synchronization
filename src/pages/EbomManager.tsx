@@ -391,7 +391,7 @@ const EbomManager = () => {
               <div role="tree" aria-label="Engineering BOM structure">
                 <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
               </div>
-              {filter && !matchesDeep(tree, filter) && <EmptyState title="No components match this search" />}
+              {filter && !matchesDeep(tree, filter) && <EmptyState title="No components match this search" mark="ebom" />}
             </Panel>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
           </div>

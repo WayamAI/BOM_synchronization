@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import { ChevronRight } from "lucide-react";
 import { statusText } from "@/lib/format";
-import { EntityMark } from "@/components/icons/EntityIcon";
+import { EntityIcon, EntityMark } from "@/components/icons/EntityIcon";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
@@ -39,6 +39,7 @@ export const Unit = ({ children, className }: { children: ReactNode; className?:
 /** Content card: 8px radius, hairline border, no shadow, optional eyebrow header. */
 export const Panel = ({
   title,
+  icon,
   action,
   padded = true,
   className,
@@ -46,6 +47,8 @@ export const Panel = ({
   children,
 }: {
   title?: ReactNode;
+  /** Entity id (iconMap): a grey lucide icon before the title. Never a brand mark. */
+  icon?: string;
   action?: ReactNode;
   padded?: boolean;
   className?: string;
@@ -55,7 +58,10 @@ export const Panel = ({
   <section className={cn("flex flex-col overflow-hidden rounded-lg border border-hairline bg-container", className)}>
     {title && (
       <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4">
-        <h3 className="type-section truncate text-quaternary">{title}</h3>
+        <h3 className="type-section flex min-w-0 items-center gap-2 text-quaternary">
+          {icon && <EntityIcon id={icon} />}
+          <span className="truncate">{title}</span>
+        </h3>
         {action && <div className="shrink-0">{action}</div>}
       </header>
     )}

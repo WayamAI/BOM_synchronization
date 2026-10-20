@@ -3,9 +3,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { pipeline } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 
 const routes: Record<string, string> = {
   cat: "/variants", ebom: "/ebom", mbom: "/mbom", sbom: "/software", service: "/service",
+};
+
+const stageIcon: Record<string, string> = {
+  cat: "variant", ebom: "ebom", mbom: "mbom", sbom: "software", service: "service-kit",
 };
 
 const dotClass = (h: string) => {
@@ -61,6 +66,7 @@ export const PipelineBar = () => {
                 )}
               >
                 <span className={cn("size-1.5 rounded-full", dotClass(s.health))} />
+                <EntityIcon id={stageIcon[s.id] ?? "part"} className={active ? "text-on-color" : undefined} />
                 <span>{s.name}</span>
                 <span className={cn("tabular hidden xl:inline", active ? "opacity-70" : "text-quaternary")}>
                   {s.components.toLocaleString("en-US")} {s.countLabel} · {s.issues} issue{s.issues === 1 ? "" : "s"}

@@ -70,6 +70,7 @@ const Dashboard = () => {
   return (
     <PageHeader
       title="Command Center"
+      mark="assembly"
       subtitle={`${activeProgram.name} · ${activeProgram.modelYear} · ${activeProgram.stage} · ${activeProgram.daysToSOP} days to SOP · ${activeProgram.pilotVinsBuilt} units built · ${activeProgram.activeEcns} ECNs`}
       actions={
         <>
@@ -151,7 +152,7 @@ const Dashboard = () => {
         </div>
 
         <div className="col-span-12 flex flex-col gap-4 xl:col-span-4">
-          <Panel title="Program Stage Pipeline" className="flex-none">
+          <Panel title="Program Stage Pipeline" icon="variant" className="flex-none">
             <div className="space-y-3">
               {programs.map(prog => {
                 const idx = STAGES.indexOf(prog.stage as typeof STAGES[number]);
@@ -229,6 +230,7 @@ const Dashboard = () => {
         <div className="col-span-12 xl:col-span-6">
           <Panel
             title="ECN Approval Queue"
+            icon="ecn"
             className="h-full min-h-[340px]"
             action={
               <Button variant="ghost" size="sm" onClick={() => navigate("/changes")}>
@@ -237,7 +239,7 @@ const Dashboard = () => {
             }
           >
             {pendingEcns.length === 0 ? (
-              <EmptyState title={`No pending ECNs for ${activeProgram.name}`} />
+              <EmptyState title={`No pending ECNs for ${activeProgram.name}`} mark="ecn" />
             ) : (
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {pendingEcns.slice(0, 4).map(e => (

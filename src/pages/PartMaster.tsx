@@ -95,7 +95,7 @@ const PartList = () => {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={10}><EmptyState title="No parts match this filter" /></td></tr>
+              <tr><td colSpan={10}><EmptyState title="No parts match this filter" mark="part" /></td></tr>
             )}
             {filtered.map(p => {
               const prog = products.find(pr => pr.id === p.programId);
@@ -159,7 +159,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
     >
       {/* Facts grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Panel title="Part Details" className="lg:col-span-2">
+        <Panel title="Part Details" icon="part" className="lg:col-span-2">
           <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 text-xs">
             <div><div className="type-eyebrow text-quaternary">Part number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
             <div><div className="type-eyebrow text-quaternary">Revision</div><div className="font-mono">{part.revision}</div></div>
@@ -180,7 +180,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         </Panel>
 
         {supplier ? (
-          <Panel title="Supplier">
+          <Panel title="Supplier" icon="supplier">
             <p className="text-sm font-semibold mt-2">{supplier.name}</p>
             <p className="type-body-sm text-muted-foreground">{supplier.country} · Tier {supplier.tier}</p>
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -248,7 +248,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
       {/* Extras: routing / kits / software / ECNs / history */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {routing.length > 0 && (
-          <Panel title="Manufacturing Routing">
+          <Panel title="Manufacturing Routing" icon="mbom">
             <div className="mt-2 space-y-2">
               {routing.map(op => {
                 const plant = plants.find(p => p.id === op.plantId);
@@ -264,7 +264,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {kits.length > 0 && (
-          <Panel title="Service Kits That Include This Part">
+          <Panel title="Service Kits That Include This Part" icon="service-kit">
             <div className="mt-2 flex flex-wrap gap-1.5">
               {kits.map(k => <Badge key={k.id} variant="outline" className="type-caption font-mono">{k.id} · {k.name}</Badge>)}
             </div>
@@ -272,7 +272,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {softOnMe.length > 0 && (
-          <Panel title="Software Running on This ECU">
+          <Panel title="Software Running on This ECU" icon="software">
             <div className="mt-2 space-y-1.5">
               {softOnMe.map(s => (
                 <div key={s.id} className="flex items-center justify-between rounded-md border border-hairline p-2 text-xs">
@@ -290,7 +290,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {affectingEcns.length > 0 && (
-          <Panel title="ECNs Affecting This Part">
+          <Panel title="ECNs Affecting This Part" icon="ecn">
             <div className="mt-2 space-y-1.5">
               {affectingEcns.map(e => (
                 <button key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left">

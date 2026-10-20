@@ -80,7 +80,7 @@ const SoftwareBom = () => {
 
       {/* ECU rollup + CVE trend */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Panel title="ECU Cyber Posture" className="lg:col-span-2">
+        <Panel title="ECU Cyber Posture" icon="software" className="lg:col-span-2">
           <p className="type-body-sm text-muted-foreground mb-3">Each ECU and its software package footprint</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {ecuRollup.map(r => (
@@ -171,7 +171,7 @@ const SoftwareBom = () => {
           </thead>
           <tbody>
             {filtered.length === 0 && (
-              <tr><td colSpan={7}><EmptyState title="No packages match this filter" /></td></tr>
+              <tr><td colSpan={7}><EmptyState title="No packages match this filter" mark="software" /></td></tr>
             )}
             {filtered.map(c => {
               const ecu = getPart(c.runsOnECU);

@@ -60,6 +60,7 @@ const BomCompare = () => {
   return (
     <PageHeader
       title="BOM Compare"
+      mark="variant"
       subtitle="Side-by-side diff across variants, or between EBOM and MBOM"
       actions={<Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="h-3.5 w-3.5" />Export diff (CSV)</Button>}
     >
@@ -146,7 +147,7 @@ const BomCompare = () => {
           </div>
 
           {ebomVsMbom.onlyEbom.length > 0 && (
-            <Panel title="Unmapped EBOM Assemblies">
+            <Panel title="Unmapped EBOM Assemblies" icon="assembly">
               <div className="overflow-x-auto">
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">

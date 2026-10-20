@@ -1,3 +1,4 @@
+import { EntityIcon } from "@/components/icons/EntityIcon";
 import { Panel, KpiTile, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -83,7 +84,7 @@ const Variants = () => {
                   onClick={() => setSelectedVariant(v.code)}
                   className={cn("border-t border-hairline cursor-pointer hover:bg-raised",
                     selectedVariant === v.code && "bg-raised")}>
-                <td className="px-3 py-2 font-mono">{v.code}</td>
+                <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityIcon id="variant" />{v.code}</span></td>
                 <td className="px-3 py-2 font-semibold">{v.name}</td>
                 <td className="px-3 py-2 text-tertiary">{v.powertrain}</td>
                 <td className="px-3 py-2 text-tertiary">{v.trim}</td>
@@ -120,7 +121,7 @@ const Variants = () => {
           </Button>
         </div>
 
-        <Panel title="Effectivity Matrix" className="lg:col-span-2">
+        <Panel title="Effectivity Matrix" icon="variant" className="lg:col-span-2">
           <p className="type-body-sm text-muted-foreground">Which variants include each optional / powertrain-gated part</p>
           <div className="mt-3 overflow-x-auto">
             <table className="tabular w-full text-xs">

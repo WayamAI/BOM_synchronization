@@ -210,7 +210,7 @@ const ServiceBom = () => {
             </thead>
             <tbody>
               {filteredFrus.length === 0 && (
-                <tr><td colSpan={8}><EmptyState title="No FRUs match this filter" /></td></tr>
+                <tr><td colSpan={8}><EmptyState title="No FRUs match this filter" mark="fru" /></td></tr>
               )}
               {filteredFrus.map(({ part: p, costs }) => {
                 const kits = serviceKits.filter(k => k.items.some(i => i.partNumber === p.partNumber));
