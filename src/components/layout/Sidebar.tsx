@@ -152,7 +152,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
             const hideItems = !open && (expanded ? "hidden" : "max-lg:hidden");
             return (
               <div key={group.section} className="flex flex-col gap-1">
-                {gi > 0 && <div className={cn("my-1 border-t border-hairline", expanded ? "mx-1" : "lg:mx-2")} />}
+                {gi > 0 && <div className={cn("my-1 border-t border-hairline", expanded ? "-mx-3" : "-mx-3 lg:-mx-[14px]")} />}
                 {!single && (
                   <button
                     type="button"

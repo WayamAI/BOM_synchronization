@@ -157,6 +157,9 @@
     letter-spacing: -0.01em;
   }
 
+  /* The last table row never doubles the border of the panel around it. */
+  tbody tr:last-child { border-bottom-width: 0; }
+
   /* Chronus icon stroke */
   svg.lucide { stroke-width: 1.75; }
 

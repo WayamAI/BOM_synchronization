@@ -388,7 +388,7 @@ const EbomManager = () => {
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
             <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} Parts`} padded={false} className="flex-1 min-h-[520px]">
-              <div role="tree" aria-label="Engineering BOM structure">
+              <div role="tree" aria-label="Engineering BOM structure" className="-mb-px">
                 <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
               </div>
               {filter && !matchesDeep(tree, filter) && <EmptyState title="No components match this search" mark="ebom" />}
