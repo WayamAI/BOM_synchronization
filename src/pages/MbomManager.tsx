@@ -1,6 +1,6 @@
 import { plural } from "@/lib/format";
 import { EntityIcon } from "@/components/icons/EntityIcon";
-import { EmptyState, QuietStatus } from "@/components/ui/primitives";
+import { EmptyState, PanelHeader, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -53,8 +53,8 @@ const MbomManager = () => {
       subtitle={`Meridian MY2026 · ${plural(totals.mbomOps, "routing operation")} across ${plural(totals.plants, "plant")}`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><ArrowDownToLine aria-hidden className="h-3.5 w-3.5" />Sync from EBOM</Button>
-          <Button size="sm" className="gap-1.5"><Factory aria-hidden className="h-3.5 w-3.5" />Release to MES</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><ArrowDownToLine aria-hidden className="size-3.5" />Sync from EBOM</Button>
+          <Button size="sm" className="gap-1.5"><Factory aria-hidden className="size-3.5" />Release to MES</Button>
         </>
       }
     >
@@ -65,17 +65,17 @@ const MbomManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <Factory aria-hidden className="h-4 w-4 text-primary" />
-                  <h3 className="text-sm font-semibold">{r.plant.name}</h3>
+                  <Factory aria-hidden className="size-3.5 text-tertiary shrink-0" />
+                  <h3 className="type-body-md font-semibold">{r.plant.name}</h3>
                 </div>
-                <p className="type-body-sm text-muted-foreground">{r.plant.country} · {r.plant.capacityPerDay} units/day</p>
+                <p className="type-body-sm text-tertiary">{r.plant.country} · {r.plant.capacityPerDay} units/day</p>
               </div>
               {r.issues > 0
                 ? <Badge variant="warning">{r.issues} open</Badge>
                 : <QuietStatus tone="success">All ready</QuietStatus>
               }
             </div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+            <div className="mt-3 grid grid-cols-3 gap-2 type-body-sm">
               <div>
                 <div className="type-eyebrow text-quaternary">Routing ops</div>
                 <div className="font-semibold">{r.ops}</div>
@@ -94,16 +94,17 @@ const MbomManager = () => {
             </div>
           </div>
         ))}
-        <div className="rounded-lg border border-hairline bg-container p-4 md:col-span-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="type-section text-quaternary">EBOM vs MBOM Reconciliation</h3>
-              <p className="type-body-sm text-muted-foreground">Assemblies in EBOM that need a routing operation in MBOM</p>
-            </div>
-            <Badge variant={unmapped.length ? "warning" : "success"}>
-              {unmapped.length ? `${unmapped.length} unmapped` : "100% mapped"}
-            </Badge>
-          </div>
+        <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4 md:col-span-3">
+          <PanelHeader
+            className="-mx-4 -mt-4 mb-4"
+            title="EBOM vs MBOM Reconciliation"
+            action={
+              <Badge variant={unmapped.length ? "warning" : "success"}>
+                {unmapped.length ? `${unmapped.length} unmapped` : "100% mapped"}
+              </Badge>
+            }
+          />
+          <p className="type-body-sm text-tertiary">Assemblies in EBOM that need a routing operation in MBOM</p>
           {unmapped.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {unmapped.slice(0, 16).map(p => (
@@ -111,7 +112,7 @@ const MbomManager = () => {
                   {p.partNumber} · {p.name}
                 </button>
               ))}
-              {unmapped.length > 16 && <span className="type-caption text-muted-foreground self-center">+{unmapped.length - 16} more</span>}
+              {unmapped.length > 16 && <span className="type-caption text-tertiary self-center">+{unmapped.length - 16} more</span>}
             </div>
           )}
         </div>
@@ -120,14 +121,14 @@ const MbomManager = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={plantFilter} onValueChange={setPlantFilter}>
-          <SelectTrigger aria-label="Filter by plants" className="h-8 w-48 text-xs"><SelectValue placeholder="All plants" /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by plants" className="h-8 w-48 type-label-sm"><SelectValue placeholder="All plants" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All plants</SelectItem>
             {plants.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger aria-label="Filter by status" className="h-8 w-36 text-xs"><SelectValue placeholder="All statuses" /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by status" className="h-8 w-36 type-label-sm"><SelectValue placeholder="All statuses" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All status</SelectItem>
             <SelectItem value="ready">Ready</SelectItem>
@@ -137,12 +138,12 @@ const MbomManager = () => {
           </SelectContent>
         </Select>
         <div className="relative">
-          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
           <Input aria-label="Search routing by PN, station, operation"
             value={q}
             onChange={e => setQ(e.target.value)}
             placeholder="Search routing by PN, station, operation"
-            className="h-8 w-72 pl-8 text-xs"
+            className="h-8 w-72 pl-8 type-label-sm"
           />
         </div>
         <Badge variant="secondary" className="ml-auto">{filteredOps.length} op{filteredOps.length === 1 ? "" : "s"}</Badge>
@@ -150,7 +151,7 @@ const MbomManager = () => {
 
       {/* Routing table */}
       <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
-        <table className="tabular w-full text-xs">
+        <table className="tabular w-full type-body-sm">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Op ID</th>
@@ -175,14 +176,14 @@ const MbomManager = () => {
                 <tr key={o.id} className="border-t border-hairline hover:bg-raised">
                   <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityIcon id="mbom" />{o.id}</span></td>
                   <td className="px-3 py-2">
-                    <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${o.partNumber}`)}>
+                    <button className="text-left hover:text-foreground" onClick={() => navigate(`/parts/${o.partNumber}`)}>
                       <div className="font-semibold">{part?.name ?? o.partNumber}</div>
-                      <div className="font-mono type-caption text-muted-foreground">{o.partNumber}</div>
+                      <div className="font-mono type-caption text-tertiary">{o.partNumber}</div>
                     </button>
                   </td>
                   <td className="px-3 py-2">{o.operation}</td>
                   <td className="px-3 py-2">{plant?.name}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{o.line}</td>
+                  <td className="px-3 py-2 text-tertiary">{o.line}</td>
                   <td className="px-3 py-2 font-mono">{o.station}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{o.takeTimeSec}s</td>
                   <td className="px-3 py-2 font-mono type-caption">{o.workInstructionId ?? "—"}</td>
@@ -195,22 +196,17 @@ const MbomManager = () => {
       </div>
 
       {/* Consumables / phantoms */}
-      <div className="rounded-lg border border-hairline bg-container p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="type-section text-quaternary">Consumables & Phantom Items</h3>
-            <p className="type-body-sm text-muted-foreground">Fluids, adhesives and commodity items rolled up per vehicle, not tracked in EBOM</p>
-          </div>
-          <AlertTriangle aria-hidden className="h-4 w-4 text-muted-foreground" />
-        </div>
+      <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
+        <PanelHeader className="-mx-4 -mt-4 mb-4" title="Consumables & Phantom Items" />
+        <p className="type-body-sm text-tertiary">Fluids, adhesives and commodity items rolled up per vehicle, not tracked in EBOM</p>
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-2">
           {mbomConsumables.map(c => (
             <div key={c.code} className="rounded-md border border-hairline p-2">
-              <div className="text-xs font-semibold">{c.name}</div>
-              <div className="type-caption text-muted-foreground font-mono">{c.code}</div>
+              <div className="type-body-sm font-semibold">{c.name}</div>
+              <div className="type-caption text-tertiary font-mono">{c.code}</div>
               <div className="mt-1 flex items-center justify-between type-body-sm">
                 <span>{c.qtyPerVehicle} {c.uom}/veh</span>
-                <span className="text-muted-foreground">{c.supplier}</span>
+                <span className="text-tertiary">{c.supplier}</span>
               </div>
             </div>
           ))}
@@ -219,12 +215,12 @@ const MbomManager = () => {
 
       {/* Footer */}
       <div className="rounded-lg border border-hairline bg-container p-3 flex items-center gap-3 flex-wrap">
-        <CheckCircle2 aria-hidden className="h-4 w-4 text-success" />
-        <span className="text-xs">{mbomOps.filter(o => o.status === "ready").length} ready</span>
-        <AlertTriangle aria-hidden className="h-4 w-4 text-warning" />
-        <span className="text-xs">{mbomOps.filter(o => o.status !== "ready").length} need attention</span>
-        <ExternalLink aria-hidden className="h-3 w-3 ml-auto text-muted-foreground" />
-        <button className="type-body-sm text-muted-foreground hover:text-foreground" onClick={() => navigate("/compare")}>Compare with EBOM</button>
+        <CheckCircle2 aria-hidden className="size-3.5 text-success" />
+        <span className="type-body-sm">{mbomOps.filter(o => o.status === "ready").length} ready</span>
+        <AlertTriangle aria-hidden className="size-3.5 text-warning" />
+        <span className="type-body-sm">{mbomOps.filter(o => o.status !== "ready").length} need attention</span>
+        <ExternalLink aria-hidden className="size-3.5 ml-auto text-tertiary" />
+        <button className="type-body-sm text-tertiary hover:text-foreground" onClick={() => navigate("/compare")}>Compare with EBOM</button>
       </div>
     </PageHeader>
   );

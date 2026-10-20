@@ -90,7 +90,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
             onClick={(e) => { e.stopPropagation(); setManual(!open); }}
             className="grid size-5 shrink-0 place-items-center rounded-md outline-none hover:bg-raised-2"
           >
-            {open ? <ChevronDown aria-hidden className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight aria-hidden className="h-3.5 w-3.5 opacity-60" />}
+            {open ? <ChevronDown aria-hidden className="size-3.5 opacity-60" /> : <ChevronRight aria-hidden className="size-3.5 opacity-60" />}
           </button>
         ) : <span className="w-5 shrink-0" />}
         <HealthDot health={node.health} />
@@ -146,7 +146,7 @@ const getChildCount = (node: EbomNode): number => {
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
     <p className="type-eyebrow text-quaternary">{label}</p>
-    <div className="text-xs">{value}</div>
+    <div className="type-body-sm">{value}</div>
   </div>
 );
 
@@ -172,7 +172,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
           <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>
           <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ? statusText(node.status) : "—"}</p>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Close details" onClick={onClose}><X aria-hidden className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="icon" aria-label="Close details" onClick={onClose}><X aria-hidden /></Button>
       </div>
 
       <div className="flex flex-wrap gap-1.5 p-3 border-b border-hairline">
@@ -180,14 +180,14 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
           <button key={t}
             onClick={() => setTab(t)}
             aria-pressed={tab === t}
-            className={cn("rounded-full border px-2.5 py-1 text-xs font-medium whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active",
+            className={cn("rounded-full border px-2.5 py-1 type-body-sm font-medium whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active",
               tab === t ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>
             {t}
           </button>
         ))}
       </div>
 
-      <div className="p-4 space-y-3 text-xs">
+      <div className="p-4 space-y-3 type-body-sm">
         {tab === "Overview" && (
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Field label="Part number" value={<span className="font-mono">{node.partNumber}</span>} />
@@ -213,17 +213,17 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "Where-Used" && (
           <div className="space-y-2">
-            <p className="type-body-sm text-muted-foreground">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
-            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">No parents. This is the top-level vehicle.</p>}
+            <p className="type-body-sm text-tertiary">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-tertiary">No parents. This is the top-level vehicle.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (
                 <div key={i} className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised cursor-pointer" onClick={() => navigate(`/parts/${e.parentPN}`)}>
                   <div>
-                    <div className="text-xs font-semibold">{parent?.name ?? e.parentPN}</div>
-                    <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}</div>
+                    <div className="type-body-sm font-semibold">{parent?.name ?? e.parentPN}</div>
+                    <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}</div>
                   </div>
-                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </div>
               );
             })}
@@ -232,32 +232,32 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "Manufacturing" && (
           <div className="space-y-2">
-            {routingOps.length === 0 && <p className="type-body-sm italic text-muted-foreground">No MBOM routing defined. Add one from the MBOM Manager.</p>}
+            {routingOps.length === 0 && <p className="type-body-sm italic text-tertiary">No MBOM routing defined. Add one from the MBOM Manager.</p>}
             {routingOps.map(op => {
               const plant = plants.find(p => p.id === op.plantId);
               return (
                 <div key={op.id} className="rounded-lg border border-hairline p-3 bg-raised">
-                  <div className="text-xs font-semibold">{op.operation}</div>
-                  <div className="type-body-sm text-muted-foreground mt-1">{plant?.name} · {op.line} · {op.station}</div>
+                  <div className="type-body-sm font-semibold">{op.operation}</div>
+                  <div className="type-body-sm text-tertiary mt-1">{plant?.name} · {op.line} · {op.station}</div>
                   <div className="flex items-center justify-between type-caption mt-2">
-                    <span className="text-muted-foreground">{op.takeTimeSec}s takt · {op.workInstructionId}</span>
+                    <span className="text-tertiary">{op.takeTimeSec}s takt · {op.workInstructionId}</span>
                     {op.status === "ready" ? <QuietStatus tone="success">{op.status}</QuietStatus> : <Badge variant={op.status === "warning" ? "warning" : op.status === "blocked" ? "error" : "neutral"}>{op.status}</Badge>}
                   </div>
                 </div>
               );
             })}
-            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate("/mbom")}>Open in MBOM Manager</Button>
+            <Button variant="link" className="type-label-sm px-0 h-auto" onClick={() => navigate("/mbom")}>Open in MBOM Manager</Button>
           </div>
         )}
 
         {tab === "Software" && (
           <div className="space-y-2">
-            {softOnMe.length === 0 && <p className="type-body-sm italic text-muted-foreground">No software packages declared for this part. Relevant only for ECU-type parts.</p>}
+            {softOnMe.length === 0 && <p className="type-body-sm italic text-tertiary">No software packages declared for this part. Relevant only for ECU-type parts.</p>}
             {softOnMe.map(c => (
               <div key={c.id} className="flex items-center justify-between rounded-md border border-hairline p-2">
                 <div>
-                  <div className="text-xs font-semibold">{c.name} <span className="font-mono text-muted-foreground">{c.version}</span></div>
-                  <div className="type-caption text-muted-foreground">{c.license} · {c.supplier}</div>
+                  <div className="type-body-sm font-semibold">{c.name} <span className="font-mono text-tertiary">{c.version}</span></div>
+                  <div className="type-caption text-tertiary">{c.license} · {c.supplier}</div>
                 </div>
                 {c.cves.length > 0
                   ? <Badge variant="error">{plural(c.cves.length, "CVE")}</Badge>
@@ -269,16 +269,16 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "History" && (
           <div className="relative pl-4 space-y-3 border-l border-hairline">
-            {history.length === 0 && <p className="type-body-sm italic text-muted-foreground">No revision history yet.</p>}
+            {history.length === 0 && <p className="type-body-sm italic text-tertiary">No revision history yet.</p>}
             {history.map((h, i) => (
               <div key={i} className="relative">
-                <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-primary" />
-                <div className="text-xs font-semibold">rev {h.revision}{h.ecnId ? ` · ${h.ecnId}` : ""}</div>
+                <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-action-primary" />
+                <div className="type-body-sm font-semibold">rev {h.revision}{h.ecnId ? ` · ${h.ecnId}` : ""}</div>
                 <div className="type-body-sm">{h.note}</div>
-                <div className="type-caption text-muted-foreground">{h.date} · {h.by}</div>
+                <div className="type-caption text-tertiary">{h.date} · {h.by}</div>
               </div>
             ))}
-            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate(`/lineage/${node.partNumber}`)}>Open full lineage</Button>
+            <Button variant="link" className="type-label-sm px-0 h-auto" onClick={() => navigate(`/lineage/${node.partNumber}`)}>Open full lineage</Button>
           </div>
         )}
       </div>
@@ -333,9 +333,9 @@ const EbomManager = () => {
       subtitle={`${activeProgram.name} ${activeProgram.modelYear} · ${variantLabel} · ${activeProgram.globalRevision}`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><GitCompare aria-hidden className="h-3.5 w-3.5" />Compare</Button>
-          <Button variant="outline" size="sm" className="gap-1.5"><Link2 aria-hidden className="h-3.5 w-3.5" />Add relationship</Button>
-          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />Add component</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><GitCompare aria-hidden className="size-3.5" />Compare</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><Link2 aria-hidden className="size-3.5" />Add relationship</Button>
+          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="size-3.5" />Add component</Button>
         </>
       }
     >
@@ -349,7 +349,7 @@ const EbomManager = () => {
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-2">
           <Select value={variantCode} onValueChange={setVariantCode}>
-            <SelectTrigger aria-label="Filter by variants" className="h-8 w-56 text-xs">
+            <SelectTrigger aria-label="Filter by variants" className="h-8 w-56 type-label-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -359,14 +359,14 @@ const EbomManager = () => {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" className="gap-1.5 h-8"><Filter aria-hidden className="h-3.5 w-3.5" />Filter</Button>
+          <Button variant="outline" size="sm" className="gap-1.5 h-8"><Filter aria-hidden className="size-3.5" />Filter</Button>
           <div className="relative">
-            <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
             <Input aria-label="Search EBOM by name or PN"
               value={filter}
               onChange={e => setFilter(e.target.value)}
               placeholder="Search EBOM by name or PN"
-              className="h-8 w-72 pl-8 text-xs"
+              className="h-8 w-72 pl-8 type-label-sm"
             />
           </div>
         </div>
@@ -400,7 +400,7 @@ const EbomManager = () => {
           <div className="flex flex-col lg:flex-row gap-4">
             <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} padded={false} className="flex-1 min-h-[520px]">
               <div className="overflow-x-auto">
-                <table className="tabular w-full text-xs">
+                <table className="tabular w-full type-body-sm">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap"><span className="sr-only">Health</span></th>
@@ -449,13 +449,13 @@ const EbomManager = () => {
 
         {/* Validation footer */}
         <div className="rounded-lg border border-hairline bg-warning-surface p-3 flex items-center gap-3 flex-wrap">
-          <GitBranch aria-hidden className="h-4 w-4 text-warning" />
-          <span className="text-xs font-semibold text-warning">Validation</span>
-          <span className="text-xs text-muted-foreground">
+          <GitBranch aria-hidden className="size-3.5 text-warning" />
+          <span className="type-body-sm font-semibold text-warning">Validation</span>
+          <span className="type-body-sm text-tertiary">
             {plural(activeProgram.bomEdges.length, "parent-child edge")} · {plural(all.filter(n => !n.owner).length, "part")} without owner · {plural(all.filter(n => n.health === "warning" || n.health === "critical").length, "health issue")} open
           </span>
-          <Boxes aria-hidden className="h-4 w-4 ml-auto text-muted-foreground" />
-          <ShieldAlert aria-hidden className="h-4 w-4 text-muted-foreground" />
+          <Boxes aria-hidden className="size-3.5 ml-auto text-tertiary" />
+          <ShieldAlert aria-hidden className="size-3.5 text-tertiary" />
         </div>
       </Tabs>
     </PageHeader>

@@ -15,7 +15,7 @@ import { useProgramContext } from "@/context/ProgramContext";
 import { logout } from "@/lib/auth";
 import { locate } from "./nav";
 
-const pill = "h-8 gap-1.5 rounded-full border-hairline bg-action px-3 text-xs font-medium text-tertiary hover:border-strong hover:bg-raised-2 hover:text-foreground";
+const pill = "h-8 gap-1.5 rounded-full border-hairline bg-action px-3 type-body-sm font-medium text-tertiary hover:border-strong hover:bg-raised-2 hover:text-foreground";
 const iconBtn = "size-8 rounded-full bg-action text-tertiary hover:bg-raised-2 hover:text-secondary-foreground";
 
 export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
@@ -49,7 +49,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className={pill}>
               <span className="max-w-[9rem] truncate text-foreground">{activeProgram.name}</span>
-              <Badge variant="secondary" className="hidden h-5 px-1.5 text-[10px] font-mono sm:inline-flex">{activeProgram.modelYear}</Badge>
+              <Badge variant="secondary" className="hidden h-5 px-1.5 type-caption font-mono sm:inline-flex">{activeProgram.modelYear}</Badge>
               <ChevronDown className="size-3 text-quaternary" aria-hidden />
             </Button>
           </DropdownMenuTrigger>
@@ -60,10 +60,10 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
               <DropdownMenuItem key={p.id} onClick={() => setActiveProgramId(p.id)} className="flex items-center justify-between cursor-pointer">
                 <div className="flex flex-col gap-0.5">
                   <span className="font-medium">{p.name}</span>
-                  <span className="text-[10px] text-muted-foreground">{p.category} · {p.stage}</span>
+                  <span className="type-caption text-tertiary">{p.category} · {p.stage}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono tabular text-muted-foreground">{p.modelYear}</span>
+                  <span className="type-body-sm font-mono tabular text-tertiary">{p.modelYear}</span>
                   {activeProgram.id === p.id && <span className="size-1.5 rounded-full bg-action-primary" />}
                 </div>
               </DropdownMenuItem>
@@ -81,13 +81,13 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-72" align="end">
-            <p className="text-xs font-semibold mb-2">VIN scope</p>
-            <p className="text-[11px] text-muted-foreground mb-2">Default: aggregate across all produced VINs.</p>
-            <div className="space-y-1.5 text-xs">
-              <div className="flex justify-between"><span className="text-muted-foreground">Plant</span><span>All (2)</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Market</span><span>All (5)</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">Variant</span><span>All trims</span></div>
-              <div className="flex justify-between"><span className="text-muted-foreground">VIN range</span><span>—</span></div>
+            <p className="type-body-sm font-semibold mb-2">VIN scope</p>
+            <p className="type-caption text-tertiary mb-2">Default: aggregate across all produced VINs.</p>
+            <div className="space-y-1.5 type-body-sm">
+              <div className="flex justify-between"><span className="text-tertiary">Plant</span><span>All (2)</span></div>
+              <div className="flex justify-between"><span className="text-tertiary">Market</span><span>All (5)</span></div>
+              <div className="flex justify-between"><span className="text-tertiary">Variant</span><span>All trims</span></div>
+              <div className="flex justify-between"><span className="text-tertiary">VIN range</span><span>—</span></div>
             </div>
           </PopoverContent>
         </Popover>
@@ -103,7 +103,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
             readOnly
             onFocus={() => setSearchHint(true)}
             onBlur={() => setSearchHint(false)}
-            className="h-8 w-72 cursor-default rounded-full border-hairline bg-action pl-9 pr-14 text-xs"
+            className="h-8 w-72 cursor-default rounded-full border-hairline bg-action pl-9 pr-14 type-body-sm"
           />
           {searchHint && (
             <div
@@ -114,7 +114,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
               Search coming soon
             </div>
           )}
-          <kbd className="absolute right-2.5 top-1/2 inline-flex h-5 -translate-y-1/2 items-center gap-0.5 rounded-full border border-hairline bg-container px-1.5 text-[10px] text-quaternary">
+          <kbd className="absolute right-2.5 top-1/2 inline-flex h-5 -translate-y-1/2 items-center gap-0.5 rounded-full border border-hairline bg-container px-1.5 type-caption text-quaternary">
             <Command className="size-3" aria-hidden />K
           </kbd>
         </div>
@@ -124,7 +124,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Notifications" className={`${iconBtn} relative`}>
               <Bell className="size-4" aria-hidden />
-              <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-error-surface text-[10px] font-medium leading-none text-error tabular">
+              <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-error-surface type-caption font-medium leading-none text-error tabular">
                 {notifications.length}
               </span>
             </Button>
@@ -161,9 +161,9 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
               aria-label="Account menu"
               className="flex items-center gap-2 rounded-full py-0.5 pl-0.5 pr-0.5 outline-none transition-colors duration-[180ms] hover:bg-action focus-visible:ring-2 focus-visible:ring-active xl:pr-3"
             >
-              <span className="grid size-8 place-items-center rounded-full bg-raised-2 text-xs font-medium text-foreground">RK</span>
+              <span className="grid size-8 place-items-center rounded-full bg-raised-2 type-body-sm font-medium text-foreground">RK</span>
               <span className="hidden flex-col items-start leading-tight xl:flex">
-                <span className="text-xs font-medium text-foreground">Ravi Kumar</span>
+                <span className="type-body-sm font-medium text-foreground">Ravi Kumar</span>
                 <span className="type-caption text-quaternary">Program manager</span>
               </span>
             </button>

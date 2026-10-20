@@ -109,9 +109,9 @@ const Reports = () => (
     title="Reports & Exports"
       mark="report"
     subtitle={`${reports.length} report types · regulatory, executive, operational and engineering deliverables for ${program.name} ${program.modelYear}`}
-    actions={<Button size="sm" className="gap-1.5"><Calendar aria-hidden className="h-3.5 w-3.5" />Schedule report</Button>}
+    actions={<Button size="sm" className="gap-1.5"><Calendar aria-hidden className="size-3.5" />Schedule report</Button>}
   >
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       {reports.map(r => (
         <div key={r.name} className="rounded-lg border border-hairline bg-container p-4 hover:border-strong transition-colors duration-150 cursor-pointer group">
           <div className="flex items-start justify-between">
@@ -124,8 +124,8 @@ const Reports = () => (
           <p className="type-body-sm mt-1 text-tertiary">{r.desc}</p>
           <p className="type-body-sm mt-3 text-quaternary">{r.outputs.join(" · ")}</p>
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-hairline">
-            <span className="type-body-sm text-muted-foreground">Last run · {r.lastRun}</span>
-            <Button size="sm" variant="ghost" className="h-7 gap-1.5 text-xs"><Download aria-hidden className="h-3 w-3" />Generate</Button>
+            <span className="type-body-sm text-tertiary">Last run · {r.lastRun}</span>
+            <Button size="sm" variant="ghost" className="h-7 gap-1.5 type-label-sm"><Download aria-hidden className="size-3.5" />Generate</Button>
           </div>
         </div>
       ))}

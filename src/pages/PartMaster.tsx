@@ -1,4 +1,4 @@
-import { EmptyState, Panel, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
+import { EmptyState, Panel, PanelHeader, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
 import { plural, statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Search, ArrowLeft, GitBranch, Boxes, ExternalLink, FileEdit } from "lucide-react";
+import { Search, ArrowLeft, Boxes, ExternalLink, FileEdit } from "lucide-react";
 
 const PartList = () => {
   const navigate = useNavigate();
@@ -43,29 +43,29 @@ const PartList = () => {
       title="Part Master"
       mark="part"
       subtitle={`Canonical registry · ${plural(allParts.length, "total part")} across ${plural(products.length, "program")} · single source of truth`}
-      actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="h-3.5 w-3.5" />New part</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="size-3.5" />New part</Button>}
     >
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input aria-label="Search by PN, name, supplier" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by PN, name, supplier" className="h-8 w-80 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
+          <Input aria-label="Search by PN, name, supplier" value={q} onChange={e => setQ(e.target.value)} placeholder="Search by PN, name, supplier" className="h-8 w-80 pl-8 type-label-sm" />
         </div>
         <Select value={programFilter} onValueChange={setProgramFilter}>
-          <SelectTrigger aria-label="Filter by programs" className="h-8 w-44 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by programs" className="h-8 w-44 type-label-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Programs</SelectItem>
             {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger aria-label="Filter by types" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by types" className="h-8 w-40 type-label-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All types</SelectItem>
             {types.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={lcFilter} onValueChange={setLcFilter}>
-          <SelectTrigger aria-label="Filter by lifecycle" className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by lifecycle" className="h-8 w-36 type-label-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">Any lifecycle</SelectItem>
             <SelectItem value="In Work">In work</SelectItem>
@@ -78,7 +78,7 @@ const PartList = () => {
       </div>
 
       <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
-        <table className="tabular w-full text-xs">
+        <table className="tabular w-full type-body-sm">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
@@ -103,12 +103,12 @@ const PartList = () => {
                 <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
                   <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-1.5"><EntityIcon id="part" />{p.partNumber}</span></td>
                   <td className="px-3 py-2 font-semibold">{p.name}</td>
-                  <td className="px-3 py-2 text-muted-foreground type-body-sm">{prog?.name ?? "—"}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
+                  <td className="px-3 py-2 text-tertiary type-body-sm">{prog?.name ?? "—"}</td>
+                  <td className="px-3 py-2 text-tertiary">{p.type}</td>
                   <td className="px-3 py-2 font-mono">{p.revision}</td>
                   <td className="px-3 py-2"><LifecycleStatus status={p.lifecycle} /></td>
                   <td className="px-3 py-2">{p.owner}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{p.supplierId ?? "—"}</td>
+                  <td className="px-3 py-2 text-tertiary">{p.supplierId ?? "—"}</td>
                   <td className="px-3 py-2 text-right tabular-nums">${p.cost.toLocaleString("en-US")}</td>
                   <td className="px-3 py-2 text-right tabular-nums">{p.leadTimeDays}d</td>
                 </tr>
@@ -128,7 +128,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
     return (
       <PageHeader title={`No part ${pn}`} subtitle="That part number does not exist">
         <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
-          <ArrowLeft aria-hidden className="h-3.5 w-3.5 mr-1" />Back to Part Master
+          <ArrowLeft aria-hidden className="size-3.5 mr-1" />Back to Part Master
         </Button>
       </PageHeader>
     );
@@ -151,16 +151,16 @@ const PartDetail = ({ pn }: { pn: string }) => {
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
-            <ArrowLeft aria-hidden className="h-3.5 w-3.5 mr-1" />All parts
+            <ArrowLeft aria-hidden className="size-3.5 mr-1" />All parts
           </Button>
-          <Button size="sm" className="gap-1.5"><FileEdit aria-hidden className="h-3.5 w-3.5" />Propose change</Button>
+          <Button size="sm" className="gap-1.5"><FileEdit aria-hidden className="size-3.5" />Propose change</Button>
         </>
       }
     >
       {/* Facts grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Panel title="Part Details" icon="part" className="lg:col-span-2">
-          <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 text-xs">
+          <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 type-body-sm">
             <div><div className="type-eyebrow text-quaternary">Part number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
             <div><div className="type-eyebrow text-quaternary">Revision</div><div className="font-mono">{part.revision}</div></div>
             <div><div className="type-eyebrow text-quaternary">Type</div><div>{part.type}</div></div>
@@ -175,15 +175,15 @@ const PartDetail = ({ pn }: { pn: string }) => {
             <div><div className="type-eyebrow text-quaternary">Warnings</div><div>{part.warnings ?? 0}</div></div>
           </div>
           {part.description && (
-            <div className="mt-4 pt-3 border-t border-hairline text-xs text-muted-foreground leading-relaxed">{part.description}</div>
+            <div className="mt-4 pt-3 border-t border-hairline type-body-sm text-tertiary leading-relaxed">{part.description}</div>
           )}
         </Panel>
 
         {supplier ? (
           <Panel title="Supplier" icon="supplier">
-            <p className="text-sm font-semibold mt-2">{supplier.name}</p>
-            <p className="type-body-sm text-muted-foreground">{supplier.country} · Tier {supplier.tier}</p>
-            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+            <p className="type-body-md font-semibold mt-2">{supplier.name}</p>
+            <p className="type-body-sm text-tertiary">{supplier.country} · Tier {supplier.tier}</p>
+            <div className="mt-3 grid grid-cols-2 gap-2 type-body-sm">
               <div><div className="type-eyebrow text-quaternary">Financial</div><div>{supplier.financialRating}</div></div>
               <div><div className="type-eyebrow text-quaternary">Geo risk</div><div>{supplier.geoRisk}</div></div>
               <div><div className="type-eyebrow text-quaternary">On-time</div><div>{supplier.onTimePct}%</div></div>
@@ -192,52 +192,46 @@ const PartDetail = ({ pn }: { pn: string }) => {
             </div>
           </Panel>
         ) : (
-          <div className="rounded-lg border border-hairline bg-container p-4 text-xs text-muted-foreground">No supplier assigned (in-house or TBD).</div>
+          <div className="rounded-lg border border-hairline bg-container p-4 type-body-sm text-tertiary">No supplier assigned (in-house or TBD).</div>
         )}
       </div>
 
       {/* Where-used + Uses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="rounded-lg border border-hairline bg-container p-4">
-          <div className="flex items-center gap-2">
-            <GitBranch aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-section text-quaternary">Where-Used (Parents)</h3>
-          </div>
-          <p className="type-body-sm text-muted-foreground mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
+        <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Where-Used (Parents)" />
+          <p className="type-body-sm text-tertiary mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
           <div className="space-y-2">
-            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">Top-level vehicle. No parents.</p>}
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-tertiary">Top-level vehicle. No parents.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (
                 <button key={i} onClick={() => navigate(`/parts/${e.parentPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
                   <div className="text-left">
-                    <div className="text-xs font-semibold">{parent?.name}</div>
-                    <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
+                    <div className="type-body-sm font-semibold">{parent?.name}</div>
+                    <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
                   </div>
-                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="rounded-lg border border-hairline bg-container p-4">
-          <div className="flex items-center gap-2">
-            <Boxes aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-section text-quaternary">Uses (Children)</h3>
-          </div>
-          <p className="type-body-sm text-muted-foreground mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
+        <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Uses (Children)" />
+          <p className="type-body-sm text-tertiary mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
           <div className="space-y-2">
-            {children.length === 0 && <p className="type-body-sm italic text-muted-foreground">Leaf part. No children.</p>}
+            {children.length === 0 && <p className="type-body-sm italic text-tertiary">Leaf part. No children.</p>}
             {children.map((e, i) => {
               const child = getPart(e.childPN);
               return (
                 <button key={i} onClick={() => navigate(`/parts/${e.childPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
                   <div className="text-left">
-                    <div className="text-xs font-semibold">{child?.name}</div>
-                    <div className="type-caption font-mono text-muted-foreground">{e.childPN} · qty {e.qty}</div>
+                    <div className="type-body-sm font-semibold">{child?.name}</div>
+                    <div className="type-caption font-mono text-tertiary">{e.childPN} · qty {e.qty}</div>
                   </div>
-                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </button>
               );
             })}
@@ -253,9 +247,9 @@ const PartDetail = ({ pn }: { pn: string }) => {
               {routing.map(op => {
                 const plant = plants.find(p => p.id === op.plantId);
                 return (
-                  <div key={op.id} className="rounded-md border border-hairline p-2 text-xs">
+                  <div key={op.id} className="rounded-md border border-hairline p-2 type-body-sm">
                     <div className="font-semibold">{op.operation}</div>
-                    <div className="type-caption text-muted-foreground">{plant?.name} · {op.line} · {op.station} · {op.takeTimeSec}s</div>
+                    <div className="type-caption text-tertiary">{plant?.name} · {op.line} · {op.station} · {op.takeTimeSec}s</div>
                   </div>
                 );
               })}
@@ -275,10 +269,10 @@ const PartDetail = ({ pn }: { pn: string }) => {
           <Panel title="Software Running on This ECU" icon="software">
             <div className="mt-2 space-y-1.5">
               {softOnMe.map(s => (
-                <div key={s.id} className="flex items-center justify-between rounded-md border border-hairline p-2 text-xs">
+                <div key={s.id} className="flex items-center justify-between rounded-md border border-hairline p-2 type-body-sm">
                   <div>
-                    <div className="font-semibold">{s.name} <span className="font-mono text-muted-foreground">{s.version}</span></div>
-                    <div className="type-caption text-muted-foreground">{s.license} · {s.supplier}</div>
+                    <div className="font-semibold">{s.name} <span className="font-mono text-tertiary">{s.version}</span></div>
+                    <div className="type-caption text-tertiary">{s.license} · {s.supplier}</div>
                   </div>
                   {s.cves.length > 0
                     ? <Badge variant="error">{plural(s.cves.length, "CVE")}</Badge>
@@ -295,8 +289,8 @@ const PartDetail = ({ pn }: { pn: string }) => {
               {affectingEcns.map(e => (
                 <button key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left">
                   <div>
-                    <div className="font-mono text-xs">{e.id}</div>
-                    <div className="text-xs font-semibold">{e.title}</div>
+                    <div className="font-mono type-body-sm">{e.id}</div>
+                    <div className="type-body-sm font-semibold">{e.title}</div>
                   </div>
                   {e.state === "In Review" ? <Badge variant="warning">{statusText(e.state)}</Badge> : e.state === "Rejected" || e.state === "Cancelled" ? <Badge variant="neutral">{statusText(e.state)}</Badge> : <QuietStatus tone={e.state === "Released" ? "success" : e.state === "Approved" ? "info" : "neutral"}>{statusText(e.state)}</QuietStatus>}
                 </button>
@@ -310,10 +304,10 @@ const PartDetail = ({ pn }: { pn: string }) => {
             <div className="mt-3 relative pl-4 space-y-3 border-l border-hairline">
               {history.map((h, i) => (
                 <div key={i} className="relative">
-                  <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-primary" />
-                  <div className="text-xs font-semibold">rev {h.revision} {h.ecnId && <span className="text-primary font-mono">· {h.ecnId}</span>}</div>
+                  <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-action-primary" />
+                  <div className="type-body-sm font-semibold">rev {h.revision} {h.ecnId && <span className="text-foreground font-mono">· {h.ecnId}</span>}</div>
                   <div className="type-body-sm">{h.note}</div>
-                  <div className="type-caption text-muted-foreground">{h.date} · {h.by}</div>
+                  <div className="type-caption text-tertiary">{h.date} · {h.by}</div>
                 </div>
               ))}
             </div>

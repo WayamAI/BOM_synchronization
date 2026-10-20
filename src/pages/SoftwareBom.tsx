@@ -56,8 +56,8 @@ const SoftwareBom = () => {
       subtitle={`Cyber · CycloneDX-compatible software inventory · ${plural(totals.softwareComponents, "package")} across ${plural(ecuParts.length, "ECU")}`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="h-3.5 w-3.5" />Export CycloneDX</Button>
-          <Button size="sm" className="gap-1.5"><ShieldAlert aria-hidden className="h-3.5 w-3.5" />Run vulnerability scan</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="size-3.5" />Export CycloneDX</Button>
+          <Button size="sm" className="gap-1.5"><ShieldAlert aria-hidden className="size-3.5" />Run vulnerability scan</Button>
         </>
       }
     >
@@ -82,7 +82,7 @@ const SoftwareBom = () => {
       {/* ECU rollup + CVE trend */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Panel title="ECU Cyber Posture" icon="software" className="lg:col-span-2">
-          <p className="type-body-sm text-muted-foreground mb-3">Each ECU and its software package footprint</p>
+          <p className="type-body-sm text-tertiary mb-3">Each ECU and its software package footprint</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {ecuRollup.map(r => (
               <button
@@ -91,10 +91,10 @@ const SoftwareBom = () => {
                 className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <Cpu aria-hidden className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <Cpu aria-hidden className="size-3.5 text-tertiary shrink-0" />
                   <div className="min-w-0">
-                    <div className="text-xs font-semibold truncate">{r.ecu.name}</div>
-                    <div className="type-caption font-mono text-muted-foreground">{r.ecu.partNumber} · {r.ecu.revision}</div>
+                    <div className="type-body-sm font-semibold truncate">{r.ecu.name}</div>
+                    <div className="type-caption font-mono text-tertiary">{r.ecu.partNumber} · {r.ecu.revision}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
@@ -111,7 +111,7 @@ const SoftwareBom = () => {
         </Panel>
 
         <Panel title="CVE Trend · 6 Weeks">
-          <p className="type-body-sm text-muted-foreground">New vulnerabilities identified per week</p>
+          <p className="type-body-sm text-tertiary">New vulnerabilities identified per week</p>
           <div className="h-[220px] mt-2">
             <ResponsiveContainer>
               <BarChart data={cveTimeline} margin={{ top: 10, right: 8, left: -20, bottom: 0 }}>
@@ -132,14 +132,14 @@ const SoftwareBom = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={ecuFilter} onValueChange={setEcuFilter}>
-          <SelectTrigger aria-label="Filter by ECUs" className="h-8 w-56 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by ECUs" className="h-8 w-56 type-label-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All ECUs</SelectItem>
             {ecuParts.map(e => <SelectItem key={e.partNumber} value={e.partNumber}>{e.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={sevFilter} onValueChange={setSevFilter}>
-          <SelectTrigger aria-label="Filter by severity" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by severity" className="h-8 w-40 type-label-sm"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">Any severity</SelectItem>
             <SelectItem value="Critical">Critical</SelectItem>
@@ -150,15 +150,15 @@ const SoftwareBom = () => {
           </SelectContent>
         </Select>
         <div className="relative">
-          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input aria-label="Search package or vendor" value={q} onChange={e => setQ(e.target.value)} placeholder="Search package or vendor" className="h-8 w-64 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
+          <Input aria-label="Search package or vendor" value={q} onChange={e => setQ(e.target.value)} placeholder="Search package or vendor" className="h-8 w-64 pl-8 type-label-sm" />
         </div>
         <Badge variant="secondary" className="ml-auto">{filtered.length} package{filtered.length === 1 ? "" : "s"}</Badge>
       </div>
 
       {/* Package table */}
       <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
-        <table className="tabular w-full text-xs">
+        <table className="tabular w-full type-body-sm">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Package</th>
@@ -181,11 +181,11 @@ const SoftwareBom = () => {
                   <td className="px-3 py-2 font-mono font-semibold">{c.name}</td>
                   <td className="px-3 py-2 font-mono">{c.version}</td>
                   <td className="px-3 py-2">{c.license}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{c.supplier}</td>
+                  <td className="px-3 py-2 text-tertiary">{c.supplier}</td>
                   <td className="px-3 py-2">
-                    <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${c.runsOnECU}`)}>
+                    <button className="text-left hover:text-foreground" onClick={() => navigate(`/parts/${c.runsOnECU}`)}>
                       <div>{ecu?.name}</div>
-                      <div className="font-mono type-caption text-muted-foreground">{c.runsOnECU}</div>
+                      <div className="font-mono type-caption text-tertiary">{c.runsOnECU}</div>
                     </button>
                   </td>
                   <td className="px-3 py-2">{c.critical ? <Badge variant="error">Safety-critical</Badge> : <span className="type-body-sm text-tertiary">Non-critical</span>}</td>
@@ -196,7 +196,7 @@ const SoftwareBom = () => {
                         <div key={v.id} className="flex items-center gap-1.5">
                           <Badge variant={sevCls(v.severity)}>{v.severity}</Badge>
                           <span className="font-mono type-caption">{v.id}</span>
-                          {v.fixedIn && <span className="type-caption text-muted-foreground">fixed in {v.fixedIn}</span>}
+                          {v.fixedIn && <span className="type-caption text-tertiary">fixed in {v.fixedIn}</span>}
                         </div>
                       ))}
                     </div>

@@ -10,7 +10,7 @@ import wayamWordmarkDark from "@/assets/brand/wayam-wordmark-dark.svg";
 import { navGroups, pinnedItems } from "./nav";
 
 const healthDot = (h?: string) => {
-  if (h === "critical") return "bg-critical";
+  if (h === "critical") return "bg-error";
   if (h === "warning")  return "bg-warning";
   return "bg-success";
 };
@@ -21,7 +21,7 @@ const TreeBranch = ({ node, onPick, depth = 0 }: { node: EbomNode; onPick: (pn: 
   const hasChildren = !!node.children?.length;
   return (
     <div>
-      <div className="group flex w-full items-center gap-1 rounded-lg py-0.5 pr-2 text-xs text-secondary-foreground transition-colors duration-150 hover:bg-action hover:text-foreground">
+      <div className="group flex w-full items-center gap-1 rounded-lg py-0.5 pr-2 type-body-sm text-secondary-foreground transition-colors duration-150 hover:bg-action hover:text-foreground">
         {hasChildren ? (
           <button
             type="button"
@@ -253,7 +253,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
               <button
                 key={pn.id}
                 onClick={() => navigate(pn.to)}
-                className="group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs text-secondary-foreground outline-none transition-colors duration-150 hover:bg-action hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
+                className="group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 type-body-sm text-secondary-foreground outline-none transition-colors duration-150 hover:bg-action hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
               >
                 <span className="size-1 shrink-0 rounded-full bg-quaternary" />
                 <span className="flex-1 truncate text-left">{pn.label}</span>

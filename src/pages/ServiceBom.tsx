@@ -76,8 +76,8 @@ const ServiceBom = () => {
       subtitle={`Spare parts, service kits & field-replaceable units · labor rate ${money(SERVICE_LABOR_RATE_USD_PER_HOUR)}/hr`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><BookOpen aria-hidden className="h-3.5 w-3.5" />Service manual</Button>
-          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />New service kit</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><BookOpen aria-hidden className="size-3.5" />Service manual</Button>
+          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="size-3.5" />New service kit</Button>
         </>
       }
     >
@@ -94,12 +94,12 @@ const ServiceBom = () => {
       {/* Tabs + filters */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="inline-flex gap-1.5">
-          <button onClick={() => setTab("kits")} aria-pressed={tab === "kits"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "kits" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="service-kit" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />Service Kits</button>
-          <button onClick={() => setTab("frus")} aria-pressed={tab === "frus"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "frus" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="fru" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />Field-Replaceable Units</button>
+          <button onClick={() => setTab("kits")} aria-pressed={tab === "kits"} className={cn("rounded-full border px-3 py-1 type-body-sm font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "kits" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="service-kit" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />Service Kits</button>
+          <button onClick={() => setTab("frus")} aria-pressed={tab === "frus"} className={cn("rounded-full border px-3 py-1 type-body-sm font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", tab === "frus" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="fru" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />Field-Replaceable Units</button>
         </div>
         {tab === "kits" && (
           <Select value={cat} onValueChange={setCat}>
-            <SelectTrigger aria-label="Filter by categories" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
+            <SelectTrigger aria-label="Filter by categories" className="h-8 w-40 type-label-sm"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">All categories</SelectItem>
               <SelectItem value="Routine">Routine</SelectItem>
@@ -111,8 +111,8 @@ const ServiceBom = () => {
           </Select>
         )}
         <div className="relative">
-          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input aria-label={tab === "kits" ? "Search kits" : "Search FRUs"} value={q} onChange={e => setQ(e.target.value)} placeholder={tab === "kits" ? "Search kits" : "Search FRUs"} className="h-8 w-64 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
+          <Input aria-label={tab === "kits" ? "Search kits" : "Search FRUs"} value={q} onChange={e => setQ(e.target.value)} placeholder={tab === "kits" ? "Search kits" : "Search FRUs"} className="h-8 w-64 pl-8 type-label-sm" />
         </div>
       </div>
 
@@ -125,20 +125,20 @@ const ServiceBom = () => {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-sm font-semibold leading-tight">{k.name}</h3>
+                    <h3 className="type-body-md font-semibold leading-tight">{k.name}</h3>
                     {catBadge(k.category) === "success" ? <span className="type-body-sm text-tertiary">{k.category}</span> : <Badge variant={catBadge(k.category)}>{k.category}</Badge>}
                   </div>
-                  <p className="type-body-sm text-muted-foreground font-mono mt-0.5">{k.id}</p>
+                  <p className="type-body-sm text-tertiary font-mono mt-0.5">{k.id}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <div className="type-eyebrow text-quaternary">Labor</div>
-                  <div className="text-xs font-semibold">{k.laborHours}h</div>
+                  <div className="type-body-sm font-semibold">{k.laborHours}h</div>
                 </div>
               </div>
 
               {/* Interval */}
               {(k.intervalKm || k.intervalMonths) && (
-                <div className="mt-1.5 flex items-center gap-2 type-caption text-muted-foreground">
+                <div className="mt-1.5 flex items-center gap-2 type-caption text-tertiary">
                   {k.intervalKm && <span>Every {k.intervalKm.toLocaleString("en-US")} km</span>}
                   {k.intervalKm && k.intervalMonths && <span className="opacity-50">·</span>}
                   {k.intervalMonths && <span>{k.intervalMonths} months</span>}
@@ -147,23 +147,23 @@ const ServiceBom = () => {
 
               {/* Cost breakdown — the new block */}
               <div className="mt-3 rounded-lg border border-hairline bg-raised p-2.5">
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-2 gap-2 type-body-sm">
                   <div className="rounded-md bg-container p-2 border border-hairline">
                     <div className="type-eyebrow text-quaternary flex items-center gap-1">
                       <Tag aria-hidden className="h-2.5 w-2.5" />Replacement cost
                     </div>
-                    <div className="text-base font-semibold tabular-nums text-success mt-0.5">{money(costs.partsSubtotal)}</div>
-                    <div className="type-caption text-muted-foreground">parts only · DIY</div>
+                    <div className="type-body-lg font-semibold tabular-nums text-success mt-0.5">{money(costs.partsSubtotal)}</div>
+                    <div className="type-caption text-tertiary">parts only · DIY</div>
                   </div>
                   <div className="rounded-md bg-container p-2 border border-hairline">
                     <div className="type-eyebrow text-quaternary flex items-center gap-1">
                       <Receipt aria-hidden className="h-2.5 w-2.5" />Service cost
                     </div>
-                    <div className="text-base font-semibold tabular-nums text-primary mt-0.5">{money(costs.serviceCost)}</div>
-                    <div className="type-caption text-muted-foreground">parts + labor · dealer</div>
+                    <div className="type-body-lg font-semibold tabular-nums text-foreground mt-0.5">{money(costs.serviceCost)}</div>
+                    <div className="type-caption text-tertiary">parts + labor · dealer</div>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center justify-between type-caption text-muted-foreground pt-2 border-t border-hairline">
+                <div className="mt-2 flex items-center justify-between type-caption text-tertiary pt-2 border-t border-hairline">
                   <span>Labor: <span className="text-foreground font-semibold tabular-nums">{money(costs.laborCost)}</span></span>
                   <span>Save DIY: <span className="text-success font-semibold tabular-nums">{money(costs.diySavings)}</span></span>
                 </div>
@@ -178,12 +178,12 @@ const ServiceBom = () => {
                     className="w-full flex items-center justify-between text-left rounded-md border border-hairline px-2 py-1.5 hover:bg-raised"
                   >
                     <div className="min-w-0">
-                      <div className="text-xs font-semibold truncate">{it.name}</div>
-                      <div className="type-caption font-mono text-muted-foreground">{it.partNumber}</div>
+                      <div className="type-body-sm font-semibold truncate">{it.name}</div>
+                      <div className="type-caption font-mono text-tertiary">{it.partNumber}</div>
                     </div>
                     <div className="text-right shrink-0 ml-2">
-                      <div className="type-caption text-muted-foreground">×{it.qty} @ {money(it.unitCost)}</div>
-                      <div className="text-xs font-semibold tabular-nums">{money(it.lineTotal)}</div>
+                      <div className="type-caption text-tertiary">×{it.qty} @ {money(it.unitCost)}</div>
+                      <div className="type-body-sm font-semibold tabular-nums">{money(it.lineTotal)}</div>
                     </div>
                   </button>
                 ))}
@@ -196,7 +196,7 @@ const ServiceBom = () => {
       {/* FRU view */}
       {tab === "frus" && (
         <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
-          <table className="tabular w-full text-xs">
+          <table className="tabular w-full type-body-sm">
             <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
                 <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
@@ -219,14 +219,14 @@ const ServiceBom = () => {
                   <tr key={p.partNumber} className="border-t border-hairline hover:bg-raised cursor-pointer" onClick={() => navigate(`/parts/${p.partNumber}`)}>
                     <td className="px-3 py-2 font-mono">{p.partNumber}</td>
                     <td className="px-3 py-2 font-semibold">{p.name}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{p.type}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{p.supplierId}</td>
+                    <td className="px-3 py-2 text-tertiary">{p.type}</td>
+                    <td className="px-3 py-2 text-tertiary">{p.supplierId}</td>
                     <td className="px-3 py-2 text-right tabular-nums text-success font-semibold">{money(costs.replacementCost)}</td>
-                    <td className="px-3 py-2 text-right tabular-nums text-muted-foreground">
+                    <td className="px-3 py-2 text-right tabular-nums text-tertiary">
                       {money(costs.laborCost)}
                       <div className="type-caption opacity-70">{costs.laborHours}h</div>
                     </td>
-                    <td className="px-3 py-2 text-right tabular-nums text-primary font-semibold">{money(costs.serviceCost)}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-foreground font-semibold">{money(costs.serviceCost)}</td>
                     <td className="px-3 py-2">
                       {kits.length > 0
                         ? <div className="flex flex-wrap gap-1">{kits.map(k => <Badge key={k.id} variant="outline" className="type-caption font-mono">{k.id}</Badge>)}</div>
@@ -242,9 +242,9 @@ const ServiceBom = () => {
 
       {/* Coverage footer */}
       <div className="rounded-lg border border-hairline bg-warning-surface p-3 flex items-center gap-3 flex-wrap">
-        <Wrench aria-hidden className="h-4 w-4 text-warning" />
-        <span className="text-xs font-semibold text-warning">Service coverage</span>
-        <span className="text-xs text-muted-foreground">
+        <Wrench aria-hidden className="size-3.5 text-warning" />
+        <span className="type-body-sm font-semibold text-warning">Service coverage</span>
+        <span className="type-body-sm text-tertiary">
           {partsCoveredByKits.size} of {plural(frus.length, "FRU")} covered by a kit · {plural(uncoveredFrus.length, "FRU")} need a kit assignment
         </span>
       </div>

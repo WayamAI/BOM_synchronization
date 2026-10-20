@@ -36,6 +36,17 @@ export const Unit = ({ children, className }: { children: ReactNode; className?:
   <span className={cn("ml-0.5 font-sans text-[0.7em] tracking-normal", className)}>{children}</span>
 );
 
+/** Shared panel header: h-11, hairline underneath, eyebrow-caps title with an optional entity icon and action. */
+export const PanelHeader = ({ title, icon, action, className }: { title: ReactNode; icon?: string; action?: ReactNode; className?: string }) => (
+  <header className={cn("flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4", className)}>
+    <h3 className="type-section flex min-w-0 items-center gap-2 text-quaternary">
+      {icon && <EntityIcon id={icon} />}
+      <span className="truncate">{title}</span>
+    </h3>
+    {action && <div className="shrink-0">{action}</div>}
+  </header>
+);
+
 /** Content card: 8px radius, hairline border, no shadow, optional eyebrow header. */
 export const Panel = ({
   title,
@@ -56,15 +67,7 @@ export const Panel = ({
   children: ReactNode;
 }) => (
   <section className={cn("flex flex-col overflow-hidden rounded-lg border border-hairline bg-container", className)}>
-    {title && (
-      <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4">
-        <h3 className="type-section flex min-w-0 items-center gap-2 text-quaternary">
-          {icon && <EntityIcon id={icon} />}
-          <span className="truncate">{title}</span>
-        </h3>
-        {action && <div className="shrink-0">{action}</div>}
-      </header>
-    )}
+    {title && <PanelHeader title={title} icon={icon} action={action} />}
     <div className={cn("min-h-0 flex-1 overflow-auto", padded && "p-4", bodyClassName)}>{children}</div>
   </section>
 );

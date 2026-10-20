@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { fieldEvents, program, getPart } from "@/lib/mockData";
 import { Badge, type BadgeVariant } from "@/components/ui/badge";
-import { KpiTile } from "@/components/ui/primitives";
+import { KpiTile, PanelHeader } from "@/components/ui/primitives";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { cn } from "@/lib/utils";
@@ -29,7 +29,7 @@ const FieldQuality = () => {
       title="Field Quality"
       mark="field-event"
       subtitle="Warranty clusters · VIN population scoping · root-cause linkage to Part Master"
-      actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Scope recall (AI)</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="size-3.5" />Scope recall (AI)</Button>}
     >
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -49,16 +49,14 @@ const FieldQuality = () => {
       </div>
 
       {/* AI root-cause panel */}
-      <div className="rounded-lg border border-hairline bg-container p-4">
-        <div className="flex items-center gap-2 relative">
-          <Sparkles className="h-3.5 w-3.5 text-quaternary" aria-hidden />
-          <div>
-            <h3 className="type-section text-quaternary">AI Root-Cause · Power Liftgate Actuator Cluster</h3>
-            <p className="type-caption text-muted-foreground">14 VINs · last 72h · Premium / Signature trims · BDY-LFT-7701</p>
-          </div>
-          <Badge variant="warning" className="ml-auto">81% confidence</Badge>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 text-xs relative">
+      <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
+        <PanelHeader
+          className="-mx-4 -mt-4 mb-4"
+          title="AI Root-Cause · Power Liftgate Actuator Cluster"
+          action={<Badge variant="warning">81% confidence</Badge>}
+        />
+        <p className="type-caption mb-3 text-tertiary">14 VINs · last 72h · Premium / Signature trims · BDY-LFT-7701</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 type-body-sm relative">
           {[
             { l: "Most likely cause",   v: "Actuator clutch slip on Magna lot 2026-MG-0418" },
             { l: "Common factor",       v: "All 14 VINs built at Pune ST-18 between Apr 12 to 14" },
@@ -74,12 +72,9 @@ const FieldQuality = () => {
 
       {/* Events table */}
       <div className="rounded-lg border border-hairline bg-container overflow-hidden">
-        <div className="p-4 border-b border-hairline flex items-center justify-between">
-          <h3 className="type-section text-quaternary">Field Quality Events</h3>
-          <Badge variant="outline" className="type-caption">{fieldEvents.length} tracked</Badge>
-        </div>
+        <PanelHeader title="Field Quality Events" action={<Badge variant="outline" className="type-caption">{fieldEvents.length} tracked</Badge>} />
         <div className="overflow-x-auto">
-          <table className="tabular w-full text-xs">
+          <table className="tabular w-full type-body-sm">
             <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
                 <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">ID</th>
@@ -103,18 +98,18 @@ const FieldQuality = () => {
                     <td className="px-3 py-2 font-semibold">{e.title}</td>
                     <td className="px-3 py-2">
                       {part
-                        ? <button className="text-left hover:text-primary" onClick={() => navigate(`/parts/${e.partNumber}`)}>
+                        ? <button className="text-left hover:text-foreground" onClick={() => navigate(`/parts/${e.partNumber}`)}>
                             <div>{part.name}</div>
-                            <div className="font-mono type-caption text-muted-foreground">{e.partNumber}</div>
+                            <div className="font-mono type-caption text-tertiary">{e.partNumber}</div>
                           </button>
-                        : <span className="text-muted-foreground">—</span>}
+                        : <span className="text-tertiary">—</span>}
                     </td>
-                    <td className="px-3 py-2 text-muted-foreground">{e.variant}</td>
+                    <td className="px-3 py-2 text-tertiary">{e.variant}</td>
                     <td className="px-3 py-2 text-right tabular-nums">{e.vinsAffected.toLocaleString("en-US")}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{e.ageHours < 24 ? `${e.ageHours}h` : `${Math.round(e.ageHours / 24)}d`}</td>
+                    <td className="px-3 py-2 text-tertiary">{e.ageHours < 24 ? `${e.ageHours}h` : `${Math.round(e.ageHours / 24)}d`}</td>
                     <td className="px-3 py-2">{e.status === "Investigating" ? <Badge variant="warning">{e.status}</Badge> : <span className="type-body-sm text-tertiary">{e.status}</span>}</td>
                     <td className="px-3 py-2">
-                      <Button size="sm" variant="ghost" className="h-6 type-body-sm gap-1 text-primary"><MapPin aria-hidden className="h-3 w-3" />Trace</Button>
+                      <Button size="sm" variant="ghost" className="h-6 type-body-sm gap-1 text-foreground"><MapPin aria-hidden className="size-3.5" />Trace</Button>
                     </td>
                   </tr>
                 );
@@ -126,9 +121,9 @@ const FieldQuality = () => {
 
       <div className="rounded-lg border border-hairline bg-warning-surface p-4 flex items-start gap-3">
         <AlertTriangle aria-hidden className="h-5 w-5 text-warning shrink-0 mt-0.5" />
-        <div className="text-xs">
+        <div className="type-body-sm">
           <p className="font-semibold text-warning">UNECE R155 reportability check</p>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-tertiary mt-1">
             1 cybersecurity event (Infotainment IHU log4j CVE) crosses the disclosure threshold and must be reported within 7 days.
             See <button className="underline" onClick={() => navigate("/compliance")}>Compliance</button> for the audit trail.
           </p>

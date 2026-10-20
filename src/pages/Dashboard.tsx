@@ -140,7 +140,7 @@ const Dashboard = () => {
         </div>
 
         {/* Health row */}
-        <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="col-span-12 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <HealthArc value={ebomScore} label="EBOM maturity" direction="higher-better" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
           <HealthArc value={mbomScore} label="MBOM readiness" direction="higher-better" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
           <HealthArc value={100 - supplyScore} label="Supply risk" direction="lower-better" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />

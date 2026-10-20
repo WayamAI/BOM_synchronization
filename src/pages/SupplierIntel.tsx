@@ -45,7 +45,7 @@ const SupplierIntel = () => {
       title="Supplier Intelligence"
       mark="supplier"
       subtitle={`${totals.suppliers} active suppliers · ${totals.singleSource} single-source parts · automated risk scoring`}
-      actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Predict disruptions</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="size-3.5" />Predict disruptions</Button>}
     >
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -69,20 +69,20 @@ const SupplierIntel = () => {
         <div className="lg:col-span-2"><CveHeatmap /></div>
         <Panel title="AI Disruption Forecast" icon="supplier" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
           <p className="type-body-sm text-tertiary">{plural(disruptions.length, "high-confidence signal")} · next 90 days</p>
-          <ul className="mt-3 space-y-3 text-xs relative">
+          <ul className="mt-3 space-y-3 type-body-sm relative">
             {disruptions.map((s, i) => (
               <li key={i} className="rounded-md border border-hairline bg-warning-surface p-2.5">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">{s.name} · {s.country}</span>
                   <Badge variant="warning">{s.riskScore}%</Badge>
                 </div>
-                <p className="type-body-sm text-muted-foreground mt-0.5 flex items-center gap-1">
+                <p className="type-body-sm text-tertiary mt-0.5 flex items-center gap-1">
                   <AlertTriangle aria-hidden className="h-2.5 w-2.5" />
                   {s.financialRating === "B" ? "Financial pressure" : "Geopolitical exposure"} · {s.singleSource ? "single-source" : "dual-source"}
                 </p>
               </li>
             ))}
-            {disruptions.length === 0 && <p className="type-body-sm italic text-muted-foreground">No high-risk signals in forecast window.</p>}
+            {disruptions.length === 0 && <p className="type-body-sm italic text-tertiary">No high-risk signals in forecast window.</p>}
           </ul>
         </Panel>
       </div>
@@ -90,15 +90,15 @@ const SupplierIntel = () => {
       {/* Filter */}
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
-          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-          <Input aria-label="Search suppliers" value={q} onChange={e => setQ(e.target.value)} placeholder="Search suppliers" className="h-8 w-80 pl-8 text-xs" />
+          <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
+          <Input aria-label="Search suppliers" value={q} onChange={e => setQ(e.target.value)} placeholder="Search suppliers" className="h-8 w-80 pl-8 type-label-sm" />
         </div>
         <Badge variant="secondary" className="ml-auto">{filtered.length} of {supplierRollup.length}</Badge>
       </div>
 
       {/* Suppliers table */}
       <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
-        <table className="tabular w-full text-xs">
+        <table className="tabular w-full type-body-sm">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
@@ -120,10 +120,10 @@ const SupplierIntel = () => {
             {filtered.map(s => (
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">
                 <td className="px-3 py-2 font-semibold"><span className="inline-flex items-center gap-1.5"><EntityIcon id="supplier" />{s.name}</span></td>
-                <td className="px-3 py-2 text-muted-foreground flex items-center gap-1.5"><MapPin aria-hidden className="h-3 w-3" />{s.country} · {s.region}</td>
+                <td className="px-3 py-2 text-tertiary flex items-center gap-1.5"><MapPin aria-hidden className="size-3.5" />{s.country} · {s.region}</td>
                 <td className="px-3 py-2 tabular text-tertiary">T{s.tier}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>
-                <td className="px-3 py-2">{s.singleSource ? <Badge variant="warning">Yes</Badge> : <span className="text-muted-foreground">—</span>}</td>
+                <td className="px-3 py-2">{s.singleSource ? <Badge variant="warning">Yes</Badge> : <span className="text-tertiary">—</span>}</td>
                 <td className="px-3 py-2 tabular text-tertiary">{s.financialRating}</td>
                 <td className="px-3 py-2 text-tertiary">{s.geoRisk}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.onTimePct}%</td>
@@ -136,9 +136,9 @@ const SupplierIntel = () => {
       </div>
 
       <div className="rounded-lg border border-hairline bg-container p-3 flex items-center gap-3 flex-wrap">
-        <span className="type-body-sm text-muted-foreground">Click any part in Part Master to see which supplier it comes from.</span>
-        <ExternalLink aria-hidden className="h-3 w-3 ml-auto text-muted-foreground" />
-        <button className="type-body-sm text-muted-foreground hover:text-foreground" onClick={() => navigate("/parts")}>Open Part Master</button>
+        <span className="type-body-sm text-tertiary">Click any part in Part Master to see which supplier it comes from.</span>
+        <ExternalLink aria-hidden className="size-3.5 ml-auto text-tertiary" />
+        <button className="type-body-sm text-tertiary hover:text-foreground" onClick={() => navigate("/parts")}>Open Part Master</button>
       </div>
     </PageHeader>
   );

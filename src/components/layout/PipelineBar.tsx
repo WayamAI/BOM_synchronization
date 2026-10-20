@@ -15,7 +15,7 @@ const stageIcon: Record<string, string> = {
 };
 
 const dotClass = (h: string) => {
-  if (h === "critical") return "bg-critical";
+  if (h === "critical") return "bg-error";
   if (h === "warning")  return "bg-warning";
   return "bg-success";
 };
@@ -60,7 +60,7 @@ export const PipelineBar = () => {
                 onClick={() => path && navigate(path)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 text-xs font-medium outline-none transition-colors duration-[150ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
+                  "inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 type-body-sm font-medium outline-none transition-colors duration-[150ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
                   active
                     ? "border-transparent bg-action-primary text-on-color"
                     : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground",

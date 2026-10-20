@@ -1,3 +1,4 @@
+import { PanelHeader } from "@/components/ui/primitives";
 import { supplierRiskHeatmap } from "@/lib/mockData";
 
 const severities = ["Financial", "Geopolitical", "Single-Source", "Quality", "Delivery"] as const;
@@ -20,11 +21,9 @@ export const CveHeatmap = () => {
   }, { region: supplierRiskHeatmap[0]?.region ?? "-", score: -1 });
 
   return (
-    <div className="h-full w-full self-start rounded-lg border border-hairline bg-container p-4">
-      <div className="mb-4">
-        <h3 className="type-section text-quaternary">Supplier Risk by Region & Category</h3>
-        <p className="type-body-sm mt-1 text-tertiary">Click a cell to drill into Supplier Intelligence</p>
-      </div>
+    <div className="h-full w-full self-start overflow-hidden rounded-lg border border-hairline bg-container p-4">
+      <PanelHeader className="-mx-4 -mt-4 mb-4" title="Supplier Risk by Region & Category" />
+      <p className="type-body-sm mb-4 text-tertiary">Click a cell to drill into Supplier Intelligence</p>
 
       <div className="mb-4 grid grid-cols-2 gap-2">
         <div className="rounded-md border border-hairline bg-raised px-3 py-2">
@@ -51,8 +50,8 @@ export const CveHeatmap = () => {
               return (
                 <div
                   key={s}
-                  className="tabular grid h-8 cursor-pointer place-items-center rounded-md border border-hairline text-xs font-medium transition-colors duration-150 hover:border-strong"
-                  style={{ backgroundColor: cellColor(s, n), color: n > 0 ? "var(--text-primary)" : "var(--text-quaternary)" }}
+                  className="tabular grid h-8 cursor-pointer place-items-center rounded-md border border-hairline type-body-sm font-medium transition-colors duration-150 hover:border-strong"
+                  style={{ backgroundColor: cellColor(s, n), color: n > 0 ? "var(--text-foreground)" : "var(--text-quaternary)" }}
                   title={`${row.region} · ${s}: ${n}`}
                 >
                   {n}

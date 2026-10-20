@@ -50,7 +50,7 @@ const Variants = () => {
       title="Variants & Configuration"
       mark="variant"
       subtitle={`CAT BOM · ${plural(totals.variants, "variant")} across 3 powertrains × 3 trims × global markets`}
-      actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />New variant</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="size-3.5" />New variant</Button>}
     >
       {/* KPI */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -66,7 +66,7 @@ const Variants = () => {
 
       {/* Variant table */}
       <div className="rounded-lg border border-hairline bg-container overflow-x-auto">
-        <table className="tabular w-full text-xs">
+        <table className="tabular w-full type-body-sm">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">SKU</th>
@@ -89,11 +89,11 @@ const Variants = () => {
                 <td className="px-3 py-2 font-semibold">{v.name}</td>
                 <td className="px-3 py-2 text-tertiary">{v.powertrain}</td>
                 <td className="px-3 py-2 text-tertiary">{v.trim}</td>
-                <td className="px-3 py-2 text-muted-foreground">{v.market}</td>
+                <td className="px-3 py-2 text-tertiary">{v.market}</td>
                 <td className="px-3 py-2 font-mono">{v.startEffectivity}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{v.unitsPlanned.toLocaleString("en-US")}</td>
                 <td className="px-3 py-2">{v.conflicts > 0
-                  ? <Badge variant="warning"><AlertTriangle aria-hidden className="h-3 w-3 mr-1" />{v.conflicts}</Badge>
+                  ? <Badge variant="warning"><AlertTriangle aria-hidden className="size-3.5 mr-1" />{v.conflicts}</Badge>
                   : <QuietStatus tone="success">Clean</QuietStatus>}</td>
               </tr>
             ))}
@@ -105,17 +105,17 @@ const Variants = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="rounded-lg border border-hairline bg-container p-4 lg:col-span-1">
           <div className="flex items-center gap-2">
-            <Layers aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-semibold">{variant.name}</h3>
+            <Layers aria-hidden className="size-3.5 text-tertiary shrink-0" />
+            <h3 className="type-body-md font-semibold">{variant.name}</h3>
           </div>
-          <p className="type-body-sm text-muted-foreground font-mono mt-0.5">{variant.code}</p>
-          <div className="mt-4 space-y-2 text-xs">
-            <div className="flex justify-between"><span className="text-muted-foreground">Powertrain</span><span className="font-semibold">{variant.powertrain}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Trim</span><span className="font-semibold">{variant.trim}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Market</span><span className="font-semibold">{variant.market}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Start effectivity</span><span className="font-semibold">{variant.startEffectivity}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Planned volume</span><span className="font-semibold">{variant.unitsPlanned.toLocaleString("en-US")}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">EBOM parts in variant</span><span className="font-semibold">{variantPartsCount}</span></div>
+          <p className="type-body-sm text-tertiary font-mono mt-0.5">{variant.code}</p>
+          <div className="mt-4 space-y-2 type-body-sm">
+            <div className="flex justify-between"><span className="text-tertiary">Powertrain</span><span className="font-semibold">{variant.powertrain}</span></div>
+            <div className="flex justify-between"><span className="text-tertiary">Trim</span><span className="font-semibold">{variant.trim}</span></div>
+            <div className="flex justify-between"><span className="text-tertiary">Market</span><span className="font-semibold">{variant.market}</span></div>
+            <div className="flex justify-between"><span className="text-tertiary">Start effectivity</span><span className="font-semibold">{variant.startEffectivity}</span></div>
+            <div className="flex justify-between"><span className="text-tertiary">Planned volume</span><span className="font-semibold">{variant.unitsPlanned.toLocaleString("en-US")}</span></div>
+            <div className="flex justify-between"><span className="text-tertiary">EBOM parts in variant</span><span className="font-semibold">{variantPartsCount}</span></div>
           </div>
           <Button variant="outline" size="sm" className="w-full mt-4" onClick={() => navigate(`/ebom`)}>
             Open EBOM filtered to this variant
@@ -123,9 +123,9 @@ const Variants = () => {
         </div>
 
         <Panel title="Effectivity Matrix" icon="variant" className="lg:col-span-2">
-          <p className="type-body-sm text-muted-foreground">Which variants include each optional / powertrain-gated part</p>
+          <p className="type-body-sm text-tertiary">Which variants include each optional / powertrain-gated part</p>
           <div className="mt-3 overflow-x-auto">
-            <table className="tabular w-full text-xs">
+            <table className="tabular w-full type-body-sm">
               <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                 <tr className="border-b border-hairline">
                   <th scope="col" className="text-left px-3 py-2 sticky left-0 bg-container font-medium whitespace-nowrap">Part</th>
@@ -140,14 +140,14 @@ const Variants = () => {
                 {effectivityMatrix.map(row => (
                   <tr key={row.pn} className="border-b border-hairline hover:bg-raised">
                     <td className="px-3 py-2 sticky left-0 bg-container">
-                      <div className="font-semibold text-xs">{row.part?.name}</div>
-                      <div className="font-mono type-caption text-muted-foreground">{row.pn}</div>
+                      <div className="font-semibold type-body-sm">{row.part?.name}</div>
+                      <div className="font-mono type-caption text-tertiary">{row.pn}</div>
                     </td>
                     {row.cells.map(c => (
                       <td key={c.variantCode} className={cn("text-center px-3 py-2", c.variantCode === selectedVariant && "bg-raised")}>
                         {c.included
-                          ? <Check aria-hidden className="inline h-3.5 w-3.5 text-success" />
-                          : <XIcon aria-hidden className="inline h-3.5 w-3.5 text-muted-foreground opacity-40" />}
+                          ? <Check aria-hidden className="inline size-3.5 text-success" />
+                          : <XIcon aria-hidden className="inline size-3.5 text-tertiary opacity-40" />}
                       </td>
                     ))}
                   </tr>
