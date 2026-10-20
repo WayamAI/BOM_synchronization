@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Bell, ChevronDown, Download, Search, Command, MapPin, Menu } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const iconBtn = "size-8 rounded-full bg-action text-tertiary hover:bg-raised-2 h
 
 export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
   const { activeProgram, setActiveProgramId } = useProgramContext();
+  const [searchHint, setSearchHint] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { group, title } = locate(location.pathname);
@@ -93,11 +95,25 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
         {/* Universal search */}
         <div className="relative hidden xl:block">
           <Search className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-quaternary" aria-hidden />
+          {/* Decorative on the baseline too (no handler). Read-only, with a hint, so it does not look broken. */}
           <Input
             aria-label="Search"
+            aria-describedby="search-hint"
             placeholder="Search parts, ECNs, suppliers"
-            className="h-8 w-72 rounded-full border-hairline bg-action pl-9 pr-14 text-xs"
+            readOnly
+            onFocus={() => setSearchHint(true)}
+            onBlur={() => setSearchHint(false)}
+            className="h-8 w-72 cursor-default rounded-full border-hairline bg-action pl-9 pr-14 text-xs"
           />
+          {searchHint && (
+            <div
+              id="search-hint"
+              role="status"
+              className="type-body-sm absolute right-0 top-full z-50 mt-2 whitespace-nowrap rounded-xl border border-hairline bg-container px-3 py-2 text-tertiary shadow-lg"
+            >
+              Search coming soon
+            </div>
+          )}
           <kbd className="absolute right-2.5 top-1/2 inline-flex h-5 -translate-y-1/2 items-center gap-0.5 rounded-full border border-hairline bg-container px-1.5 text-[10px] text-quaternary">
             <Command className="size-3" aria-hidden />K
           </kbd>
