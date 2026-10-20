@@ -7,7 +7,7 @@ import { totals, program } from "@/lib/mockData";
 const reports = [
   {
     name: "Executive Program Pack",
-    desc: "Single-page Meridian MY2026 status — health, ECNs, risk, days-to-SOP",
+    desc: "Single-page Meridian MY2026 status: health, ECNs, risk, days-to-SOP",
     format: "PDF",
     schedule: "Weekly",
     lastRun: "Apr 22, 2026",

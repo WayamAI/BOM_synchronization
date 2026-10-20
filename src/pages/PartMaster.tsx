@@ -204,7 +204,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
           </div>
           <p className="type-body-sm text-muted-foreground mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
           <div className="space-y-2">
-            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">Top-level vehicle — no parents.</p>}
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">Top-level vehicle. No parents.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (
@@ -227,7 +227,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
           </div>
           <p className="type-body-sm text-muted-foreground mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
           <div className="space-y-2">
-            {children.length === 0 && <p className="type-body-sm italic text-muted-foreground">Leaf part — no children.</p>}
+            {children.length === 0 && <p className="type-body-sm italic text-muted-foreground">Leaf part. No children.</p>}
             {children.map((e, i) => {
               const child = getPart(e.childPN);
               return (

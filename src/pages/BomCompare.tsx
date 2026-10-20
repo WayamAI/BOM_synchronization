@@ -90,7 +90,7 @@ const BomCompare = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="rounded-lg border border-hairline bg-container p-4">
-              <div className="type-eyebrow text-quaternary mb-2">Only in A — {variants.find(v => v.code === a)?.name}</div>
+              <div className="type-eyebrow text-quaternary mb-2">Only in A · {variants.find(v => v.code === a)?.name}</div>
               <div className="type-display-xl tabular text-foreground mb-2">{variantResult.onlyA.length}</div>
               <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
                 {variantResult.onlyA.map(pn => (
@@ -109,7 +109,7 @@ const BomCompare = () => {
             </div>
 
             <div className="rounded-lg border border-hairline bg-container p-4">
-              <div className="type-eyebrow text-quaternary mb-2">Only in B — {variants.find(v => v.code === b)?.name}</div>
+              <div className="type-eyebrow text-quaternary mb-2">Only in B · {variants.find(v => v.code === b)?.name}</div>
               <div className="type-display-xl tabular text-foreground mb-2">{variantResult.onlyB.length}</div>
               <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
                 {variantResult.onlyB.map(pn => (
@@ -141,7 +141,7 @@ const BomCompare = () => {
             <div className="rounded-lg border border-hairline bg-error-surface p-4">
               <div className="type-eyebrow text-error mb-2">MBOM only (phantom)</div>
               <div className="type-display-xl tabular text-foreground">{ebomVsMbom.onlyMbom.length}</div>
-              <p className="type-body-sm text-muted-foreground mt-1">Routing exists for a part not in EBOM — investigate.</p>
+              <p className="type-body-sm text-muted-foreground mt-1">Routing exists for a part not in EBOM. Investigate.</p>
             </div>
           </div>
 

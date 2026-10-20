@@ -392,7 +392,7 @@ const merAiBriefing: AIBriefingItem[] = [
   { priority:1, text:"ECN-2241 (battery cell tab, EV) blocks 2 supplier requotes. Approve or escalate today.", impact:"$1.4M tooling at risk" },
   { priority:2, text:"Critical CVE on Infotainment IHU affects 3,420 pilot VINs. OTA campaign staged (ECN-2244).", impact:"UNECE R155 exposure" },
   { priority:3, text:"Pune ST-22 is 8% over takt after HV pack rework.", impact:"+12s per vehicle" },
-  { priority:4, text:"Anonymous PCB Co. (Taiwan) downgraded to financial watch — BMS ECU single-source.", impact:"Supply continuity" },
+  { priority:4, text:"Anonymous PCB Co. (Taiwan) downgraded to financial watch, BMS ECU single-source.", impact:"Supply continuity" },
 ];
 
 const merChangeVelocity: ChangeVelocityEntry[] = [
@@ -467,9 +467,9 @@ const atlVariants: Variant[] = [
 const atlEcns: ECN[] = [
   { id:"ECN-3001", title:"CVT belt material grade upgrade", state:"In Review", priority:"High", raisedBy:"Liu Wei", raisedAt:"2026-03-10", affectedPNs:["ATL-CVT-1001"], affectedVariants:["ATL-ICE-BASE-AS","ATL-ICE-PREM-EU"], reason:"Quality", estCostImpactUsd:8, estVinsAffected:0, description:"Belt delamination at 80°C soak. Aisin proposes carbon-fibre reinforced grade.",
     timeline:[{ at:"2026-03-10", by:"Liu Wei", role:"Transmission Engineer", event:"ECN raised" }] },
-  { id:"ECN-3002", title:"BEV wiring harness routing — door intrusion",state:"Draft", priority:"Medium", raisedBy:"Soo-Ah Kim", raisedAt:"2026-03-22", affectedPNs:["ATL-HRN-1001"], affectedVariants:["ATL-BEV-BASE-CN"], reason:"Engineering", estCostImpactUsd:4, estVinsAffected:0, description:"Harness contacts door seal in BEV variant. Reroute through B-pillar.",
+  { id:"ECN-3002", title:"BEV wiring harness routing, door intrusion",state:"Draft", priority:"Medium", raisedBy:"Soo-Ah Kim", raisedAt:"2026-03-22", affectedPNs:["ATL-HRN-1001"], affectedVariants:["ATL-BEV-BASE-CN"], reason:"Engineering", estCostImpactUsd:4, estVinsAffected:0, description:"Harness contacts door seal in BEV variant. Reroute through B-pillar.",
     timeline:[{ at:"2026-03-22", by:"Soo-Ah Kim", role:"E/E Architect", event:"Draft opened" }] },
-  { id:"ECN-3003", title:"Infotainment localisation — Mandarin TTS", state:"Approved", priority:"Low", raisedBy:"Chen Fang", raisedAt:"2026-02-15", approver:"Liu Wei", affectedPNs:["ATL-IHU-1001"], affectedVariants:["ATL-BEV-BASE-CN"], reason:"Engineering", estCostImpactUsd:0, estVinsAffected:0, description:"Add Mandarin text-to-speech pack to IHU firmware for China launch.",
+  { id:"ECN-3003", title:"Infotainment localisation, Mandarin TTS", state:"Approved", priority:"Low", raisedBy:"Chen Fang", raisedAt:"2026-02-15", approver:"Liu Wei", affectedPNs:["ATL-IHU-1001"], affectedVariants:["ATL-BEV-BASE-CN"], reason:"Engineering", estCostImpactUsd:0, estVinsAffected:0, description:"Add Mandarin text-to-speech pack to IHU firmware for China launch.",
     timeline:[{ at:"2026-02-15", by:"Chen Fang", role:"Localisation Lead", event:"ECN raised" },{ at:"2026-02-28", by:"Liu Wei", role:"Program Manager", event:"Approved" }] },
 ];
 
@@ -501,7 +501,7 @@ const atlActivityFeed: ActivityEntry[] = [
 ];
 
 const atlAiBriefing: AIBriefingItem[] = [
-  { priority:1, text:"ECN-3001 CVT belt upgrade pending — must resolve before China homologation gate.", impact:"3-week schedule risk" },
+  { priority:1, text:"ECN-3001 CVT belt upgrade pending, must resolve before China homologation gate.", impact:"3-week schedule risk" },
   { priority:2, text:"BEV harness routing conflict (ECN-3002) must close before prototype build-2 BOM freeze.", impact:"Prototype delay" },
 ];
 
@@ -573,7 +573,7 @@ const ttnVariants: Variant[] = [
 const ttnEcns: ECN[] = [
   { id:"ECN-4001", title:"Diesel engine NVH damper revision", state:"In Review", priority:"Medium", raisedBy:"Jake Morrison", raisedAt:"2026-04-01", affectedPNs:["TTN-ENG-3001"], affectedVariants:["TTN-DSL-BASE-NA","TTN-DSL-PREM-MX"], reason:"Engineering", estCostImpactUsd:14, estVinsAffected:0, description:"Torsional damper resonance at 1,800 rpm identified in rig test.",
     timeline:[{ at:"2026-04-01", by:"Jake Morrison", role:"NVH Engineer", event:"ECN raised" }] },
-  { id:"ECN-4002", title:"Tow hitch load rating documentation update", state:"Released", priority:"Low", raisedBy:"Maria Reyes", raisedAt:"2026-03-01", approver:"Jake Morrison", affectedPNs:["TTN-TOW-3001"], affectedVariants:[], reason:"Regulatory", estCostImpactUsd:0, estVinsAffected:0, description:"Update SAE J2807 compliance documentation — no hardware change.",
+  { id:"ECN-4002", title:"Tow hitch load rating documentation update", state:"Released", priority:"Low", raisedBy:"Maria Reyes", raisedAt:"2026-03-01", approver:"Jake Morrison", affectedPNs:["TTN-TOW-3001"], affectedVariants:[], reason:"Regulatory", estCostImpactUsd:0, estVinsAffected:0, description:"Update SAE J2807 compliance documentation, no hardware change.",
     timeline:[{ at:"2026-03-01", by:"Maria Reyes", role:"Regulatory Engineer", event:"ECN raised" },{ at:"2026-03-12", by:"Jake Morrison", role:"Program Manager", event:"Released" }] },
 ];
 
@@ -597,13 +597,13 @@ const ttnMbomOps: MbomOp[] = [
 
 const ttnActivityFeed: ActivityEntry[] = [
   { id:1, type:"warning",  text:"Diesel NVH resonance at 1,800 rpm found in rig test (ECN-4001 raised)",   user:"NVH Team",   time:"1d ago" },
-  { id:2, type:"approval", text:"ECN-4002 tow hitch documentation released — regulatory gate cleared",     user:"Maria Reyes",time:"3d ago" },
+  { id:2, type:"approval", text:"ECN-4002 tow hitch documentation released, regulatory gate cleared",     user:"Maria Reyes",time:"3d ago" },
   { id:3, type:"add",      text:"Cold-climate test fleet dispatched to Arvidsjaur, Sweden",                user:"Prog. Mgmt", time:"4d ago" },
 ];
 
 const ttnAiBriefing: AIBriefingItem[] = [
   { priority:1, text:"ECN-4001 diesel NVH fix must close before D1 design freeze in 6 weeks.", impact:"SOP gate risk" },
-  { priority:2, text:"Single-source dependency on Cummins diesel ECU — qualify secondary supplier.", impact:"Supply continuity" },
+  { priority:2, text:"Single-source dependency on Cummins diesel ECU, qualify secondary supplier.", impact:"Supply continuity" },
 ];
 
 const ttnChangeVelocity: ChangeVelocityEntry[] = [
@@ -700,14 +700,14 @@ const novMbomOps: MbomOp[] = [
 ];
 
 const novActivityFeed: ActivityEntry[] = [
-  { id:1, type:"critical", text:"LiDAR false-positive emergency braking on 2 test VINs — ADAS investigation opened", user:"ADAS Test",    time:"4h ago" },
+  { id:1, type:"critical", text:"LiDAR false-positive emergency braking on 2 test VINs, ADAS investigation opened", user:"ADAS Test",    time:"4h ago" },
   { id:2, type:"cve",      text:"LiDAR perception CVE discovered (ECN-5002 opened)",                                   user:"Security WG", time:"12h ago" },
   { id:3, type:"warning",  text:"800V pack charge timeout at 150 kW DC on 5 prototype VINs",                          user:"Charging WG", time:"1d ago" },
   { id:4, type:"approval", text:"ECN-5003 torque vectoring calibration approved",                                      user:"Sara Okonkwo",time:"2d ago" },
 ];
 
 const novAiBriefing: AIBriefingItem[] = [
-  { priority:1, text:"LiDAR false-positive braking is a Level 3 safety regression — pause road testing until root cause confirmed.", impact:"L3 homologation at risk" },
+  { priority:1, text:"LiDAR false-positive braking is a Level 3 safety regression, pause road testing until root cause confirmed.", impact:"L3 homologation at risk" },
   { priority:2, text:"ECN-5001 secondary battery supplier qualification must complete before Q3 SOP gate.", impact:"Supply continuity" },
   { priority:3, text:"OTA stall rate 0.8% on cellular hand-off exceeds 0.3% target.", impact:"Field quality metric" },
 ];

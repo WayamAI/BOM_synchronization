@@ -95,7 +95,7 @@ const MbomManager = () => {
         <div className="rounded-lg border border-hairline bg-container p-4 md:col-span-3">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="type-eyebrow text-quaternary">EBOM ↔ MBOM Reconciliation</h3>
+              <h3 className="type-eyebrow text-quaternary">EBOM vs MBOM Reconciliation</h3>
               <p className="type-body-sm text-muted-foreground">Assemblies in EBOM that need a routing operation in MBOM</p>
             </div>
             <Badge variant={unmapped.length ? "warning" : "success"}>
@@ -197,7 +197,7 @@ const MbomManager = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="type-eyebrow text-quaternary">Consumables & Phantom Items</h3>
-            <p className="type-body-sm text-muted-foreground">Fluids, adhesives and commodity items rolled up per vehicle — not tracked in EBOM</p>
+            <p className="type-body-sm text-muted-foreground">Fluids, adhesives and commodity items rolled up per vehicle, not tracked in EBOM</p>
           </div>
           <AlertTriangle aria-hidden className="h-4 w-4 text-muted-foreground" />
         </div>

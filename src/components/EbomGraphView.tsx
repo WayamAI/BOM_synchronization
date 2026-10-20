@@ -386,7 +386,7 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => fitView({ duration: 300, padding: 0.2, maxZoom: 1.2 })} title="Fit to screen">
             <Maximize2 className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={handleReset} title="Reset — collapse all">
+          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={handleReset} title="Reset and collapse all">
             <RotateCcw className="h-3.5 w-3.5" />
           </Button>
         </div>

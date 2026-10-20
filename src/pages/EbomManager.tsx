@@ -181,7 +181,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
         {tab === "Where-Used" && (
           <div className="space-y-2">
             <p className="type-body-sm text-muted-foreground">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
-            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">No parents — this is the top-level vehicle.</p>}
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">No parents. This is the top-level vehicle.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (

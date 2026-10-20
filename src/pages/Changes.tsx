@@ -375,7 +375,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
 
                 {hist.length === 0 ? (
                   <div className="mt-3 rounded-md border border-dashed border-hairline bg-raised px-3 py-4 text-center">
-                    <p className="text-xs text-muted-foreground">This part has not been revised yet — no lineage to display.</p>
+                    <p className="text-xs text-muted-foreground">This part has not been revised yet, so there is no lineage to display.</p>
                     <p className="type-caption text-muted-foreground mt-1">Once this ECN is released, it will appear here as the first revision entry.</p>
                   </div>
                 ) : (

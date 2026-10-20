@@ -61,7 +61,7 @@ const FieldQuality = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 text-xs relative">
           {[
             { l: "Most likely cause",   v: "Actuator clutch slip on Magna lot 2026-MG-0418" },
-            { l: "Common factor",       v: "All 14 VINs built at Pune ST-18 between Apr 12–14" },
+            { l: "Common factor",       v: "All 14 VINs built at Pune ST-18 between Apr 12 to 14" },
             { l: "Recommended action",  v: "Contain lot 2026-MG-0418 (287 VINs scoped). ECN-2242 already approved." },
           ].map(b => (
             <div key={b.l} className="rounded-md border border-hairline bg-raised p-3">

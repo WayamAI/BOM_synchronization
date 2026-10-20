@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
+import { ChevronRight } from "lucide-react";
 import { EntityMark } from "@/components/icons/EntityIcon";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
@@ -23,6 +24,11 @@ const toneDot: Record<Tone, string> = {
   error: "bg-error",
   neutral: "bg-quaternary",
 };
+
+/** Flow separator (Chronus 4.16): a 12px chevron, the only arrow glyph in labels. */
+export const InlineArrow = ({ className }: { className?: string }) => (
+  <ChevronRight aria-hidden className={cn("inline size-3 align-[-1px] text-quaternary", className)} />
+);
 
 /** Unit or percent sign beside a Michroma value: Geist, same colour, slightly smaller. */
 export const Unit = ({ children, className }: { children: ReactNode; className?: string }) => (

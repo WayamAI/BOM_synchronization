@@ -198,7 +198,7 @@ const Dashboard = () => {
                   <div className="rounded-md border border-hairline bg-raised px-3 py-2">
                     <div className="type-eyebrow mb-1 text-quaternary">Actionable insight</div>
                     <p className="type-body-sm text-tertiary">
-                      "{activeProgram.ecns[0].title} ({activeProgram.ecns[0].id}) — prioritize resolution before next gate."
+                      "{activeProgram.ecns[0].title} ({activeProgram.ecns[0].id}), prioritize resolution before next gate."
                     </p>
                   </div>
                 )}
