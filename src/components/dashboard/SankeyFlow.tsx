@@ -46,7 +46,7 @@ export const SankeyFlow = () => {
     <div className="h-full rounded-lg border border-hairline bg-container p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="type-eyebrow text-quaternary">Cross-BOM Flow · Variants <InlineArrow /> EBOM <InlineArrow /> MBOM <InlineArrow /> Service</h3>
+          <h3 className="type-section text-quaternary">Cross-BOM Flow · Variants <InlineArrow /> EBOM <InlineArrow /> MBOM <InlineArrow /> Service</h3>
           <p className="type-body-sm mt-1 text-tertiary">Meridian SUV · variants flowing through engineering, plants and service</p>
         </div>
         <div className="type-caption flex items-center gap-3 text-tertiary">

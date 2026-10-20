@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/format";
 import { useNavigate } from "react-router-dom";
 import { programs, suppliers } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
@@ -139,10 +140,10 @@ const Dashboard = () => {
 
         {/* Health row */}
         <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <HealthArc value={ebomScore} label="EBOM Maturity" tone="success" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
-          <HealthArc value={mbomScore} label="MBOM Readiness" tone="warning" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
-          <HealthArc value={100 - supplyScore} label="Supply Risk" tone="danger" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />
-          <HealthArc value={serviceScore} label="Service Scope" tone="success" micro={[{ label: "Kits", value: String(activeProgram.serviceKits.length) }, { label: "Serviceable", value: `${serviceableParts.length}` }]} />
+          <HealthArc value={ebomScore} label="EBOM maturity" tone="success" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
+          <HealthArc value={mbomScore} label="MBOM readiness" tone="warning" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
+          <HealthArc value={100 - supplyScore} label="Supply risk" tone="danger" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />
+          <HealthArc value={serviceScore} label="Service scope" tone="success" micro={[{ label: "Kits", value: String(activeProgram.serviceKits.length) }, { label: "Serviceable", value: `${serviceableParts.length}` }]} />
         </div>
 
         <div className="col-span-12 flex flex-col xl:col-span-8">
@@ -247,7 +248,7 @@ const Dashboard = () => {
                   >
                     <div className="mb-1 flex items-start justify-between gap-2">
                       <span className="type-caption font-mono text-quaternary">{e.id}</span>
-                      <Badge variant="warning">{e.state}</Badge>
+                      <Badge variant="warning">{statusText(e.state)}</Badge>
                     </div>
                     <p className="type-body-md line-clamp-1 text-foreground">{e.title}</p>
                     <p className="type-body-sm mt-0.5 line-clamp-1 text-tertiary">{e.reason}</p>

@@ -198,14 +198,14 @@ const ServiceBom = () => {
           <table className="tabular w-full text-xs">
             <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
               <tr>
-                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
                 <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                 <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
                 <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
                 <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Replacement<br/><span className="font-normal normal-case type-caption">parts only</span></th>
                 <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Labor</th>
                 <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Service<br/><span className="font-normal normal-case type-caption">parts + labor</span></th>
-                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">In Kits</th>
+                <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">In kits</th>
               </tr>
             </thead>
             <tbody>

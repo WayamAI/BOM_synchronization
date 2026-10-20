@@ -26,7 +26,7 @@ const FieldQuality = () => {
 
   return (
     <PageHeader
-      title="Field Quality & Recall Scoping"
+      title="Field Quality"
       mark="field-event"
       subtitle="Warranty clusters · VIN population scoping · root-cause linkage to Part Master"
       actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Scope recall (AI)</Button>}
@@ -53,7 +53,7 @@ const FieldQuality = () => {
         <div className="flex items-center gap-2 relative">
           <Sparkles className="h-3.5 w-3.5 text-quaternary" aria-hidden />
           <div>
-            <h3 className="type-eyebrow text-quaternary">AI Root-Cause · Power Liftgate Actuator cluster</h3>
+            <h3 className="type-section text-quaternary">AI Root-Cause · Power Liftgate Actuator Cluster</h3>
             <p className="type-caption text-muted-foreground">14 VINs · last 72h · Premium / Signature trims · BDY-LFT-7701</p>
           </div>
           <Badge variant="warning" className="ml-auto">81% confidence</Badge>
@@ -75,7 +75,7 @@ const FieldQuality = () => {
       {/* Events table */}
       <div className="rounded-lg border border-hairline bg-container overflow-hidden">
         <div className="p-4 border-b border-hairline flex items-center justify-between">
-          <h3 className="type-eyebrow text-quaternary">Field Quality Events</h3>
+          <h3 className="type-section text-quaternary">Field Quality Events</h3>
           <Badge variant="outline" className="type-caption">{fieldEvents.length} tracked</Badge>
         </div>
         <div className="overflow-x-auto">

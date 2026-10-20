@@ -101,7 +101,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
           {navGroups.map((group, gi) => (
             <div key={group.section} className="flex flex-col gap-1.5">
               {gi > 0 && <div className={cn("mx-1 my-1 border-t border-hairline", expanded ? "" : "lg:mx-2")} />}
-              <div className={cn("type-eyebrow px-1 pt-1 text-quaternary", railOnly)}>{group.section}</div>
+              <div className={cn("type-section px-1 pt-1 text-quaternary", railOnly)}>{group.section}</div>
               {group.items.map(({ to, label, icon: Icon, end }) => (
                 <NavLink
                   key={to}
@@ -145,7 +145,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
 
         <div className={cn("border-t border-hairline px-3 pt-3", railOnly)}>
           <div className="mb-1 flex items-center justify-between px-1">
-            <span className="type-eyebrow text-quaternary">Program tree</span>
+            <span className="type-section text-quaternary">Program Tree</span>
             <span className="type-caption tabular text-quaternary">rev 2.4</span>
           </div>
           <div className="pb-4">
@@ -163,7 +163,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
         >
           <div className="flex items-center gap-2">
             <Pin className="size-3 text-quaternary" aria-hidden />
-            <span className="type-eyebrow text-quaternary">Pinned</span>
+            <span className="type-section text-quaternary">Pinned</span>
           </div>
           <ChevronDown className={cn("size-3 text-quaternary transition-transform duration-150", !pinnedOpen && "-rotate-90")} aria-hidden />
         </button>
@@ -208,7 +208,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
           style={{ top: flyout.top }}
           className="pointer-events-none fixed left-[76px] z-50 hidden -translate-y-1/2 rounded-xl border border-hairline bg-container px-3 py-2 shadow-lg lg:block"
         >
-          <div className="type-eyebrow whitespace-nowrap text-quaternary">{flyout.group}</div>
+          <div className="type-section whitespace-nowrap text-quaternary">{flyout.group}</div>
           <div className="type-label-md whitespace-nowrap text-foreground">{flyout.label}</div>
         </div>
       )}

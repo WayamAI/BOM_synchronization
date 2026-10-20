@@ -1,5 +1,6 @@
 import { EmptyState, Panel, KpiTile } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
+import { statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -29,8 +30,8 @@ const stateCls = (s: string): BadgeVariant =>
 // Normal states are quiet text; only states that need attention get a solid badge.
 const EcnState = ({ state }: { state: string }) =>
   state === "In Review" || state === "Rejected"
-    ? <Badge variant={stateCls(state)}>{state}</Badge>
-    : <span className="type-body-sm text-tertiary">{state}</span>;
+    ? <Badge variant={stateCls(state)}>{statusText(state)}</Badge>
+    : <span className="type-body-sm text-tertiary">{statusText(state)}</span>;
 
 const prioCls = (p: string): BadgeVariant =>
   p === "Critical" ? "error" :
@@ -68,10 +69,10 @@ const ChangesList = () => {
         {STATES.map(s => {
           const count = ecns.filter(e => e.state === s).length;
           return (
-            <KpiTile key={s} label={s} value={count} />
+            <KpiTile key={s} label={statusText(s)} value={count} />
           );
         })}
-        <KpiTile label="Rejected / Cancelled" value={<>{ecns.filter(e => e.state === "Rejected" || e.state === "Cancelled").length}</>} />
+        <KpiTile label="Rejected or cancelled" value={<>{ecns.filter(e => e.state === "Rejected" || e.state === "Cancelled").length}</>} />
       </div>
 
       {/* Filters */}
@@ -80,7 +81,7 @@ const ChangesList = () => {
           <SelectTrigger aria-label="Filter by states" className="h-8 w-40 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All states</SelectItem>
-            {STATES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+            {STATES.map(s => <SelectItem key={s} value={s}>{statusText(s)}</SelectItem>)}
             <SelectItem value="Rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
@@ -221,7 +222,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
         <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
             <Workflow aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-eyebrow text-quaternary">Impact Analysis</h3>
+            <h3 className="type-section text-quaternary">Impact Analysis</h3>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-3 text-xs">
             <div className="rounded-md border border-hairline p-2">
@@ -251,7 +252,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Clock aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-eyebrow text-quaternary">Timeline · People & Rationale</h3>
+            <h3 className="type-section text-quaternary">Timeline · People & Rationale</h3>
           </div>
           <Badge variant="secondary" className="type-caption">{ecn.timeline.length} event{ecn.timeline.length === 1 ? "" : "s"}</Badge>
         </div>
@@ -309,7 +310,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
       {/* Affected parts table */}
       <div className="rounded-lg border border-hairline bg-container">
         <div className="p-4 border-b border-hairline flex items-center justify-between">
-          <h3 className="type-eyebrow text-quaternary">Affected Parts ({ecn.affectedPNs.length})</h3>
+          <h3 className="type-section text-quaternary">Affected Parts ({ecn.affectedPNs.length})</h3>
           {ecn.affectedVariants.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {ecn.affectedVariants.map(v => <Badge key={v} variant="outline" className="type-caption font-mono">{v}</Badge>)}
@@ -319,12 +320,12 @@ const ChangesDetail = ({ id }: { id: string }) => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
-              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Current Rev</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Current rev</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Unit Cost</th>
+              <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Unit cost</th>
             </tr>
           </thead>
           <tbody>
@@ -351,7 +352,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
         <div className="p-4 border-b border-hairline flex items-center justify-between">
           <div className="flex items-center gap-2">
             <History aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-eyebrow text-quaternary">Revision Lineage</h3>
+            <h3 className="type-section text-quaternary">Revision Lineage</h3>
           </div>
           <span className="type-caption text-muted-foreground">History of each affected part across prior ECNs</span>
         </div>

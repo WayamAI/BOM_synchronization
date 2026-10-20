@@ -16,7 +16,7 @@ export const navGroups: { section: string; items: NavItem[] }[] = [
     { to: "/",           label: "Command Center",  icon: LayoutDashboard, end: true },
   ]},
   { section: "BOM Views", items: [
-    { to: "/variants",   label: "Variants & Config", icon: Layers },
+    { to: "/variants",   label: "Variants & Configuration", icon: Layers },
     { to: "/ebom",       label: "Engineering BOM",   icon: GitBranch },
     { to: "/mbom",       label: "Manufacturing BOM", icon: Factory },
     { to: "/service",    label: "Service BOM",       icon: Wrench },
@@ -28,7 +28,7 @@ export const navGroups: { section: string; items: NavItem[] }[] = [
   ]},
   { section: "Parts & Supply", items: [
     { to: "/parts",      label: "Part Master",       icon: Boxes },
-    { to: "/suppliers",  label: "Supplier Intel",    icon: Truck },
+    { to: "/suppliers",  label: "Supplier Intelligence",    icon: Truck },
     { to: "/field",      label: "Field Quality",     icon: AlertOctagon },
   ]},
   { section: "Reports", items: [
@@ -42,20 +42,9 @@ export const pinnedItems = [
   { id: "sup",  label: "Anonymous PCB · Taiwan",    to: "/suppliers" },
 ];
 
-const routeLabels: Record<string, string> = {
-  "": "Command Center",
-  variants: "Variants & Configuration",
-  ebom: "Engineering BOM",
-  mbom: "Manufacturing BOM",
-  service: "Service BOM",
-  software: "Software BOM",
-  changes: "Change Management",
-  compare: "BOM Compare",
-  parts: "Part Master",
-  suppliers: "Supplier Intelligence",
-  field: "Field Quality",
-  reports: "Reports & Exports",
-};
+const routeLabels: Record<string, string> = Object.fromEntries(
+  navGroups.flatMap(g => g.items.map(i => [i.to.replace(/^\//, ""), i.label])),
+);
 
 export const locate = (pathname: string): { group: string; title: string } => {
   const first = pathname.split("/").filter(Boolean)[0] ?? "";

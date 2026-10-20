@@ -109,7 +109,7 @@ const SoftwareBom = () => {
           </div>
         </Panel>
 
-        <Panel title="CVE Trend · 6 weeks">
+        <Panel title="CVE Trend · 6 Weeks">
           <p className="type-body-sm text-muted-foreground">New vulnerabilities identified per week</p>
           <div className="h-[220px] mt-2">
             <ResponsiveContainer>
@@ -131,7 +131,7 @@ const SoftwareBom = () => {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         <Select value={ecuFilter} onValueChange={setEcuFilter}>
-          <SelectTrigger aria-label="Filter by ecus" className="h-8 w-56 text-xs"><SelectValue /></SelectTrigger>
+          <SelectTrigger aria-label="Filter by ECUs" className="h-8 w-56 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All ECUs</SelectItem>
             {ecuParts.map(e => <SelectItem key={e.partNumber} value={e.partNumber}>{e.name}</SelectItem>)}

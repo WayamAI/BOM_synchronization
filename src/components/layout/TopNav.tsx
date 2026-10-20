@@ -115,7 +115,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
           </PopoverTrigger>
           <PopoverContent align="end" className="w-80 p-0">
             <div className="flex h-11 items-center justify-between border-b border-hairline px-4">
-              <span className="type-eyebrow text-quaternary">Notifications</span>
+              <span className="type-section text-quaternary">Notifications</span>
               <span className="type-caption tabular text-quaternary">{notifications.length} new</span>
             </div>
             <div className="max-h-80 overflow-y-auto scrollbar-thin">
@@ -148,7 +148,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
               <span className="grid size-8 place-items-center rounded-full bg-raised-2 text-xs font-medium text-foreground">RK</span>
               <span className="hidden flex-col items-start leading-tight xl:flex">
                 <span className="text-xs font-medium text-foreground">Ravi Kumar</span>
-                <span className="type-eyebrow text-[10px] text-quaternary">Program Manager</span>
+                <span className="type-caption text-quaternary">Program manager</span>
               </span>
             </button>
           </DropdownMenuTrigger>

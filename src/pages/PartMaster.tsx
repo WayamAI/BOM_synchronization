@@ -1,5 +1,6 @@
 import { EmptyState, Panel, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
+import { statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -67,8 +68,8 @@ const PartList = () => {
           <SelectTrigger aria-label="Filter by lifecycle" className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">Any lifecycle</SelectItem>
-            <SelectItem value="In Work">In Work</SelectItem>
-            <SelectItem value="In Review">In Review</SelectItem>
+            <SelectItem value="In Work">In work</SelectItem>
+            <SelectItem value="In Review">In review</SelectItem>
             <SelectItem value="Released">Released</SelectItem>
             <SelectItem value="Obsolete">Obsolete</SelectItem>
           </SelectContent>
@@ -80,7 +81,7 @@ const PartList = () => {
         <table className="tabular w-full text-xs">
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
-              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Program</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
@@ -146,7 +147,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
     <PageHeader
       title={part.name}
       mark="part"
-      subtitle={`${pn} · rev ${part.revision} · ${part.type} · ${part.lifecycle}`}
+      subtitle={`${pn} · rev ${part.revision} · ${part.type} · ${statusText(part.lifecycle)}`}
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
@@ -160,7 +161,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Panel title="Part Details" className="lg:col-span-2">
           <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3 text-xs">
-            <div><div className="type-eyebrow text-quaternary">Part Number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
+            <div><div className="type-eyebrow text-quaternary">Part number</div><div className="font-mono font-semibold">{part.partNumber}</div></div>
             <div><div className="type-eyebrow text-quaternary">Revision</div><div className="font-mono">{part.revision}</div></div>
             <div><div className="type-eyebrow text-quaternary">Type</div><div>{part.type}</div></div>
             <div><div className="type-eyebrow text-quaternary">Lifecycle</div><LifecycleStatus status={part.lifecycle} /></div>
@@ -200,7 +201,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
             <GitBranch aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-eyebrow text-quaternary">Where-Used (parents)</h3>
+            <h3 className="type-section text-quaternary">Where-Used (Parents)</h3>
           </div>
           <p className="type-body-sm text-muted-foreground mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
           <div className="space-y-2">
@@ -223,7 +224,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         <div className="rounded-lg border border-hairline bg-container p-4">
           <div className="flex items-center gap-2">
             <Boxes aria-hidden className="h-4 w-4 text-primary" />
-            <h3 className="type-eyebrow text-quaternary">Uses (children)</h3>
+            <h3 className="type-section text-quaternary">Uses (Children)</h3>
           </div>
           <p className="type-body-sm text-muted-foreground mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
           <div className="space-y-2">
@@ -263,7 +264,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {kits.length > 0 && (
-          <Panel title="Service Kits that include this part">
+          <Panel title="Service Kits That Include This Part">
             <div className="mt-2 flex flex-wrap gap-1.5">
               {kits.map(k => <Badge key={k.id} variant="outline" className="type-caption font-mono">{k.id} · {k.name}</Badge>)}
             </div>
@@ -271,7 +272,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {softOnMe.length > 0 && (
-          <Panel title="Software running on this ECU">
+          <Panel title="Software Running on This ECU">
             <div className="mt-2 space-y-1.5">
               {softOnMe.map(s => (
                 <div key={s.id} className="flex items-center justify-between rounded-md border border-hairline p-2 text-xs">
@@ -289,7 +290,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {affectingEcns.length > 0 && (
-          <Panel title="ECNs affecting this part">
+          <Panel title="ECNs Affecting This Part">
             <div className="mt-2 space-y-1.5">
               {affectingEcns.map(e => (
                 <button key={e.id} onClick={() => navigate(`/changes/${e.id}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left">
@@ -297,7 +298,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
                     <div className="font-mono text-xs">{e.id}</div>
                     <div className="text-xs font-semibold">{e.title}</div>
                   </div>
-                  {e.state === "In Review" ? <Badge variant="warning">{e.state}</Badge> : e.state === "Rejected" || e.state === "Cancelled" ? <Badge variant="neutral">{e.state}</Badge> : <QuietStatus tone={e.state === "Released" ? "success" : e.state === "Approved" ? "info" : "neutral"}>{e.state}</QuietStatus>}
+                  {e.state === "In Review" ? <Badge variant="warning">{statusText(e.state)}</Badge> : e.state === "Rejected" || e.state === "Cancelled" ? <Badge variant="neutral">{statusText(e.state)}</Badge> : <QuietStatus tone={e.state === "Released" ? "success" : e.state === "Approved" ? "info" : "neutral"}>{statusText(e.state)}</QuietStatus>}
                 </button>
               ))}
             </div>

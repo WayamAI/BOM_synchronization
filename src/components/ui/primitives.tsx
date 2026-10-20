@@ -2,6 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import { ChevronRight } from "lucide-react";
+import { statusText } from "@/lib/format";
 import { EntityMark } from "@/components/icons/EntityIcon";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
@@ -54,7 +55,7 @@ export const Panel = ({
   <section className={cn("flex flex-col overflow-hidden rounded-lg border border-hairline bg-container", className)}>
     {title && (
       <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4">
-        <h3 className="type-eyebrow truncate text-quaternary">{title}</h3>
+        <h3 className="type-section truncate text-quaternary">{title}</h3>
         {action && <div className="shrink-0">{action}</div>}
       </header>
     )}
@@ -125,9 +126,9 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
 /** BOM lifecycle state. Released and In Work are plain text (no dot: a dot means health); In Review and Obsolete get a solid badge. */
 export const LifecycleStatus = ({ status }: { status?: string }) => {
   if (!status) return <span className="type-body-sm text-quaternary">—</span>;
-  if (status === "In Review") return <Badge variant="warning">{status}</Badge>;
-  if (status === "Obsolete") return <Badge variant="neutral">{status}</Badge>;
-  return <span className="type-body-sm whitespace-nowrap text-tertiary">{status}</span>;
+  if (status === "In Review") return <Badge variant="warning">{statusText(status)}</Badge>;
+  if (status === "Obsolete") return <Badge variant="neutral">{statusText(status)}</Badge>;
+  return <span className="type-body-sm whitespace-nowrap text-tertiary">{statusText(status)}</span>;
 };
 
 /** Plain statement, no illustration, no call to action. */

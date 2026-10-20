@@ -103,7 +103,7 @@ const BomCompare = () => {
             </div>
 
             <div className="rounded-lg border border-hairline bg-container p-4">
-              <div className="type-eyebrow text-quaternary mb-2">In Both</div>
+              <div className="type-eyebrow text-quaternary mb-2">In both</div>
               <div className="type-display-xl tabular text-foreground mb-2">{variantResult.both.length}</div>
               <div className="text-xs text-muted-foreground">Common carryover structure across both variants. These parts participate in shared manufacturing and service flows.</div>
             </div>
@@ -151,7 +151,7 @@ const BomCompare = () => {
                 <table className="tabular w-full text-xs">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
-                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>

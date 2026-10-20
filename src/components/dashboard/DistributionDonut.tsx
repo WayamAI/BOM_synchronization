@@ -7,7 +7,7 @@ export const DistributionDonut = () => {
   const total = distribution.reduce((a, b) => a + b.value, 0);
   return (
     <div className="h-full rounded-lg border border-hairline bg-container p-4">
-      <h3 className="type-eyebrow text-quaternary">Component Distribution</h3>
+      <h3 className="type-section text-quaternary">Component Distribution</h3>
       <p className="type-body-sm mt-1 text-tertiary">Breakdown by type</p>
       <div className="relative mt-2 h-[200px]">
         <ResponsiveContainer width="100%" height="100%">

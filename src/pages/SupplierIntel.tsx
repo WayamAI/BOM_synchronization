@@ -41,7 +41,7 @@ const SupplierIntel = () => {
 
   return (
     <PageHeader
-      title="Supplier & Risk Intelligence"
+      title="Supplier Intelligence"
       mark="supplier"
       subtitle={`${totals.suppliers} active suppliers · ${totals.singleSource} single-source parts · automated risk scoring`}
       actions={<Button size="sm" className="gap-1.5"><Sparkles aria-hidden className="h-3.5 w-3.5" />Predict disruptions</Button>}
@@ -101,7 +101,7 @@ const SupplierIntel = () => {
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
-              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Country / Region</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Country / region</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Tier</th>
               <th scope="col" className="text-right px-3 py-2 font-medium whitespace-nowrap">Parts</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Single-source</th>

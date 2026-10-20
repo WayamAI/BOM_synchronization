@@ -68,7 +68,7 @@ const Variants = () => {
           <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
             <tr>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">SKU</th>
-              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant Name</th>
+              <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Variant name</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Powertrain</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Trim</th>
               <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Market</th>

@@ -147,7 +147,7 @@ export const SystemHealthMatrix = () => {
     <div className="h-full rounded-lg border border-hairline bg-container p-4">
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline pb-4">
         <div>
-          <h3 className="type-eyebrow text-quaternary">System Health Matrix</h3>
+          <h3 className="type-section text-quaternary">System Health Matrix</h3>
           <p className="type-body-sm mt-1 text-tertiary">
             Readiness by system across design, manufacturing, supply and cyber.
           </p>

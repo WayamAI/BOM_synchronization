@@ -1,5 +1,6 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
+import { statusText } from "@/lib/format";
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -137,7 +138,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
             <h3 className="type-display-lg truncate text-foreground">{node.name}</h3>
           </div>
           <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>
-          <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
+          <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ? statusText(node.status) : "—"}</p>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Close details" onClick={onClose}><X aria-hidden className="h-4 w-4" /></Button>
       </div>
@@ -308,9 +309,9 @@ const EbomManager = () => {
     >
       <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-full space-y-4">
         <TabsList>
-          <TabsTrigger value="tree">Tree View</TabsTrigger>
-          <TabsTrigger value="table">Table View</TabsTrigger>
-          <TabsTrigger value="graph">Graph View</TabsTrigger>
+          <TabsTrigger value="tree">Tree view</TabsTrigger>
+          <TabsTrigger value="table">Table view</TabsTrigger>
+          <TabsTrigger value="graph">Graph view</TabsTrigger>
         </TabsList>
 
         {/* Toolbar */}
@@ -354,7 +355,7 @@ const EbomManager = () => {
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} parts`} padded={false} className="flex-1 min-h-[520px]">
+            <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} Parts`} padded={false} className="flex-1 min-h-[520px]">
               <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
             </Panel>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
@@ -368,7 +369,7 @@ const EbomManager = () => {
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap"><span className="sr-only">Health</span></th>
-                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
