@@ -1,4 +1,4 @@
-import { statusText } from "@/lib/format";
+import { plural, statusText } from "@/lib/format";
 import { useNavigate } from "react-router-dom";
 import { programs, suppliers } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
@@ -71,7 +71,7 @@ const Dashboard = () => {
     <PageHeader
       title="Command Center"
       mark="assembly"
-      subtitle={`${activeProgram.name} · ${activeProgram.modelYear} · ${activeProgram.stage} · ${activeProgram.daysToSOP} days to SOP · ${activeProgram.pilotVinsBuilt} units built · ${activeProgram.activeEcns} ECNs`}
+      subtitle={`${activeProgram.name} · ${activeProgram.modelYear} · ${activeProgram.stage} · ${plural(activeProgram.daysToSOP, "day")} to SOP · ${plural(activeProgram.pilotVinsBuilt, "unit")} built · ${plural(activeProgram.activeEcns, "ECN")}`}
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => navigate("/changes")}>

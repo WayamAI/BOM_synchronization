@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { EntityIcon } from "@/components/icons/EntityIcon";
 import { Panel, KpiTile, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
@@ -48,7 +49,7 @@ const Variants = () => {
     <PageHeader
       title="Variants & Configuration"
       mark="variant"
-      subtitle={`CAT BOM · ${totals.variants} variants across 3 powertrains × 3 trims × global markets`}
+      subtitle={`CAT BOM · ${plural(totals.variants, "variant")} across 3 powertrains × 3 trims × global markets`}
       actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />New variant</Button>}
     >
       {/* KPI */}

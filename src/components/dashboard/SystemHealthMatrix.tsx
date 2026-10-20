@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -98,7 +99,7 @@ export const SystemHealthMatrix = () => {
       const avgOnTime = rel.length ? rel.reduce((a, s) => a + s.onTimePct, 0) / rel.length : 95;
       const singleSrc = rel.filter(s => s.singleSource).length;
       const supply: Score = rel.length
-        ? { value: Math.max(0, Math.min(100, Math.round(avgOnTime - singleSrc * 4))), raw: `${rel.length} suppliers · ${singleSrc} single-source` }
+        ? { value: Math.max(0, Math.min(100, Math.round(avgOnTime - singleSrc * 4))), raw: `${plural(rel.length, "supplier")} · ${singleSrc} single-source` }
         : { value: null, raw: "no suppliers" };
 
       // Cyber = 100 - (CVE count × 5 + criticals × 10)
@@ -107,7 +108,7 @@ export const SystemHealthMatrix = () => {
       const crit = allCves.filter(v => v.severity === "Critical").length;
       const cyber: Score = ecus.length === 0
         ? { value: null, raw: "no ECUs" }
-        : { value: Math.max(0, 100 - allCves.length * 5 - crit * 10), raw: `${ecus.length} ECUs · ${allCves.length} CVEs` };
+        : { value: Math.max(0, 100 - allCves.length * 5 - crit * 10), raw: `${plural(ecus.length, "ECU")} · ${plural(allCves.length, "CVE")}` };
 
       // Open ECNs targeting parts in this system
       const openEcns = ecns.filter(e =>

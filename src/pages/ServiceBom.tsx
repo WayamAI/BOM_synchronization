@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { EmptyState, KpiTile } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
@@ -244,7 +245,7 @@ const ServiceBom = () => {
         <Wrench aria-hidden className="h-4 w-4 text-warning" />
         <span className="text-xs font-semibold text-warning">Service coverage</span>
         <span className="text-xs text-muted-foreground">
-          {partsCoveredByKits.size} of {frus.length} FRUs covered by a kit · {uncoveredFrus.length} FRUs need a kit assignment
+          {partsCoveredByKits.size} of {plural(frus.length, "FRU")} covered by a kit · {plural(uncoveredFrus.length, "FRU")} need a kit assignment
         </span>
       </div>
     </PageHeader>

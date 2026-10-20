@@ -41,3 +41,20 @@ describe("EBOM toolbar", () => {
     expect(top.readOnly).toBe(true);
   });
 });
+
+describe("plural", () => {
+  it("uses the singular for exactly one and groups thousands", async () => {
+    const { plural } = await import("@/lib/format");
+    expect(plural(1, "part")).toBe("1 part");
+    expect(plural(0, "part")).toBe("0 parts");
+    expect(plural(2, "assembly", "assemblies")).toBe("2 assemblies");
+    expect(plural(1, "assembly", "assemblies")).toBe("1 assembly");
+    expect(plural(1200, "CVE")).toBe("1,200 CVEs");
+  });
+
+  it("EBOM structure title says '1 Part' for a single match", () => {
+    renderEbom();
+    fireEvent.change(screen.getByPlaceholderText("Search EBOM by name or PN"), { target: { value: "Battery Management" } });
+    expect(screen.getByText("Structure · 1 Part")).toBeInTheDocument();
+  });
+});

@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { EmptyState, KpiTile, Panel, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +53,7 @@ const SoftwareBom = () => {
     <PageHeader
       title="Software BOM"
       mark="software"
-      subtitle={`Cyber · CycloneDX-compatible software inventory · ${totals.softwareComponents} packages across ${ecuParts.length} ECUs`}
+      subtitle={`Cyber · CycloneDX-compatible software inventory · ${plural(totals.softwareComponents, "package")} across ${plural(ecuParts.length, "ECU")}`}
       actions={
         <>
           <Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="h-3.5 w-3.5" />Export CycloneDX</Button>
@@ -101,7 +102,7 @@ const SoftwareBom = () => {
                   {r.crit > 0
                     ? <Badge variant="error">{r.crit} crit</Badge>
                     : r.cves > 0
-                      ? <Badge variant="warning">{r.cves} CVE</Badge>
+                      ? <Badge variant="warning">{plural(r.cves, "CVE")}</Badge>
                       : <QuietStatus tone="success">clean</QuietStatus>}
                 </div>
               </button>

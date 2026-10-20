@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Download, Calendar } from "lucide-react";
@@ -15,7 +16,7 @@ const reports = [
   },
   {
     name: "EBOM Export",
-    desc: `Complete flattened EBOM · ${totals.ebomParts} parts with quantities, suppliers, revs`,
+    desc: `Complete flattened EBOM · ${plural(totals.ebomParts, "part")} with quantities, suppliers, revs`,
     format: "CSV / JSON",
     schedule: "On demand",
     lastRun: "Apr 20, 2026",
@@ -23,7 +24,7 @@ const reports = [
   },
   {
     name: "MBOM Routing Sheet",
-    desc: `Plant-wise work instructions · ${totals.mbomOps} ops across ${totals.plants} plants`,
+    desc: `Plant-wise work instructions · ${plural(totals.mbomOps, "op")} across ${plural(totals.plants, "plant")}`,
     format: "PDF / XML",
     schedule: "Per build",
     lastRun: "Apr 22, 2026",
@@ -31,7 +32,7 @@ const reports = [
   },
   {
     name: "Service BOM / Spare Parts Catalog",
-    desc: `${totals.serviceKits} kits · ${totals.frus} FRUs for dealer network publication`,
+    desc: `${plural(totals.serviceKits, "kit")} · ${plural(totals.frus, "FRU")} for dealer network publication`,
     format: "PDF",
     schedule: "Monthly",
     lastRun: "Apr 1, 2026",
@@ -47,7 +48,7 @@ const reports = [
   },
   {
     name: "CycloneDX Software BOM Export",
-    desc: `All ECU firmware software packages · ${totals.softwareComponents} items`,
+    desc: `All ECU firmware software packages · ${plural(totals.softwareComponents, "item")}`,
     format: "CycloneDX JSON",
     schedule: "Weekly",
     lastRun: "Apr 21, 2026",

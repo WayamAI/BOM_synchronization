@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 /**
  * EbomGraphView — Progressive disclosure BOM dependency graph.
  *
@@ -127,7 +128,7 @@ const BomNode = ({ data }: { data: any }) => {
           </span>
         </span>
         {!!node.cves && (
-          <span className="ml-auto rounded-full bg-error-badge px-2 py-0.5 text-[10px] font-medium text-badge">{node.cves} CVE</span>
+          <span className="ml-auto rounded-full bg-error-badge px-2 py-0.5 text-[10px] font-medium text-badge">{plural(node.cves, "CVE")}</span>
         )}
         {!!node.warnings && !node.cves && (
           <span className="ml-auto rounded-full bg-warning-badge px-2 py-0.5 text-[10px] font-medium text-badge">{node.warnings}⚠</span>

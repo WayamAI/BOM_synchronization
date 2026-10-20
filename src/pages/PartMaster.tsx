@@ -1,6 +1,6 @@
 import { EmptyState, Panel, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
-import { statusText } from "@/lib/format";
+import { plural, statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -42,7 +42,7 @@ const PartList = () => {
     <PageHeader
       title="Part Master"
       mark="part"
-      subtitle={`Canonical registry · ${allParts.length} total parts across ${products.length} programs · single source of truth`}
+      subtitle={`Canonical registry · ${plural(allParts.length, "total part")} across ${plural(products.length, "program")} · single source of truth`}
       actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="h-3.5 w-3.5" />New part</Button>}
     >
       <div className="flex flex-wrap items-center gap-2">
@@ -168,7 +168,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
             <div><div className="type-eyebrow text-quaternary">Owner</div><div>{part.owner}</div></div>
             <div><div className="type-eyebrow text-quaternary">Serviceable</div><div>{part.serviceable ? "Yes" : "No"}{part.fru ? " · FRU" : ""}</div></div>
             <div><div className="type-eyebrow text-quaternary">Unit cost</div><div className="tabular-nums">${part.cost.toLocaleString("en-US")}</div></div>
-            <div><div className="type-eyebrow text-quaternary">Lead time</div><div>{part.leadTimeDays} days</div></div>
+            <div><div className="type-eyebrow text-quaternary">Lead time</div><div>{plural(part.leadTimeDays, "day")}</div></div>
             <div><div className="type-eyebrow text-quaternary">UoM</div><div>{part.uom}</div></div>
             <div><div className="type-eyebrow text-quaternary">Created</div><div>{part.createdAt}</div></div>
             <div><div className="type-eyebrow text-quaternary">Updated</div><div>{part.updatedAt}</div></div>
@@ -281,7 +281,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
                     <div className="type-caption text-muted-foreground">{s.license} · {s.supplier}</div>
                   </div>
                   {s.cves.length > 0
-                    ? <Badge variant="error">{s.cves.length} CVE</Badge>
+                    ? <Badge variant="error">{plural(s.cves.length, "CVE")}</Badge>
                     : <QuietStatus tone="success">Clean</QuietStatus>}
                 </div>
               ))}

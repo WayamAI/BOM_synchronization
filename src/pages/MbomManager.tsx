@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { EntityIcon } from "@/components/icons/EntityIcon";
 import { EmptyState, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
@@ -49,7 +50,7 @@ const MbomManager = () => {
     <PageHeader
       title="Manufacturing BOM"
       mark="mbom"
-      subtitle={`Meridian MY2026 · ${totals.mbomOps} routing operations across ${totals.plants} plants`}
+      subtitle={`Meridian MY2026 · ${plural(totals.mbomOps, "routing operation")} across ${plural(totals.plants, "plant")}`}
       actions={
         <>
           <Button variant="outline" size="sm" className="gap-1.5"><ArrowDownToLine aria-hidden className="h-3.5 w-3.5" />Sync from EBOM</Button>

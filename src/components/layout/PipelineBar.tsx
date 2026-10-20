@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
@@ -69,7 +70,7 @@ export const PipelineBar = () => {
                 <EntityIcon id={stageIcon[s.id] ?? "part"} className={active ? "text-on-color" : undefined} />
                 <span>{s.name}</span>
                 <span className={cn("tabular hidden xl:inline", active ? "opacity-70" : "text-quaternary")}>
-                  {s.components.toLocaleString("en-US")} {s.countLabel} · {s.issues} issue{s.issues === 1 ? "" : "s"}
+                  {plural(s.components, s.countLabel.replace(/s$/, ""), s.countLabel)} · {plural(s.issues, "issue")}
                 </span>
                 {s.drift && (
                   <span className={cn("hidden lg:inline", active ? "opacity-80" : "text-warning")}>

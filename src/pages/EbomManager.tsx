@@ -1,6 +1,6 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
-import { statusText } from "@/lib/format";
+import { plural, statusText } from "@/lib/format";
 import { useMemo, useState, useEffect, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -100,7 +100,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
           {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
         </span>
         <span className="ml-auto flex shrink-0 items-center gap-3">
-          {!!node.cves && <Badge variant="error">{node.cves} CVE</Badge>}
+          {!!node.cves && <Badge variant="error">{plural(node.cves, "CVE")}</Badge>}
           {!!node.warnings && <Badge variant="warning">{node.warnings} warn</Badge>}
           <span className="hidden w-24 items-center sm:flex">{node.status && <LifecycleStatus status={node.status} />}</span>
           <span className="type-body-sm hidden w-20 justify-end text-quaternary sm:flex">{node.type}</span>
@@ -197,7 +197,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
             <Field label="Owner team" value={node.owner ?? "—"} />
             <Field label="Supplier" value={node.supplier ?? "—"} />
             <Field label="Unit cost" value={part?.cost ? `$${part.cost.toLocaleString("en-US")}` : "—"} />
-            <Field label="Lead time" value={part ? `${part.leadTimeDays} days` : "—"} />
+            <Field label="Lead time" value={part ? plural(part.leadTimeDays, "day") : "—"} />
             <Field label="UoM" value={part?.uom ?? "—"} />
             <Field label="Serviceable" value={part?.serviceable ? "Yes (in Service BOM)" : "No"} />
             <Field label="Dependency depth" value={depth} />
@@ -260,7 +260,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
                   <div className="type-caption text-muted-foreground">{c.license} · {c.supplier}</div>
                 </div>
                 {c.cves.length > 0
-                  ? <Badge variant="error">{c.cves.length} CVE</Badge>
+                  ? <Badge variant="error">{plural(c.cves.length, "CVE")}</Badge>
                   : <QuietStatus tone="success">Clean</QuietStatus>}
               </div>
             ))}
@@ -387,7 +387,7 @@ const EbomManager = () => {
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} Parts`} padded={false} className="flex-1 min-h-[520px]">
+            <Panel title={`Structure · ${plural(filteredRows.length, "Part")}`} padded={false} className="flex-1 min-h-[520px]">
               <div role="tree" aria-label="Engineering BOM structure" className="-mb-px">
                 <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
               </div>
@@ -452,7 +452,7 @@ const EbomManager = () => {
           <GitBranch aria-hidden className="h-4 w-4 text-warning" />
           <span className="text-xs font-semibold text-warning">Validation</span>
           <span className="text-xs text-muted-foreground">
-            {activeProgram.bomEdges.length} parent-child edges · {all.filter(n => !n.owner).length} parts without owner · {all.filter(n => n.health === "warning" || n.health === "critical").length} health issues open
+            {plural(activeProgram.bomEdges.length, "parent-child edge")} · {plural(all.filter(n => !n.owner).length, "part")} without owner · {plural(all.filter(n => n.health === "warning" || n.health === "critical").length, "health issue")} open
           </span>
           <Boxes aria-hidden className="h-4 w-4 ml-auto text-muted-foreground" />
           <ShieldAlert aria-hidden className="h-4 w-4 text-muted-foreground" />
