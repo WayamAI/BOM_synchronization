@@ -1,7 +1,7 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
 import { statusText } from "@/lib/format";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   buildEbomTree, type EbomNode, getPart, getWhereUsed,
@@ -44,23 +44,55 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
     node.name.toLowerCase().includes(filter.toLowerCase()) ||
     node.partNumber.toLowerCase().includes(filter.toLowerCase());
   const anyChildMatches = node.children?.some(c => matchesDeep(c, filter)) ?? false;
-  const [open, setOpen] = useState(depth < 2 || (!!filter && anyChildMatches));
+  // Open state follows the filter unless the user toggled this row by hand.
+  const [manual, setManual] = useState<boolean | null>(null);
+  useEffect(() => setManual(null), [filter]);
   const has = !!node.children?.length;
+  const open = has && (manual ?? (filter ? anyChildMatches : depth < 2));
   const isSel = selected === node.id;
 
   if (filter && !matchesFilter && !anyChildMatches) return null;
 
+  // Roving keyboard support over the flat list of visible rows.
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(node); }
+    else if (e.key === "ArrowRight" && has && !open) { e.preventDefault(); setManual(true); }
+    else if (e.key === "ArrowLeft" && has && open) { e.preventDefault(); setManual(false); }
+    else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const items = Array.from(e.currentTarget.closest<HTMLElement>("[role=tree]")?.querySelectorAll<HTMLElement>("[role=treeitem]") ?? []);
+      items[items.indexOf(e.currentTarget) + (e.key === "ArrowDown" ? 1 : -1)]?.focus();
+    }
+  };
+
   return (
     <div>
       <div
-        onClick={() => { onSelect(node); if (has) setOpen(!open); }}
+        role="treeitem"
+        tabIndex={0}
+        aria-level={depth + 1}
+        aria-selected={isSel}
+        aria-expanded={has ? open : undefined}
+        onClick={() => onSelect(node)}
+        onKeyDown={onKeyDown}
         className={cn(
-          "group flex min-h-9 items-center gap-2 border-b border-hairline px-2 py-2 cursor-pointer hover:bg-raised transition-colors",
+          "group flex min-h-9 items-center gap-2 border-b border-hairline px-2 py-2 cursor-pointer outline-none hover:bg-raised transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-active",
           isSel && "bg-raised ring-1 ring-inset ring-active"
         )}
         style={{ paddingLeft: 8 + depth * 16 }}
       >
-        {has ? (open ? <ChevronDown aria-hidden className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight aria-hidden className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
+        {has ? (
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
+            onClick={(e) => { e.stopPropagation(); setManual(!open); }}
+            className="grid size-5 shrink-0 place-items-center rounded-md outline-none hover:bg-raised-2"
+          >
+            {open ? <ChevronDown aria-hidden className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight aria-hidden className="h-3.5 w-3.5 opacity-60" />}
+          </button>
+        ) : <span className="w-5 shrink-0" />}
         <HealthDot health={node.health} />
         <EntityIcon id={has ? "assembly" : "part"} />
         <span title={node.name} className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
@@ -74,7 +106,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
           <span className="type-body-sm hidden w-20 justify-end text-quaternary sm:flex">{node.type}</span>
         </span>
       </div>
-      {open && has && node.children!.map(c => (
+      {open && node.children!.map(c => (
         <TreeRow key={c.id} node={c} depth={depth + 1} onSelect={onSelect} selected={selected} filter={filter} />
       ))}
     </div>
@@ -356,7 +388,10 @@ const EbomManager = () => {
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
             <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} Parts`} padded={false} className="flex-1 min-h-[520px]">
-              <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
+              <div role="tree" aria-label="Engineering BOM structure">
+                <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
+              </div>
+              {filter && !matchesDeep(tree, filter) && <EmptyState title="No components match this search" />}
             </Panel>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
           </div>

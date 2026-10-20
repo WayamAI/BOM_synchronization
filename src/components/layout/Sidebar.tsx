@@ -20,21 +20,33 @@ const TreeBranch = ({ node, depth = 0, onPick }: { node: EbomNode; depth?: numbe
   const hasChildren = !!node.children?.length;
   return (
     <div>
-      <button
-        onClick={() => hasChildren ? setOpen(!open) : onPick(node.partNumber)}
-        onDoubleClick={() => onPick(node.partNumber)}
-        className="group flex w-full items-center gap-1.5 rounded-lg py-1 pr-2 text-xs text-secondary-foreground outline-none transition-colors duration-150 hover:bg-action hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
-        style={{ paddingLeft: 8 + depth * 12 }}
-        title={node.partNumber}
+      <div
+        className="group flex w-full items-center gap-1 rounded-lg py-0.5 pr-2 text-xs text-secondary-foreground transition-colors duration-150 hover:bg-action hover:text-foreground"
+        style={{ paddingLeft: 4 + depth * 12 }}
       >
         {hasChildren ? (
-          open ? <ChevronDown className="size-3 shrink-0 text-quaternary" aria-hidden /> : <ChevronRight className="size-3 shrink-0 text-quaternary" aria-hidden />
+          <button
+            type="button"
+            onClick={() => setOpen(!open)}
+            aria-expanded={open}
+            aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
+            className="grid size-5 shrink-0 place-items-center rounded-md outline-none focus-visible:ring-2 focus-visible:ring-active"
+          >
+            {open ? <ChevronDown className="size-3 text-quaternary" aria-hidden /> : <ChevronRight className="size-3 text-quaternary" aria-hidden />}
+          </button>
         ) : (
-          <span className="w-3" />
+          <span className="size-5 shrink-0" />
         )}
-        <span className={cn("size-1.5 rounded-full shrink-0", healthDot(node.health))} />
-        <span className="truncate text-left">{node.name}</span>
-      </button>
+        <button
+          type="button"
+          onClick={() => onPick(node.partNumber)}
+          title={`${node.name} (${node.partNumber})`}
+          className="flex min-w-0 flex-1 items-center gap-1.5 rounded-md py-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-active"
+        >
+          <span className={cn("size-1.5 shrink-0 rounded-full", healthDot(node.health))} />
+          <span className="truncate">{node.name}</span>
+        </button>
+      </div>
       {open && hasChildren && (
         <div>{node.children!.map(c => <TreeBranch key={c.id} node={c} depth={depth + 1} onPick={onPick} />)}</div>
       )}
