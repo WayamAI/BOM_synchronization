@@ -140,7 +140,7 @@ const getChildCount = (node: EbomNode): number => {
     if (n.children) n.children.forEach(traverse);
   };
   if (node.children) node.children.forEach(traverse);
-  return count - 1; // exclude self
+  return count; // descendants only; the node itself is never counted, so a leaf is 0
 };
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (

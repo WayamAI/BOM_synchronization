@@ -58,3 +58,22 @@ describe("plural", () => {
     expect(screen.getByText("Structure · 1 Part")).toBeInTheDocument();
   });
 });
+
+describe("EBOM drawer child components", () => {
+  const childComponents = () => {
+    const label = screen.getAllByText("Child components").find(el => el.tagName === "P")!;
+    return label.nextElementSibling!.textContent;
+  };
+
+  it("shows 0 for a leaf part", () => {
+    renderEbom();
+    fireEvent.click(screen.getByText("ICE 2.0L Turbo Engine Assy"));
+    expect(childComponents()).toBe("0");
+  });
+
+  it("counts every descendant of an assembly", () => {
+    renderEbom();
+    fireEvent.click(screen.getByText("HV Battery Pack 85 kWh"));
+    expect(Number(childComponents())).toBeGreaterThanOrEqual(1);
+  });
+});
