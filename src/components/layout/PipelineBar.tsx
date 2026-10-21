@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { pipeline } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 
 const routes: Record<string, string> = {
   cat: "/variants", ebom: "/ebom", mbom: "/mbom", sbom: "/software", service: "/service",
@@ -48,7 +48,7 @@ export const PipelineBar = () => {
       <div
         ref={scroller}
         onScroll={measure}
-        className="flex h-10 items-center gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:px-5 [&::-webkit-scrollbar]:hidden"
+        className="flex h-12 items-center gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:px-5 [&::-webkit-scrollbar]:hidden"
       >
         <span className="type-eyebrow mr-1 shrink-0 text-quaternary">Lifecycle</span>
         {pipeline.map((s, idx) => {
@@ -60,14 +60,14 @@ export const PipelineBar = () => {
                 onClick={() => path && navigate(path)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 type-body-sm font-medium outline-none transition-colors duration-[150ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
+                  "inline-flex h-9 items-center gap-1.5 rounded-full border pl-2 pr-3 type-body-sm font-medium outline-none transition-colors duration-[150ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
                   active
                     ? "border-transparent bg-action-primary text-on-color"
                     : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground",
                 )}
               >
                 <span className={cn("size-1.5 rounded-full", dotClass(s.health))} />
-                <EntityIcon id={stageIcon[s.id] ?? "part"} className={active ? "text-on-color" : undefined} />
+                <EntityGlyph id={stageIcon[s.id] ?? "part"} size={20} className={active ? "text-on-color" : undefined} />
                 <span>{s.name}</span>
                 <span className={cn("tabular hidden xl:inline", active ? "opacity-70" : "text-quaternary")}>
                   {plural(s.components, s.countLabel.replace(/s$/, ""), s.countLabel)} · {plural(s.issues, "issue")}

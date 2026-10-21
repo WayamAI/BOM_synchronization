@@ -60,7 +60,7 @@ const BomCompare = () => {
   return (
     <PageHeader
       title="BOM Compare"
-      mark="variant"
+      mark="compare"
       subtitle="Side-by-side diff across variants, or between EBOM and MBOM"
       actions={<Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="size-3.5" />Export diff (CSV)</Button>}
     >

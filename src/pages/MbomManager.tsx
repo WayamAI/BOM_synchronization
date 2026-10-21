@@ -1,5 +1,5 @@
 import { plural } from "@/lib/format";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { EmptyState, PanelHeader, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +65,7 @@ const MbomManager = () => {
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <Factory aria-hidden className="size-3.5 text-tertiary shrink-0" />
+                  <EntityGlyph id="plant" size={20} />
                   <h3 className="type-body-md font-semibold">{r.plant.name}</h3>
                 </div>
                 <p className="type-body-sm text-tertiary">{r.plant.country} · {r.plant.capacityPerDay} units/day</p>
@@ -98,6 +98,7 @@ const MbomManager = () => {
           <PanelHeader
             className="-mx-4 -mt-4 mb-4"
             title="EBOM vs MBOM Reconciliation"
+            icon="validation"
             action={
               <Badge variant={unmapped.length ? "warning" : "success"}>
                 {unmapped.length ? `${unmapped.length} unmapped` : "100% mapped"}
@@ -174,7 +175,7 @@ const MbomManager = () => {
               const part = getPart(o.partNumber);
               return (
                 <tr key={o.id} className="border-t border-hairline hover:bg-raised">
-                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityIcon id="mbom" />{o.id}</span></td>
+                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityGlyph id="mbom" size={20} />{o.id}</span></td>
                   <td className="px-3 py-2">
                     <button className="text-left hover:text-foreground" onClick={() => navigate(`/parts/${o.partNumber}`)}>
                       <div className="font-semibold">{part?.name ?? o.partNumber}</div>
@@ -197,7 +198,7 @@ const MbomManager = () => {
 
       {/* Consumables / phantoms */}
       <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
-        <PanelHeader className="-mx-4 -mt-4 mb-4" title="Consumables & Phantom Items" />
+        <PanelHeader className="-mx-4 -mt-4 mb-4" title="Consumables & Phantom Items" icon="mbom" />
         <p className="type-body-sm text-tertiary">Fluids, adhesives and commodity items rolled up per vehicle, not tracked in EBOM</p>
         <div className="mt-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-2">
           {mbomConsumables.map(c => (

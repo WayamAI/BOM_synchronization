@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import { ChevronRight } from "lucide-react";
 import { statusText } from "@/lib/format";
-import { EntityIcon, EntityMark } from "@/components/icons/EntityIcon";
+import { EntityGlyph, EntityMark } from "@/components/icons/EntityIcon";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
@@ -36,11 +36,11 @@ export const Unit = ({ children, className }: { children: ReactNode; className?:
   <span className={cn("ml-0.5 font-sans text-[0.7em] tracking-normal", className)}>{children}</span>
 );
 
-/** Shared panel header: h-11, hairline underneath, eyebrow-caps title with an optional entity icon and action. */
+/** Shared panel header: h-11, hairline underneath, eyebrow-caps title with an optional 20px entity glyph and action. */
 export const PanelHeader = ({ title, icon, action, className }: { title: ReactNode; icon?: string; action?: ReactNode; className?: string }) => (
   <header className={cn("flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4", className)}>
     <h3 className="type-section flex min-w-0 items-center gap-2 text-quaternary">
-      {icon && <EntityIcon id={icon} />}
+      {icon && <EntityGlyph id={icon} size={20} />}
       <span className="truncate">{title}</span>
     </h3>
     {action && <div className="shrink-0">{action}</div>}
@@ -72,7 +72,7 @@ export const Panel = ({
   </section>
 );
 
-/** KPI tile: eyebrow label, Michroma tabular value, signed delta and hint. */
+/** KPI tile: eyebrow label (with an optional 24px entity glyph), Michroma tabular value, signed delta and hint. */
 export const KpiTile = ({
   label,
   value,
@@ -80,6 +80,7 @@ export const KpiTile = ({
   delta,
   tone = "neutral",
   hint,
+  icon,
   onClick,
   className,
   valueClassName,
@@ -90,13 +91,22 @@ export const KpiTile = ({
   delta?: string;
   tone?: Tone;
   hint?: string;
+  /** Entity id (iconMap): a 24px glyph at the top right. Identity only, never a status. */
+  icon?: string;
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   className?: string;
   valueClassName?: string;
 }) => {
   const body = (
     <>
-      <span className="type-eyebrow truncate text-quaternary">{label}</span>
+      {icon ? (
+        <span className="flex items-center justify-between gap-2">
+          <span className="type-eyebrow truncate text-quaternary">{label}</span>
+          <EntityGlyph id={icon} size={24} />
+        </span>
+      ) : (
+        <span className="type-eyebrow truncate text-quaternary">{label}</span>
+      )}
       <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>{value}{unit && <Unit>{unit}</Unit>}</span>
       {(delta || hint) && (
         <span className="flex items-baseline gap-2">
