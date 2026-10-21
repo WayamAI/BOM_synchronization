@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
 import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
+import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
 import loginHeroWebp from "@/assets/brand/login-hero.webp";
 import loginHeroJpg from "@/assets/brand/login-hero.jpg";
 import { Input } from "@/components/ui/input";
@@ -53,8 +54,7 @@ const Login = () => {
         {/* Content */}
         <div className="relative z-10 flex h-full min-h-screen flex-col justify-between p-10">
           <div className="flex items-center gap-2.5">
-            <img src={wayamLogoLight} alt="" className="size-10 shrink-0 dark:hidden" />
-            <img src={wayamLogoDark} alt="" className="hidden size-10 shrink-0 dark:block" />
+            <img src={wayamMarkDark} alt="" className="h-8 w-auto shrink-0" />
             <span className="text-base font-medium leading-none">Wayam AI</span>
           </div>
           <div className="max-w-xl">
