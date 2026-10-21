@@ -22,11 +22,12 @@ import Reports from "@/pages/Reports";
 const ROOT = resolve(__dirname, "../..");
 const ids = Object.keys(entityIcons);
 
+const sheetIds: string[] = (JSON.parse(readFileSync(resolve(ROOT, "scripts/icon-sheets.json"), "utf-8")) as { ids: string[] }[]).flatMap(s => s.ids);
+
 describe("icon mapping", () => {
-  it("has the 12 expected ids", () => {
-    expect(ids.sort()).toEqual(
-      ["assembly", "ebom", "ecn", "field-event", "fru", "mbom", "part", "report", "service-kit", "software", "supplier", "variant"],
-    );
+  it("has exactly the ids listed in scripts/icon-sheets.json", () => {
+    expect([...ids].sort()).toEqual([...sheetIds].sort());
+    expect(new Set(sheetIds).size).toBe(sheetIds.length);
   });
 
   it.each(ids)("%s resolves to a lucide icon and a mark url", (id) => {

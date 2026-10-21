@@ -67,7 +67,7 @@ const SupplierIntel = () => {
       {/* Heatmap + AI forecast */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2"><CveHeatmap /></div>
-        <Panel title="AI Disruption Forecast" icon="supplier" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
+        <Panel title="AI Disruption Forecast" icon="ai" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
           <p className="type-body-sm text-tertiary">{plural(disruptions.length, "high-confidence signal")} · next 90 days</p>
           <ul className="mt-3 space-y-3 type-body-sm relative">
             {disruptions.map((s, i) => (

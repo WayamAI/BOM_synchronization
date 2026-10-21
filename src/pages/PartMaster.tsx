@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Search, ArrowLeft, Boxes, ExternalLink, FileEdit } from "lucide-react";
+import { Search, ArrowLeft, Plus, ExternalLink, FileEdit } from "lucide-react";
 
 const PartList = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const PartList = () => {
       title="Part Master"
       mark="part"
       subtitle={`Canonical registry · ${plural(allParts.length, "total part")} across ${plural(products.length, "program")} · single source of truth`}
-      actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="size-3.5" />New part</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="size-3.5" />New part</Button>}
     >
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">

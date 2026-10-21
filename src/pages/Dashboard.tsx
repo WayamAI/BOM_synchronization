@@ -70,7 +70,7 @@ const Dashboard = () => {
   return (
     <PageHeader
       title="Command Center"
-      mark="assembly"
+      mark="command-center"
       subtitle={`${activeProgram.name} · ${activeProgram.modelYear} · ${activeProgram.stage} · ${plural(activeProgram.daysToSOP, "day")} to SOP · ${plural(activeProgram.pilotVinsBuilt, "unit")} built · ${plural(activeProgram.activeEcns, "ECN")}`}
       actions={
         <>
