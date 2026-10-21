@@ -345,3 +345,43 @@ Left as they are, by decision:
 6. "Pipeline streaming live" is static text.
 7. Overview is a single link rather than a collapsible group (a one-item group has nothing to collapse).
 8. Should the sidebar names stay in full ("Variants & Configuration") or be shortened in the narrow rail flyout?
+
+## Icons v2
+
+Branch `ui-icons` (from `ui-review-fixes`). Full inventory, catalogue, prompts and plan: `ICON_AUDIT.md`.
+
+### What changed
+
+- **72 marks** (soft 3D, orange gradient, transparent) cut from 6 sheets listed in `scripts/icon-sheets.json`: the original 12 plus 60 new (52 planned plus 8 spares on sheet 5). `scripts/cut-icons.py` loops over the sheets, ignores stray marks, fails if a sheet does not give its declared number of icons or if an id repeats, and writes `public/icons/<id>.png` (144px) and `public/icons/sm/<id>.png` (96px). Sheets may declare a `count`, and ids listed under `candidates` are cut to `design/candidates/` only.
+- **Registry:** `iconMap.ts` maps every id to `{ lucide fallback, mark }`. `markUrl(id, px)` returns the 96px cut up to 32px. `typeMark(type)` maps Vehicle, System, Assembly, ECU, Part and Harness to their glyph. `EntityGlyph` (20 to 32px) and `EntityMark` (36, 44, 72px) fall back to the lucide icon if the PNG fails; `EntityIcon` stays the lucide icon.
+- **Replaced icons:** `system-battery` (option B, a row of four cells) replaced the first version, which read as a fuel can. `quality` (option A, a rosette with a tick) replaced the first version, which looked like a clock and clashed with `history`. The two retired icons and the two unused options are in `design/candidates/`.
+- **Wrong concepts fixed:** Dashboard header `command-center` (was `assembly`), Compare header `compare` (was `variant`), stage pipeline panel uses the five `stage-*` marks, AI forecast panel `ai`, Part Master nav `part`, Software nav `software`, Electrical tile `system-electrical`, Body tile `system-body`, the New part button uses `Plus` instead of `Boxes`, Field Quality nav and panels use `quality`.
+
+### Where marks appear
+
+| Spot | Size |
+|---|---|
+| Sidebar pucks (rail, expanded, flyout, mobile) | 22px in the 36px puck |
+| Page headers / empty states | 44px / 72px |
+| System Health Matrix tiles | 28px in 44px tiles |
+| Dashboard program cards (`vehicle-*`) | 32px |
+| Lifecycle chips (chip h-9, strip h-12) and top-bar bell and export | 20px |
+| Panel headers, EBOM graph legend and node chips | 20px |
+| KPI tiles | 24px |
+| Table rows, lists, cost labels, Pinned rows | 20px |
+| EBOM drawer header (type-aware) | 32px |
+| Report cards (per type, in a 44px circle) | 28px |
+| 404 page and not-found headers | 72px and 44px |
+
+### Decisions
+
+- **D1:** `field-event` (stop-sign shape) stays only on the Field Quality header and its empty state. The sidebar puck, panels and tiles that mean "quality" use `quality`.
+- **D2:** buttons keep lucide icons (13px; `Button` forces the size).
+- **D3:** chevrons, search, close, status icons and badges keep lucide. **Override for rows** (manager request): table rows, lists and small labels now use 20px marks, with rows about 40px high. Exception: the Program Tree in the sidebar stays without icons (a 20px glyph truncated names at depth 2 and 3, and the sidebar should stay clean).
+- **Status rule:** brand-orange marks are identity only. They never sit inside a warning, error or success badge or banner, never replace a status icon, and are removed from KPI tiles whose value is shown in a status colour (Variants Conflicts; Field Quality Open quality events, VINs impacted, Critical open; Software Open CVEs, Critical CVEs; Suppliers Single-source, On watchlist, High-risk disruption). Warning banners (EBOM validation, Service coverage) and the "n open" ECN chip keep their lucide icons. Two spots left as they are by decision: the red count bubble on the bell and the health dot beside each lifecycle stage mark. A test fails if a mark is rendered on a line with a status tone class or inside a `Badge`.
+- **Not done:** HealthArc cards (the arc is status-coloured), ECN stepper and ECN state tiles, EBOM view tabs, notification items, program switcher items, account avatar.
+
+### Tests and checks
+
+- `icons.test.tsx` reads `icon-sheets.json` (only the id list check changed). New `icons-v2.test.tsx`: every id has a lucide fallback and both PNG sizes (144 and 96), `public/icons` and `public/icons/sm` contain exactly the registered ids, `markUrl` size routing, `EntityGlyph` fallback, no mark beside a status tone class or inside a Badge.
+- Verified with `tsc`, `npm test`, `npm run build`, `npm run lint` (baseline 10) and Playwright at 1440, 1366, 1024 and 390 in light and dark on 15 routes: no horizontal overflow, no broken images, no failed requests, no page errors.
