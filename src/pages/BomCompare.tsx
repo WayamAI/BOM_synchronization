@@ -60,42 +60,43 @@ const BomCompare = () => {
   return (
     <PageHeader
       title="BOM Compare"
+      mark="variant"
       subtitle="Side-by-side diff across variants, or between EBOM and MBOM"
-      actions={<Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="h-3.5 w-3.5" />Export diff (CSV)</Button>}
+      actions={<Button variant="outline" size="sm" className="gap-1.5"><Download aria-hidden className="size-3.5" />Export diff (CSV)</Button>}
     >
       {/* Mode toggle */}
       <div className="inline-flex gap-1.5">
-        <button onClick={() => setMode("variants")} aria-pressed={mode === "variants"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "variants" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>Variant A vs Variant B</button>
-        <button onClick={() => setMode("ebom-mbom")} aria-pressed={mode === "ebom-mbom"} className={cn("rounded-full border px-3 py-1 text-xs font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "ebom-mbom" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="ebom" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />EBOM vs MBOM</button>
+        <button onClick={() => setMode("variants")} aria-pressed={mode === "variants"} className={cn("rounded-full border px-3 py-1 type-body-sm font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "variants" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>Variant A vs Variant B</button>
+        <button onClick={() => setMode("ebom-mbom")} aria-pressed={mode === "ebom-mbom"} className={cn("rounded-full border px-3 py-1 type-body-sm font-medium outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active", mode === "ebom-mbom" ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}><EntityIcon id="ebom" className="mr-1.5 inline size-3.5 align-[-2px] text-current" />EBOM vs MBOM</button>
       </div>
 
       {mode === "variants" ? (
         <>
           <div className="flex items-center gap-3 flex-wrap">
             <Select value={a} onValueChange={setA}>
-              <SelectTrigger aria-label="Variant A" className="h-9 w-72 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger aria-label="Variant A" className="h-8 w-72 type-label-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {variants.map(v => <SelectItem key={v.code} value={v.code}>{v.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <ArrowRight aria-hidden className="h-4 w-4 text-muted-foreground" />
+            <ArrowRight aria-hidden className="size-3.5 text-tertiary" />
             <Select value={b} onValueChange={setB}>
-              <SelectTrigger aria-label="Variant B" className="h-9 w-72 text-xs"><SelectValue /></SelectTrigger>
+              <SelectTrigger aria-label="Variant B" className="h-8 w-72 type-label-sm"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {variants.map(v => <SelectItem key={v.code} value={v.code}>{v.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <Badge variant="outline" className="ml-auto"><GitCompare aria-hidden className="h-3 w-3 mr-1" />{variantResult.onlyA.length + variantResult.onlyB.length} differences</Badge>
+            <Badge variant="outline" className="ml-auto"><GitCompare aria-hidden className="size-3.5 mr-1" />{variantResult.onlyA.length + variantResult.onlyB.length} differences</Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="rounded-lg border border-hairline bg-container p-4">
-              <div className="type-eyebrow text-quaternary mb-2">Only in A — {variants.find(v => v.code === a)?.name}</div>
+              <div className="type-eyebrow text-quaternary mb-2">Only in A · {variants.find(v => v.code === a)?.name}</div>
               <div className="type-display-xl tabular text-foreground mb-2">{variantResult.onlyA.length}</div>
               <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
                 {variantResult.onlyA.map(pn => (
-                  <div key={pn} className="text-xs">
-                    <span className="font-mono type-caption text-muted-foreground">{pn}</span>
+                  <div key={pn} className="type-body-sm">
+                    <span className="font-mono type-caption text-tertiary">{pn}</span>
                     <div>{getPart(pn)?.name}</div>
                   </div>
                 ))}
@@ -103,18 +104,18 @@ const BomCompare = () => {
             </div>
 
             <div className="rounded-lg border border-hairline bg-container p-4">
-              <div className="type-eyebrow text-quaternary mb-2">In Both</div>
+              <div className="type-eyebrow text-quaternary mb-2">In both</div>
               <div className="type-display-xl tabular text-foreground mb-2">{variantResult.both.length}</div>
-              <div className="text-xs text-muted-foreground">Common carryover structure across both variants. These parts participate in shared manufacturing and service flows.</div>
+              <div className="type-body-sm text-tertiary">Common carryover structure across both variants. These parts participate in shared manufacturing and service flows.</div>
             </div>
 
             <div className="rounded-lg border border-hairline bg-container p-4">
-              <div className="type-eyebrow text-quaternary mb-2">Only in B — {variants.find(v => v.code === b)?.name}</div>
+              <div className="type-eyebrow text-quaternary mb-2">Only in B · {variants.find(v => v.code === b)?.name}</div>
               <div className="type-display-xl tabular text-foreground mb-2">{variantResult.onlyB.length}</div>
               <div className="space-y-1 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
                 {variantResult.onlyB.map(pn => (
-                  <div key={pn} className="text-xs">
-                    <span className="font-mono type-caption text-muted-foreground">{pn}</span>
+                  <div key={pn} className="type-body-sm">
+                    <span className="font-mono type-caption text-tertiary">{pn}</span>
                     <div>{getPart(pn)?.name}</div>
                   </div>
                 ))}
@@ -124,34 +125,34 @@ const BomCompare = () => {
         </>
       ) : (
         <>
-          <p className="text-xs text-muted-foreground">
+          <p className="type-body-sm text-tertiary">
             Reconciliation between Engineering BOM (design intent) and Manufacturing BOM (routing of assemblies through plants). Any EBOM assembly without a routing is a mapping gap; any MBOM op without an EBOM assembly is a phantom that needs investigation.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="rounded-lg border border-hairline bg-container p-4">
               <div className="type-eyebrow text-quaternary mb-2">Mapped both ways</div>
               <div className="type-display-xl tabular text-foreground">{ebomVsMbom.matched.length}</div>
-              <p className="type-body-sm text-muted-foreground mt-1">Assemblies with a live MBOM routing.</p>
+              <p className="type-body-sm text-tertiary mt-1">Assemblies with a live MBOM routing.</p>
             </div>
             <div className="rounded-lg border border-hairline bg-warning-surface p-4">
               <div className="type-eyebrow text-warning mb-2">EBOM only (no routing)</div>
               <div className="type-display-xl tabular text-foreground">{ebomVsMbom.onlyEbom.length}</div>
-              <p className="type-body-sm text-muted-foreground mt-1">Needs a manufacturing process decision.</p>
+              <p className="type-body-sm text-tertiary mt-1">Needs a manufacturing process decision.</p>
             </div>
             <div className="rounded-lg border border-hairline bg-error-surface p-4">
               <div className="type-eyebrow text-error mb-2">MBOM only (phantom)</div>
               <div className="type-display-xl tabular text-foreground">{ebomVsMbom.onlyMbom.length}</div>
-              <p className="type-body-sm text-muted-foreground mt-1">Routing exists for a part not in EBOM — investigate.</p>
+              <p className="type-body-sm text-tertiary mt-1">Routing exists for a part not in EBOM. Investigate.</p>
             </div>
           </div>
 
           {ebomVsMbom.onlyEbom.length > 0 && (
-            <Panel title="Unmapped EBOM Assemblies">
+            <Panel title="Unmapped EBOM Assemblies" icon="assembly">
               <div className="overflow-x-auto">
-                <table className="tabular w-full text-xs">
+                <table className="tabular w-full type-body-sm">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
-                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Supplier</th>
@@ -164,8 +165,8 @@ const BomCompare = () => {
                         <tr key={pn} className="border-b border-hairline hover:bg-raised">
                           <td className="px-3 py-2 font-mono">{pn}</td>
                           <td className="px-3 py-2 font-semibold">{p?.name}</td>
-                          <td className="px-3 py-2 text-muted-foreground">{p?.type}</td>
-                          <td className="px-3 py-2 text-muted-foreground">{p?.supplierId}</td>
+                          <td className="px-3 py-2 text-tertiary">{p?.type}</td>
+                          <td className="px-3 py-2 text-tertiary">{p?.supplierId}</td>
                         </tr>
                       );
                     })}

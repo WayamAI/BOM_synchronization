@@ -1,7 +1,9 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
-import { EntityMark } from "@/components/icons/EntityIcon";
+import { ChevronRight } from "lucide-react";
+import { statusText } from "@/lib/format";
+import { EntityIcon, EntityMark } from "@/components/icons/EntityIcon";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4).
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
@@ -24,14 +26,31 @@ const toneDot: Record<Tone, string> = {
   neutral: "bg-quaternary",
 };
 
+/** Flow separator (Chronus 4.16): a 12px chevron, the only arrow glyph in labels. */
+export const InlineArrow = ({ className }: { className?: string }) => (
+  <ChevronRight aria-hidden className={cn("inline size-3 align-[-1px] text-quaternary", className)} />
+);
+
 /** Unit or percent sign beside a Michroma value: Geist, same colour, slightly smaller. */
 export const Unit = ({ children, className }: { children: ReactNode; className?: string }) => (
   <span className={cn("ml-0.5 font-sans text-[0.7em] tracking-normal", className)}>{children}</span>
 );
 
+/** Shared panel header: h-11, hairline underneath, eyebrow-caps title with an optional entity icon and action. */
+export const PanelHeader = ({ title, icon, action, className }: { title: ReactNode; icon?: string; action?: ReactNode; className?: string }) => (
+  <header className={cn("flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4", className)}>
+    <h3 className="type-section flex min-w-0 items-center gap-2 text-quaternary">
+      {icon && <EntityIcon id={icon} />}
+      <span className="truncate">{title}</span>
+    </h3>
+    {action && <div className="shrink-0">{action}</div>}
+  </header>
+);
+
 /** Content card: 8px radius, hairline border, no shadow, optional eyebrow header. */
 export const Panel = ({
   title,
+  icon,
   action,
   padded = true,
   className,
@@ -39,6 +58,8 @@ export const Panel = ({
   children,
 }: {
   title?: ReactNode;
+  /** Entity id (iconMap): a grey lucide icon before the title. Never a brand mark. */
+  icon?: string;
   action?: ReactNode;
   padded?: boolean;
   className?: string;
@@ -46,12 +67,7 @@ export const Panel = ({
   children: ReactNode;
 }) => (
   <section className={cn("flex flex-col overflow-hidden rounded-lg border border-hairline bg-container", className)}>
-    {title && (
-      <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4">
-        <h3 className="type-eyebrow truncate text-quaternary">{title}</h3>
-        {action && <div className="shrink-0">{action}</div>}
-      </header>
-    )}
+    {title && <PanelHeader title={title} icon={icon} action={action} />}
     <div className={cn("min-h-0 flex-1 overflow-auto", padded && "p-4", bodyClassName)}>{children}</div>
   </section>
 );
@@ -119,9 +135,9 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
 /** BOM lifecycle state. Released and In Work are plain text (no dot: a dot means health); In Review and Obsolete get a solid badge. */
 export const LifecycleStatus = ({ status }: { status?: string }) => {
   if (!status) return <span className="type-body-sm text-quaternary">—</span>;
-  if (status === "In Review") return <Badge variant="warning">{status}</Badge>;
-  if (status === "Obsolete") return <Badge variant="neutral">{status}</Badge>;
-  return <span className="type-body-sm whitespace-nowrap text-tertiary">{status}</span>;
+  if (status === "In Review") return <Badge variant="warning">{statusText(status)}</Badge>;
+  if (status === "Obsolete") return <Badge variant="neutral">{statusText(status)}</Badge>;
+  return <span className="type-body-sm whitespace-nowrap text-tertiary">{statusText(status)}</span>;
 };
 
 /** Plain statement, no illustration, no call to action. */

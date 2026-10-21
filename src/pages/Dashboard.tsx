@@ -1,3 +1,4 @@
+import { plural, statusText } from "@/lib/format";
 import { useNavigate } from "react-router-dom";
 import { programs, suppliers } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
@@ -9,7 +10,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { Panel, KpiTile, EmptyState, StatusDot, QuietStatus } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
 import { Sparkles, FileEdit, ShieldAlert, FileBarChart, AlertTriangle, ArrowRight } from "lucide-react";
-import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
 const STAGES = ["Concept", "Design", "Engineering", "Pre-Production", "SOP"] as const;
@@ -69,7 +70,8 @@ const Dashboard = () => {
   return (
     <PageHeader
       title="Command Center"
-      subtitle={`${activeProgram.name} · ${activeProgram.modelYear} · ${activeProgram.stage} · ${activeProgram.daysToSOP} days to SOP · ${activeProgram.pilotVinsBuilt} units built · ${activeProgram.activeEcns} ECNs`}
+      mark="assembly"
+      subtitle={`${activeProgram.name} · ${activeProgram.modelYear} · ${activeProgram.stage} · ${plural(activeProgram.daysToSOP, "day")} to SOP · ${plural(activeProgram.pilotVinsBuilt, "unit")} built · ${plural(activeProgram.activeEcns, "ECN")}`}
       actions={
         <>
           <Button variant="outline" size="sm" onClick={() => navigate("/changes")}>
@@ -138,11 +140,11 @@ const Dashboard = () => {
         </div>
 
         {/* Health row */}
-        <div className="col-span-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <HealthArc value={ebomScore} label="EBOM Maturity" tone="success" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
-          <HealthArc value={mbomScore} label="MBOM Readiness" tone="warning" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
-          <HealthArc value={100 - supplyScore} label="Supply Risk" tone="danger" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />
-          <HealthArc value={serviceScore} label="Service Scope" tone="success" micro={[{ label: "Kits", value: String(activeProgram.serviceKits.length) }, { label: "Serviceable", value: `${serviceableParts.length}` }]} />
+        <div className="col-span-12 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <HealthArc value={ebomScore} label="EBOM maturity" direction="higher-better" micro={[{ label: "Released", value: `${releasedParts.length}/${progParts.length}` }, { label: "In review", value: String(progParts.filter(p => p.lifecycle === "In Review").length) }]} />
+          <HealthArc value={mbomScore} label="MBOM readiness" direction="higher-better" micro={[{ label: "Operations", value: String(activeProgram.mbomOps.length) }, { label: "Plants", value: String(new Set(activeProgram.mbomOps.map(o => o.plantId)).size) }]} />
+          <HealthArc value={100 - supplyScore} label="Supply risk" direction="lower-better" micro={[{ label: "Single-source", value: String(singleSrcCount) }, { label: "Suppliers", value: String(usedSuppliers.length) }]} />
+          <HealthArc value={serviceScore} label="Service scope" direction="higher-better" micro={[{ label: "Kits", value: String(activeProgram.serviceKits.length) }, { label: "Serviceable", value: `${serviceableParts.length}` }]} />
         </div>
 
         <div className="col-span-12 flex flex-col xl:col-span-8">
@@ -150,7 +152,7 @@ const Dashboard = () => {
         </div>
 
         <div className="col-span-12 flex flex-col gap-4 xl:col-span-4">
-          <Panel title="Program Stage Pipeline" className="flex-none">
+          <Panel title="Program Stage Pipeline" icon="variant" className="flex-none">
             <div className="space-y-3">
               {programs.map(prog => {
                 const idx = STAGES.indexOf(prog.stage as typeof STAGES[number]);
@@ -198,7 +200,7 @@ const Dashboard = () => {
                   <div className="rounded-md border border-hairline bg-raised px-3 py-2">
                     <div className="type-eyebrow mb-1 text-quaternary">Actionable insight</div>
                     <p className="type-body-sm text-tertiary">
-                      "{activeProgram.ecns[0].title} ({activeProgram.ecns[0].id}) — prioritize resolution before next gate."
+                      "{activeProgram.ecns[0].title} ({activeProgram.ecns[0].id}), prioritize resolution before next gate."
                     </p>
                   </div>
                 )}
@@ -214,11 +216,6 @@ const Dashboard = () => {
           <Panel
             title="Security Hub"
             className="flex-none"
-            action={
-              <span className="flex gap-1" aria-hidden>
-                {[...Array(5)].map((_, i) => <span key={i} className="h-1 w-3 rounded-full bg-success" />)}
-              </span>
-            }
           >
             <p className="type-body-sm text-tertiary">No active cybersecurity threats detected in the last <span className="tabular text-foreground">240 hours</span>. SOC status: Normal.</p>
           </Panel>
@@ -228,6 +225,7 @@ const Dashboard = () => {
         <div className="col-span-12 xl:col-span-6">
           <Panel
             title="ECN Approval Queue"
+            icon="ecn"
             className="h-full min-h-[340px]"
             action={
               <Button variant="ghost" size="sm" onClick={() => navigate("/changes")}>
@@ -236,7 +234,7 @@ const Dashboard = () => {
             }
           >
             {pendingEcns.length === 0 ? (
-              <EmptyState title={`No pending ECNs for ${activeProgram.name}`} />
+              <EmptyState title={`No pending ECNs for ${activeProgram.name}`} mark="ecn" />
             ) : (
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 {pendingEcns.slice(0, 4).map(e => (
@@ -247,7 +245,7 @@ const Dashboard = () => {
                   >
                     <div className="mb-1 flex items-start justify-between gap-2">
                       <span className="type-caption font-mono text-quaternary">{e.id}</span>
-                      <Badge variant="warning">{e.state}</Badge>
+                      <Badge variant="warning">{statusText(e.state)}</Badge>
                     </div>
                     <p className="type-body-md line-clamp-1 text-foreground">{e.title}</p>
                     <p className="type-body-sm mt-0.5 line-clamp-1 text-tertiary">{e.reason}</p>
@@ -265,15 +263,18 @@ const Dashboard = () => {
             className="h-full min-h-[340px]"
             action={<span className="type-caption tabular text-quaternary">{activeProgram.name}</span>}
           >
-            <div className="h-[220px]">
+            <p className="type-body-sm text-tertiary">Changes per week (bars, left axis) and average cycle time in days (line, right axis)</p>
+            <div className="mt-2 h-[240px]">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={activeProgram.changeVelocity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <ComposedChart data={activeProgram.changeVelocity} margin={{ top: 8, right: 0, left: 0, bottom: 0 }}>
                   <XAxis dataKey="week" axisLine={false} tickLine={false} tick={axisTick} />
-                  <YAxis axisLine={false} tickLine={false} tick={axisTick} />
+                  <YAxis yAxisId="count" width={28} axisLine={false} tickLine={false} tick={axisTick} allowDecimals={false} />
+                  <YAxis yAxisId="days" orientation="right" width={28} axisLine={false} tickLine={false} tick={axisTick} allowDecimals={false} />
                   <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} itemStyle={chartTooltipLabelStyle} cursor={{ fill: "var(--surface-raised)" }} />
-                  <Bar dataKey="approved" stackId="a" fill="var(--analytics-series-2)" barSize={12} isAnimationActive={false} />
-                  <Bar dataKey="rejected" stackId="a" fill="var(--analytics-series-4)" barSize={12} radius={[4, 4, 0, 0]} isAnimationActive={false} />
-                  <Line type="monotone" dataKey="cycle" stroke="var(--analytics-series-1)" strokeWidth={2} dot={false} isAnimationActive={false} />
+                  <Legend verticalAlign="bottom" height={28} formatter={(v: string) => <span style={{ color: "var(--text-tertiary)" }}>{v}</span>} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--text-tertiary)" }} />
+                  <Bar yAxisId="count" name="Approved" dataKey="approved" stackId="a" fill="var(--analytics-series-2)" barSize={12} isAnimationActive={false} />
+                  <Bar yAxisId="count" name="Rejected" dataKey="rejected" stackId="a" fill="var(--analytics-series-4)" barSize={12} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                  <Line yAxisId="days" name="Cycle time (days)" type="monotone" dataKey="cycle" stroke="var(--analytics-series-1)" strokeWidth={2} dot={false} isAnimationActive={false} />
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
@@ -298,7 +299,7 @@ const Dashboard = () => {
                   <div key={e.id} className="flex cursor-pointer items-center gap-2 rounded-md border border-hairline px-2 py-1.5 transition-colors duration-[150ms] hover:border-strong">
                     <StatusDot tone={sevTone(e.severity)} />
                     <div className="min-w-0">
-                      <p className="type-body-sm truncate text-foreground">{e.title}</p>
+                      <p className="type-body-sm line-clamp-2 text-foreground" title={e.title}>{e.title}</p>
                       <p className="type-caption text-quaternary">{e.variant}</p>
                     </div>
                   </div>

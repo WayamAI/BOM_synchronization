@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Download, Calendar } from "lucide-react";
@@ -7,7 +8,7 @@ import { totals, program } from "@/lib/mockData";
 const reports = [
   {
     name: "Executive Program Pack",
-    desc: "Single-page Meridian MY2026 status — health, ECNs, risk, days-to-SOP",
+    desc: "Single-page Meridian MY2026 status: health, ECNs, risk, days-to-SOP",
     format: "PDF",
     schedule: "Weekly",
     lastRun: "Apr 22, 2026",
@@ -15,7 +16,7 @@ const reports = [
   },
   {
     name: "EBOM Export",
-    desc: `Complete flattened EBOM · ${totals.ebomParts} parts with quantities, suppliers, revs`,
+    desc: `Complete flattened EBOM · ${plural(totals.ebomParts, "part")} with quantities, suppliers, revs`,
     format: "CSV / JSON",
     schedule: "On demand",
     lastRun: "Apr 20, 2026",
@@ -23,7 +24,7 @@ const reports = [
   },
   {
     name: "MBOM Routing Sheet",
-    desc: `Plant-wise work instructions · ${totals.mbomOps} ops across ${totals.plants} plants`,
+    desc: `Plant-wise work instructions · ${plural(totals.mbomOps, "op")} across ${plural(totals.plants, "plant")}`,
     format: "PDF / XML",
     schedule: "Per build",
     lastRun: "Apr 22, 2026",
@@ -31,7 +32,7 @@ const reports = [
   },
   {
     name: "Service BOM / Spare Parts Catalog",
-    desc: `${totals.serviceKits} kits · ${totals.frus} FRUs for dealer network publication`,
+    desc: `${plural(totals.serviceKits, "kit")} · ${plural(totals.frus, "FRU")} for dealer network publication`,
     format: "PDF",
     schedule: "Monthly",
     lastRun: "Apr 1, 2026",
@@ -47,7 +48,7 @@ const reports = [
   },
   {
     name: "CycloneDX Software BOM Export",
-    desc: `All ECU firmware software packages · ${totals.softwareComponents} items`,
+    desc: `All ECU firmware software packages · ${plural(totals.softwareComponents, "item")}`,
     format: "CycloneDX JSON",
     schedule: "Weekly",
     lastRun: "Apr 21, 2026",
@@ -108,9 +109,9 @@ const Reports = () => (
     title="Reports & Exports"
       mark="report"
     subtitle={`${reports.length} report types · regulatory, executive, operational and engineering deliverables for ${program.name} ${program.modelYear}`}
-    actions={<Button size="sm" className="gap-1.5"><Calendar aria-hidden className="h-3.5 w-3.5" />Schedule report</Button>}
+    actions={<Button size="sm" className="gap-1.5"><Calendar aria-hidden className="size-3.5" />Schedule report</Button>}
   >
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
       {reports.map(r => (
         <div key={r.name} className="rounded-lg border border-hairline bg-container p-4 hover:border-strong transition-colors duration-150 cursor-pointer group">
           <div className="flex items-start justify-between">
@@ -123,8 +124,8 @@ const Reports = () => (
           <p className="type-body-sm mt-1 text-tertiary">{r.desc}</p>
           <p className="type-body-sm mt-3 text-quaternary">{r.outputs.join(" · ")}</p>
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-hairline">
-            <span className="type-body-sm text-muted-foreground">Last run · {r.lastRun}</span>
-            <Button size="sm" variant="ghost" className="h-7 gap-1.5 text-xs"><Download aria-hidden className="h-3 w-3" />Generate</Button>
+            <span className="type-body-sm text-tertiary">Last run · {r.lastRun}</span>
+            <Button size="sm" variant="ghost" className="h-7 gap-1.5 type-label-sm"><Download aria-hidden className="size-3.5" />Generate</Button>
           </div>
         </div>
       ))}

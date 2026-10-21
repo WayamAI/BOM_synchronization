@@ -1,6 +1,7 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
 import { EntityIcon } from "@/components/icons/EntityIcon";
-import { useMemo, useState, useEffect } from "react";
+import { plural, statusText } from "@/lib/format";
+import { useMemo, useState, useEffect, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   buildEbomTree, type EbomNode, getPart, getWhereUsed,
@@ -43,23 +44,55 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
     node.name.toLowerCase().includes(filter.toLowerCase()) ||
     node.partNumber.toLowerCase().includes(filter.toLowerCase());
   const anyChildMatches = node.children?.some(c => matchesDeep(c, filter)) ?? false;
-  const [open, setOpen] = useState(depth < 2 || (!!filter && anyChildMatches));
+  // Open state follows the filter unless the user toggled this row by hand.
+  const [manual, setManual] = useState<boolean | null>(null);
+  useEffect(() => setManual(null), [filter]);
   const has = !!node.children?.length;
+  const open = has && (manual ?? (filter ? anyChildMatches : depth < 2));
   const isSel = selected === node.id;
 
   if (filter && !matchesFilter && !anyChildMatches) return null;
 
+  // Roving keyboard support over the flat list of visible rows.
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSelect(node); }
+    else if (e.key === "ArrowRight" && has && !open) { e.preventDefault(); setManual(true); }
+    else if (e.key === "ArrowLeft" && has && open) { e.preventDefault(); setManual(false); }
+    else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      const items = Array.from(e.currentTarget.closest<HTMLElement>("[role=tree]")?.querySelectorAll<HTMLElement>("[role=treeitem]") ?? []);
+      items[items.indexOf(e.currentTarget) + (e.key === "ArrowDown" ? 1 : -1)]?.focus();
+    }
+  };
+
   return (
     <div>
       <div
-        onClick={() => { onSelect(node); if (has) setOpen(!open); }}
+        role="treeitem"
+        tabIndex={0}
+        aria-level={depth + 1}
+        aria-selected={isSel}
+        aria-expanded={has ? open : undefined}
+        onClick={() => onSelect(node)}
+        onKeyDown={onKeyDown}
         className={cn(
-          "group flex min-h-9 items-center gap-2 border-b border-hairline px-2 py-2 cursor-pointer hover:bg-raised transition-colors",
+          "group flex min-h-9 items-center gap-2 border-b border-hairline px-2 py-2 cursor-pointer outline-none hover:bg-raised transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-active",
           isSel && "bg-raised ring-1 ring-inset ring-active"
         )}
         style={{ paddingLeft: 8 + depth * 16 }}
       >
-        {has ? (open ? <ChevronDown aria-hidden className="h-3.5 w-3.5 opacity-60" /> : <ChevronRight aria-hidden className="h-3.5 w-3.5 opacity-60" />) : <span className="w-3.5" />}
+        {has ? (
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
+            onClick={(e) => { e.stopPropagation(); setManual(!open); }}
+            className="grid size-5 shrink-0 place-items-center rounded-md outline-none hover:bg-raised-2"
+          >
+            {open ? <ChevronDown aria-hidden className="size-3.5 opacity-60" /> : <ChevronRight aria-hidden className="size-3.5 opacity-60" />}
+          </button>
+        ) : <span className="w-5 shrink-0" />}
         <HealthDot health={node.health} />
         <EntityIcon id={has ? "assembly" : "part"} />
         <span title={node.name} className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
@@ -67,13 +100,13 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
           {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
         </span>
         <span className="ml-auto flex shrink-0 items-center gap-3">
-          {!!node.cves && <Badge variant="error">{node.cves} CVE</Badge>}
+          {!!node.cves && <Badge variant="error">{plural(node.cves, "CVE")}</Badge>}
           {!!node.warnings && <Badge variant="warning">{node.warnings} warn</Badge>}
           <span className="hidden w-24 items-center sm:flex">{node.status && <LifecycleStatus status={node.status} />}</span>
           <span className="type-body-sm hidden w-20 justify-end text-quaternary sm:flex">{node.type}</span>
         </span>
       </div>
-      {open && has && node.children!.map(c => (
+      {open && node.children!.map(c => (
         <TreeRow key={c.id} node={c} depth={depth + 1} onSelect={onSelect} selected={selected} filter={filter} />
       ))}
     </div>
@@ -107,13 +140,13 @@ const getChildCount = (node: EbomNode): number => {
     if (n.children) n.children.forEach(traverse);
   };
   if (node.children) node.children.forEach(traverse);
-  return count - 1; // exclude self
+  return count; // descendants only; the node itself is never counted, so a leaf is 0
 };
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
     <p className="type-eyebrow text-quaternary">{label}</p>
-    <div className="text-xs">{value}</div>
+    <div className="type-body-sm">{value}</div>
   </div>
 );
 
@@ -137,9 +170,9 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
             <h3 className="type-display-lg truncate text-foreground">{node.name}</h3>
           </div>
           <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>
-          <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ?? "—"}</p>
+          <p className="type-body-sm text-tertiary">{node.type} · {node.owner ?? "Unassigned"} · {node.status ? statusText(node.status) : "—"}</p>
         </div>
-        <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Close details" onClick={onClose}><X aria-hidden className="h-4 w-4" /></Button>
+        <Button variant="ghost" size="icon" aria-label="Close details" onClick={onClose}><X aria-hidden /></Button>
       </div>
 
       <div className="flex flex-wrap gap-1.5 p-3 border-b border-hairline">
@@ -147,14 +180,14 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
           <button key={t}
             onClick={() => setTab(t)}
             aria-pressed={tab === t}
-            className={cn("rounded-full border px-2.5 py-1 text-xs font-medium whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active",
+            className={cn("rounded-full border px-2.5 py-1 type-body-sm font-medium whitespace-nowrap outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-active",
               tab === t ? "border-transparent bg-action-primary text-on-color" : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground")}>
             {t}
           </button>
         ))}
       </div>
 
-      <div className="p-4 space-y-3 text-xs">
+      <div className="p-4 space-y-3 type-body-sm">
         {tab === "Overview" && (
           <div className="grid grid-cols-2 gap-x-4 gap-y-3">
             <Field label="Part number" value={<span className="font-mono">{node.partNumber}</span>} />
@@ -164,7 +197,7 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
             <Field label="Owner team" value={node.owner ?? "—"} />
             <Field label="Supplier" value={node.supplier ?? "—"} />
             <Field label="Unit cost" value={part?.cost ? `$${part.cost.toLocaleString("en-US")}` : "—"} />
-            <Field label="Lead time" value={part ? `${part.leadTimeDays} days` : "—"} />
+            <Field label="Lead time" value={part ? plural(part.leadTimeDays, "day") : "—"} />
             <Field label="UoM" value={part?.uom ?? "—"} />
             <Field label="Serviceable" value={part?.serviceable ? "Yes (in Service BOM)" : "No"} />
             <Field label="Dependency depth" value={depth} />
@@ -180,17 +213,17 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "Where-Used" && (
           <div className="space-y-2">
-            <p className="type-body-sm text-muted-foreground">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
-            {whereUsed.length === 0 && <p className="type-body-sm italic text-muted-foreground">No parents — this is the top-level vehicle.</p>}
+            <p className="type-body-sm text-tertiary">This part is used as a child of {whereUsed.length} parent{whereUsed.length === 1 ? "" : "s"}:</p>
+            {whereUsed.length === 0 && <p className="type-body-sm italic text-tertiary">No parents. This is the top-level vehicle.</p>}
             {whereUsed.map((e, i) => {
               const parent = getPart(e.parentPN);
               return (
                 <div key={i} className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised cursor-pointer" onClick={() => navigate(`/parts/${e.parentPN}`)}>
                   <div>
-                    <div className="text-xs font-semibold">{parent?.name ?? e.parentPN}</div>
-                    <div className="type-caption font-mono text-muted-foreground">{e.parentPN} · qty {e.qty}</div>
+                    <div className="type-body-sm font-semibold">{parent?.name ?? e.parentPN}</div>
+                    <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}</div>
                   </div>
-                  <ExternalLink aria-hidden className="h-3 w-3 opacity-50" />
+                  <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </div>
               );
             })}
@@ -199,35 +232,35 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "Manufacturing" && (
           <div className="space-y-2">
-            {routingOps.length === 0 && <p className="type-body-sm italic text-muted-foreground">No MBOM routing defined. Add one from the MBOM Manager.</p>}
+            {routingOps.length === 0 && <p className="type-body-sm italic text-tertiary">No MBOM routing defined. Add one from the MBOM Manager.</p>}
             {routingOps.map(op => {
               const plant = plants.find(p => p.id === op.plantId);
               return (
                 <div key={op.id} className="rounded-lg border border-hairline p-3 bg-raised">
-                  <div className="text-xs font-semibold">{op.operation}</div>
-                  <div className="type-body-sm text-muted-foreground mt-1">{plant?.name} · {op.line} · {op.station}</div>
+                  <div className="type-body-sm font-semibold">{op.operation}</div>
+                  <div className="type-body-sm text-tertiary mt-1">{plant?.name} · {op.line} · {op.station}</div>
                   <div className="flex items-center justify-between type-caption mt-2">
-                    <span className="text-muted-foreground">{op.takeTimeSec}s takt · {op.workInstructionId}</span>
+                    <span className="text-tertiary">{op.takeTimeSec}s takt · {op.workInstructionId}</span>
                     {op.status === "ready" ? <QuietStatus tone="success">{op.status}</QuietStatus> : <Badge variant={op.status === "warning" ? "warning" : op.status === "blocked" ? "error" : "neutral"}>{op.status}</Badge>}
                   </div>
                 </div>
               );
             })}
-            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate("/mbom")}>Open in MBOM Manager</Button>
+            <Button variant="link" className="type-label-sm px-0 h-auto" onClick={() => navigate("/mbom")}>Open in MBOM Manager</Button>
           </div>
         )}
 
         {tab === "Software" && (
           <div className="space-y-2">
-            {softOnMe.length === 0 && <p className="type-body-sm italic text-muted-foreground">No software packages declared for this part. Relevant only for ECU-type parts.</p>}
+            {softOnMe.length === 0 && <p className="type-body-sm italic text-tertiary">No software packages declared for this part. Relevant only for ECU-type parts.</p>}
             {softOnMe.map(c => (
               <div key={c.id} className="flex items-center justify-between rounded-md border border-hairline p-2">
                 <div>
-                  <div className="text-xs font-semibold">{c.name} <span className="font-mono text-muted-foreground">{c.version}</span></div>
-                  <div className="type-caption text-muted-foreground">{c.license} · {c.supplier}</div>
+                  <div className="type-body-sm font-semibold">{c.name} <span className="font-mono text-tertiary">{c.version}</span></div>
+                  <div className="type-caption text-tertiary">{c.license} · {c.supplier}</div>
                 </div>
                 {c.cves.length > 0
-                  ? <Badge variant="error">{c.cves.length} CVE</Badge>
+                  ? <Badge variant="error">{plural(c.cves.length, "CVE")}</Badge>
                   : <QuietStatus tone="success">Clean</QuietStatus>}
               </div>
             ))}
@@ -236,16 +269,16 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
 
         {tab === "History" && (
           <div className="relative pl-4 space-y-3 border-l border-hairline">
-            {history.length === 0 && <p className="type-body-sm italic text-muted-foreground">No revision history yet.</p>}
+            {history.length === 0 && <p className="type-body-sm italic text-tertiary">No revision history yet.</p>}
             {history.map((h, i) => (
               <div key={i} className="relative">
-                <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-primary" />
-                <div className="text-xs font-semibold">rev {h.revision}{h.ecnId ? ` · ${h.ecnId}` : ""}</div>
+                <span className="absolute -left-[18px] top-1 h-2 w-2 rounded-full bg-action-primary" />
+                <div className="type-body-sm font-semibold">rev {h.revision}{h.ecnId ? ` · ${h.ecnId}` : ""}</div>
                 <div className="type-body-sm">{h.note}</div>
-                <div className="type-caption text-muted-foreground">{h.date} · {h.by}</div>
+                <div className="type-caption text-tertiary">{h.date} · {h.by}</div>
               </div>
             ))}
-            <Button variant="link" className="text-xs px-0 h-auto" onClick={() => navigate(`/lineage/${node.partNumber}`)}>Open full lineage</Button>
+            <Button variant="link" className="type-label-sm px-0 h-auto" onClick={() => navigate(`/lineage/${node.partNumber}`)}>Open full lineage</Button>
           </div>
         )}
       </div>
@@ -300,23 +333,23 @@ const EbomManager = () => {
       subtitle={`${activeProgram.name} ${activeProgram.modelYear} · ${variantLabel} · ${activeProgram.globalRevision}`}
       actions={
         <>
-          <Button variant="outline" size="sm" className="gap-1.5"><GitCompare aria-hidden className="h-3.5 w-3.5" />Compare</Button>
-          <Button variant="outline" size="sm" className="gap-1.5"><Link2 aria-hidden className="h-3.5 w-3.5" />Add relationship</Button>
-          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="h-3.5 w-3.5" />Add component</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><GitCompare aria-hidden className="size-3.5" />Compare</Button>
+          <Button variant="outline" size="sm" className="gap-1.5"><Link2 aria-hidden className="size-3.5" />Add relationship</Button>
+          <Button size="sm" className="gap-1.5"><Plus aria-hidden className="size-3.5" />Add component</Button>
         </>
       }
     >
       <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-full space-y-4">
         <TabsList>
-          <TabsTrigger value="tree">Tree View</TabsTrigger>
-          <TabsTrigger value="table">Table View</TabsTrigger>
-          <TabsTrigger value="graph">Graph View</TabsTrigger>
+          <TabsTrigger value="tree">Tree view</TabsTrigger>
+          <TabsTrigger value="table">Table view</TabsTrigger>
+          <TabsTrigger value="graph">Graph view</TabsTrigger>
         </TabsList>
 
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-2">
           <Select value={variantCode} onValueChange={setVariantCode}>
-            <SelectTrigger aria-label="Filter by variants" className="h-8 w-56 text-xs">
+            <SelectTrigger aria-label="Filter by variants" className="h-8 w-56 type-label-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -326,14 +359,14 @@ const EbomManager = () => {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" size="sm" className="gap-1.5 h-8"><Filter aria-hidden className="h-3.5 w-3.5" />Filter</Button>
+          <Button variant="outline" size="sm" className="gap-1.5 h-8"><Filter aria-hidden className="size-3.5" />Filter</Button>
           <div className="relative">
-            <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Search aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary" />
             <Input aria-label="Search EBOM by name or PN"
               value={filter}
               onChange={e => setFilter(e.target.value)}
               placeholder="Search EBOM by name or PN"
-              className="h-8 w-72 pl-8 text-xs"
+              className="h-8 w-72 pl-8 type-label-sm"
             />
           </div>
         </div>
@@ -354,8 +387,11 @@ const EbomManager = () => {
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Structure · ${filteredRows.length.toLocaleString("en-US")} parts`} padded={false} className="flex-1 min-h-[520px]">
-              <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
+            <Panel title={`Structure · ${plural(filteredRows.length, "Part")}`} padded={false} className="flex-1 min-h-[520px]">
+              <div role="tree" aria-label="Engineering BOM structure" className="-mb-px">
+                <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
+              </div>
+              {filter && !matchesDeep(tree, filter) && <EmptyState title="No components match this search" mark="ebom" />}
             </Panel>
             {selected && <SidePanel node={selected} onClose={() => setSelected(null)} tree={tree} />}
           </div>
@@ -364,11 +400,11 @@ const EbomManager = () => {
           <div className="flex flex-col lg:flex-row gap-4">
             <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} padded={false} className="flex-1 min-h-[520px]">
               <div className="overflow-x-auto">
-                <table className="tabular w-full text-xs">
+                <table className="tabular w-full type-body-sm">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
                     <tr className="border-b border-hairline">
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap"><span className="sr-only">Health</span></th>
-                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part Number</th>
+                      <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Part number</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Name</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Type</th>
                       <th scope="col" className="text-left px-3 py-2 font-medium whitespace-nowrap">Rev</th>
@@ -413,13 +449,13 @@ const EbomManager = () => {
 
         {/* Validation footer */}
         <div className="rounded-lg border border-hairline bg-warning-surface p-3 flex items-center gap-3 flex-wrap">
-          <GitBranch aria-hidden className="h-4 w-4 text-warning" />
-          <span className="text-xs font-semibold text-warning">Validation</span>
-          <span className="text-xs text-muted-foreground">
-            {activeProgram.bomEdges.length} parent-child edges · {all.filter(n => !n.owner).length} parts without owner · {all.filter(n => n.health === "warning" || n.health === "critical").length} health issues open
+          <GitBranch aria-hidden className="size-3.5 text-warning" />
+          <span className="type-body-sm font-semibold text-warning">Validation</span>
+          <span className="type-body-sm text-tertiary">
+            {plural(activeProgram.bomEdges.length, "parent-child edge")} · {plural(all.filter(n => !n.owner).length, "part")} without owner · {plural(all.filter(n => n.health === "warning" || n.health === "critical").length, "health issue")} open
           </span>
-          <Boxes aria-hidden className="h-4 w-4 ml-auto text-muted-foreground" />
-          <ShieldAlert aria-hidden className="h-4 w-4 text-muted-foreground" />
+          <Boxes aria-hidden className="size-3.5 ml-auto text-tertiary" />
+          <ShieldAlert aria-hidden className="size-3.5 text-tertiary" />
         </div>
       </Tabs>
     </PageHeader>

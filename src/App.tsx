@@ -61,7 +61,7 @@ const App = () => (
               <Route path="/field"        element={<FieldQuality />} />
               <Route path="/reports"      element={<Reports />} />
             </Route>
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<RequireAuth><NotFound /></RequireAuth>} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -5,10 +6,10 @@ import {
 } from "@/lib/mockData";
 import { useProgramContext } from "@/context/ProgramContext";
 import { cn } from "@/lib/utils";
-import { Unit } from "@/components/ui/primitives";
+import { Panel, Unit } from "@/components/ui/primitives";
 import {
   Zap, Battery, CircleDot, Box, Armchair, Cpu,
-  TrendingUp, Factory, Truck, ShieldAlert, FileEdit,
+  FileEdit,
 } from "lucide-react";
 
 const SYSTEM_VISUAL: Record<string, { icon: typeof Zap; color: string; short: string }> = {
@@ -98,7 +99,7 @@ export const SystemHealthMatrix = () => {
       const avgOnTime = rel.length ? rel.reduce((a, s) => a + s.onTimePct, 0) / rel.length : 95;
       const singleSrc = rel.filter(s => s.singleSource).length;
       const supply: Score = rel.length
-        ? { value: Math.max(0, Math.min(100, Math.round(avgOnTime - singleSrc * 4))), raw: `${rel.length} suppliers · ${singleSrc} single-source` }
+        ? { value: Math.max(0, Math.min(100, Math.round(avgOnTime - singleSrc * 4))), raw: `${plural(rel.length, "supplier")} · ${singleSrc} single-source` }
         : { value: null, raw: "no suppliers" };
 
       // Cyber = 100 - (CVE count × 5 + criticals × 10)
@@ -107,7 +108,7 @@ export const SystemHealthMatrix = () => {
       const crit = allCves.filter(v => v.severity === "Critical").length;
       const cyber: Score = ecus.length === 0
         ? { value: null, raw: "no ECUs" }
-        : { value: Math.max(0, 100 - allCves.length * 5 - crit * 10), raw: `${ecus.length} ECUs · ${allCves.length} CVEs` };
+        : { value: Math.max(0, 100 - allCves.length * 5 - crit * 10), raw: `${plural(ecus.length, "ECU")} · ${plural(allCves.length, "CVE")}` };
 
       // Open ECNs targeting parts in this system
       const openEcns = ecns.filter(e =>
@@ -120,10 +121,10 @@ export const SystemHealthMatrix = () => {
   }, [systemsMeta]);
 
   const dims = [
-    { key: "design", label: "Design",        icon: TrendingUp,  to: "/ebom" },
-    { key: "mfg",    label: "Manufacturing", icon: Factory,     to: "/mbom" },
-    { key: "supply", label: "Supply",        icon: Truck,       to: "/suppliers" },
-    { key: "cyber",  label: "Cyber",         icon: ShieldAlert, to: "/software" },
+    { key: "design", label: "Design",        to: "/ebom" },
+    { key: "mfg",    label: "Manufacturing", to: "/mbom" },
+    { key: "supply", label: "Supply",        to: "/suppliers" },
+    { key: "cyber",  label: "Cyber",         to: "/software" },
   ] as const;
 
   const totals = useMemo(() => {
@@ -144,30 +145,27 @@ export const SystemHealthMatrix = () => {
   }, [rows]);
 
   return (
-    <div className="h-full rounded-lg border border-hairline bg-container p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-hairline pb-4">
-        <div>
-          <h3 className="type-eyebrow text-quaternary">System Health Matrix</h3>
-          <p className="type-body-sm mt-1 text-tertiary">
-            Readiness by system across design, manufacturing, supply and cyber.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="type-caption inline-flex items-center gap-1.5 text-success">
+    <Panel
+      title="System Health Matrix"
+      className="h-full"
+      action={
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="type-caption inline-flex items-center gap-1.5 text-tertiary">
             <span className="size-1.5 rounded-full bg-success" />
             Healthy 85+
           </span>
-          <span className="type-caption inline-flex items-center gap-1.5 text-warning">
+          <span className="type-caption inline-flex items-center gap-1.5 text-tertiary">
             <span className="size-1.5 rounded-full bg-warning" />
-            Watch 65-84
+            Watch 65 to 84
           </span>
-          <span className="type-caption inline-flex items-center gap-1.5 text-error">
+          <span className="type-caption inline-flex items-center gap-1.5 text-tertiary">
             <span className="size-1.5 rounded-full bg-error" />
             Risk below 65
           </span>
         </div>
-      </div>
+      }
+    >
+      <p className="type-body-sm text-tertiary">Readiness by system across design, manufacturing, supply and cyber.</p>
 
       <div className="mt-4 grid grid-cols-3 gap-2 md:grid-cols-6">
         <div className="rounded-md border border-hairline bg-raised px-3 py-2">
@@ -181,11 +179,8 @@ export const SystemHealthMatrix = () => {
         {dims.map(d => {
           const v = totals[d.key as "design" | "mfg" | "supply" | "cyber"];
           return (
-            <div key={d.key} className="rounded-lg border border-border bg-muted/20 px-3 py-2">
-              <div className="type-eyebrow flex items-center gap-1 text-quaternary">
-                <d.icon className="size-3" aria-hidden />
-                {d.label}
-              </div>
+            <div key={d.key} className="min-w-0 rounded-md border border-hairline bg-raised px-3 py-2">
+              <div className="type-eyebrow truncate text-quaternary">{d.label}</div>
               <div className={cn(
                 "type-display-lg tabular mt-1",
                 v >= 85 ? "text-success" : v >= 65 ? "text-warning" : "text-error"
@@ -217,10 +212,7 @@ export const SystemHealthMatrix = () => {
               <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(160px,1.7fr)_56px_repeat(4,minmax(84px,1fr))_72px] lg:items-center lg:gap-3">
                 <button onClick={() => navigate(`/parts/${row.pn}`)} className="min-w-0 text-left">
                   <div className="flex items-center gap-3">
-                    <div
-                      className="grid size-10 shrink-0 place-items-center rounded-lg"
-                      style={{ background: `color-mix(in srgb, ${row.color} 8%, transparent)`, color: row.color, boxShadow: `inset 0 0 0 1px color-mix(in srgb, ${row.color} 18%, transparent)` }}
-                    >
+                    <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-hairline bg-action text-tertiary">
                       <Icon className="size-4" aria-hidden />
                     </div>
                     <div className="min-w-0">
@@ -241,7 +233,7 @@ export const SystemHealthMatrix = () => {
 
                 <div className="text-left lg:text-center">
                   <div className="type-eyebrow text-quaternary lg:hidden">Parts</div>
-                  <div className="type-display-lg tabular text-foreground">{row.total}</div>
+                  <div className="type-label-md tabular text-foreground">{row.total}</div>
                 </div>
 
                 {dims.map(d => {
@@ -262,7 +254,7 @@ export const SystemHealthMatrix = () => {
                         <div className="type-eyebrow text-quaternary lg:hidden">
                           {d.label}
                         </div>
-                        <div className={cn("type-display-lg tabular leading-none", style.fg)}>
+                        <div className={cn("type-display-base tabular leading-none", style.fg)}>
                           {s.value === null ? "—" : <>{s.value}<Unit>%</Unit></>}
                         </div>
                       </div>
@@ -295,6 +287,6 @@ export const SystemHealthMatrix = () => {
           );
         })}
       </div>
-    </div>
+    </Panel>
   );
 };

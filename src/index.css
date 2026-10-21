@@ -135,7 +135,9 @@
   * {
     @apply border-border;
   }
+  /* Fixed-viewport shell (Chronus 2.9): the document never scrolls, regions inside it do. */
   html, body, #root { height: 100%; }
+  html, body { overflow: hidden; overscroll-behavior: none; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     background: var(--surface-page-background);
@@ -157,6 +159,9 @@
     letter-spacing: -0.01em;
   }
 
+  /* The last table row never doubles the border of the panel around it. */
+  tbody tr:last-child { border-bottom-width: 0; }
+
   /* Chronus icon stroke */
   svg.lucide { stroke-width: 1.75; }
 
@@ -172,7 +177,9 @@
      cn() reads unknown text-* names as colours and would drop them. Compose with
      a colour class, e.g. "type-body-sm text-tertiary". */
   .type-caption    { font-size: 12px; line-height: 16px; font-weight: 500; }
-  .type-eyebrow    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .type-eyebrow    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
+  /* Uppercase is reserved for panel titles and sidebar group labels. */
+  .type-section    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
   .type-label-sm   { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
   .type-label-md   { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
   .type-body-sm    { font-size: 12px; line-height: 16px; letter-spacing: -0.01em; }

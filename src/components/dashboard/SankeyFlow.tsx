@@ -1,5 +1,6 @@
 import { sankeyNodes, sankeyLinks } from "@/lib/mockData";
 import { useMemo, useState } from "react";
+import { InlineArrow } from "@/components/ui/primitives";
 
 const groupColor: Record<string, string> = {
   cat:     "var(--analytics-series-6)",
@@ -45,7 +46,7 @@ export const SankeyFlow = () => {
     <div className="h-full rounded-lg border border-hairline bg-container p-4">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="type-eyebrow text-quaternary">Cross-BOM Flow — Variants → EBOM → MBOM → Service</h3>
+          <h3 className="type-section text-quaternary">Cross-BOM Flow · Variants <InlineArrow /> EBOM <InlineArrow /> MBOM <InlineArrow /> Service</h3>
           <p className="type-body-sm mt-1 text-tertiary">Meridian SUV · variants flowing through engineering, plants and service</p>
         </div>
         <div className="type-caption flex items-center gap-3 text-tertiary">
@@ -95,7 +96,7 @@ export const SankeyFlow = () => {
               />
               {isHover && (
                 <text x={cx} y={(sy + ty) / 2 - 6} textAnchor="middle" className="fill-foreground" fontSize="11" fontWeight="600">
-                  {sankeyNodes[l.source].name} → {sankeyNodes[l.target].name}: {l.value}
+                  {sankeyNodes[l.source].name} to {sankeyNodes[l.target].name}: {l.value}
                 </text>
               )}
             </g>

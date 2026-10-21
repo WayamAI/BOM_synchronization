@@ -1,15 +1,21 @@
+import { plural } from "@/lib/format";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { pipeline } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
+import { EntityIcon } from "@/components/icons/EntityIcon";
 
 const routes: Record<string, string> = {
   cat: "/variants", ebom: "/ebom", mbom: "/mbom", sbom: "/software", service: "/service",
 };
 
+const stageIcon: Record<string, string> = {
+  cat: "variant", ebom: "ebom", mbom: "mbom", sbom: "software", service: "service-kit",
+};
+
 const dotClass = (h: string) => {
-  if (h === "critical") return "bg-critical";
+  if (h === "critical") return "bg-error";
   if (h === "warning")  return "bg-warning";
   return "bg-success";
 };
@@ -54,16 +60,17 @@ export const PipelineBar = () => {
                 onClick={() => path && navigate(path)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 text-xs font-medium outline-none transition-colors duration-[150ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
+                  "inline-flex h-7 items-center gap-1.5 rounded-full border px-2.5 type-body-sm font-medium outline-none transition-colors duration-[150ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
                   active
                     ? "border-transparent bg-action-primary text-on-color"
                     : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground",
                 )}
               >
                 <span className={cn("size-1.5 rounded-full", dotClass(s.health))} />
+                <EntityIcon id={stageIcon[s.id] ?? "part"} className={active ? "text-on-color" : undefined} />
                 <span>{s.name}</span>
                 <span className={cn("tabular hidden xl:inline", active ? "opacity-70" : "text-quaternary")}>
-                  {s.components.toLocaleString("en-US")} {s.countLabel} · {s.issues} issue{s.issues === 1 ? "" : "s"}
+                  {plural(s.components, s.countLabel.replace(/s$/, ""), s.countLabel)} · {plural(s.issues, "issue")}
                 </span>
                 {s.drift && (
                   <span className={cn("hidden lg:inline", active ? "opacity-80" : "text-warning")}>

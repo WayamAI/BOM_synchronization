@@ -220,3 +220,128 @@ BOM Compare (GitCompare) has no entity in the mapping. The nav is unchanged.
 - **Outputs:** `src/assets/brand/login-hero.webp` (q80, 88 KB) and `login-hero.jpg` (q82, 169 KB), both 2400×1200.
 - **Script:** `python scripts/prepare-login-hero.py` (Pillow only) regenerates both from the source.
 - **Login:** shown as a full-bleed `<picture>` behind the left panel (decorative, `object-right`), with a bottom-left black gradient overlay for headline legibility. Same in light and dark.
+
+## Review fixes
+
+Branch `ui-review-fixes` (from merged `main` at `aeb76de`). 17 commits, 37 files changed. Frontend only, no new dependencies, no backend change. The existing tests are unchanged; new tests are in `src/tests/review-fixes.test.tsx`. Final checks: `tsc` clean, 82 of 82 tests, build OK, lint 10 problems (2 errors, 8 warnings, same as baseline), production preview checked on all 14 routes plus the login scenarios.
+
+### Commits
+
+| Commit | Point |
+|---|---|
+| `48e9de6` | Restore `CHRONUS_DESIGN_SYSTEM.md` |
+| `b22c10c` | 1. Login first (`sessionStorage`) |
+| `d96b6c8` | Deployment config: `vercel.json` |
+| `66aed50` | 6. Dashes, `InlineArrow` |
+| `0f987e1` | 4. Casing and unified page names |
+| `d38f14d` | 5. Tree view fixes |
+| `c26cd07` | 3. Sidebar structure |
+| `d2a2eed` | 2. Icon gaps |
+| `16dd1d5` | 7. Line gaps |
+| `b9bcb62` | 8. Dashboard charts |
+| `b3325c8` | Scroll bug on `/ebom` |
+| `0fc076e` | Last dash (heatmap tooltips) |
+| `f57495e` | Top bar search hint |
+| `ce1b9f3` | Toolbar investigation and test |
+| `8f36e80` | Singular and plural labels |
+| `8875914` | Child components count |
+| `83bb864` | 9. Consistency pass |
+
+### Design document
+
+`CHRONUS_DESIGN_SYSTEM.md` was added in the baseline commit `7e885eb`, which is the root of the local `master` branch. The `main` and `ui-chronus-redesign` history never contained it, so it was not deleted by the merge; it was never carried over. It is restored from `7e885eb` in its own commit.
+
+### Deployment config change
+
+`vercel.json` is new: a single rewrite of every path to `/index.html`, so a refresh or deep link such as `/ebom` does not return a 404 on Vercel. Nothing else in deployment config changed.
+
+### 1. Login shown first
+
+- **Was wrong:** `auth.ts` stored `wayam_auth` in `localStorage`, which survives tabs and browser restarts, so `RequireAuth` let a returning browser straight into the dashboard.
+- **Changed:** the flag lives in `sessionStorage` (`src/lib/auth.ts`); `logout()` also clears the old `localStorage` key. In `src/App.tsx`, unknown URLs now sit behind `RequireAuth`, so a logged-out user reaches `/login` for any path.
+- **Verified (preview build):** fresh browser to `/`, `/ebom`, `/parts/BAT-PCK-8500` and an unknown URL all land on `/login`; sign in goes to `/`; reload keeps the session; a new tab opens on `/login`. Sign in does not return to the requested page (it never did), it goes to the dashboard.
+
+### 2. Icons
+
+- **Checked:** `public/icons/*.png` and the brand SVGs load correctly in the production build (HTTP 200, filenames lowercase and matching the ids, `BASE_URL` is `/`), so nothing breaks on Linux or Vercel.
+- **Gaps filled:** lifecycle chips, Dashboard and BOM Compare header marks, empty-state marks on 7 tables and the Dashboard ECN queue, MBOM and Variants row icons, and an optional `icon` on `Panel`. Rows and panel headers use grey lucide icons only. `field-event` stays on Field Quality only.
+- **Files:** `PipelineBar.tsx`, `primitives.tsx`, `Dashboard.tsx`, `BomCompare.tsx`, `Variants.tsx`, `MbomManager.tsx`, and the pages with empty states.
+
+### 3. Sidebar
+
+- Groups: Overview (one link, not collapsible), BOM Views, Change & Quality, Intelligence. Routes are unchanged. The three multi-item groups collapse; the group of the current route opens on navigation; the rail still shows every item.
+- Program Tree and Pinned are collapsed by default. The tree has a Chronus spine (1px, a tick per child, an L-shaped last corner) and scrolls in its own box.
+- Nothing is clipped at 900px height. Files: `nav.ts`, `Sidebar.tsx`.
+
+### 4. Casing
+
+- `.type-eyebrow` no longer uppercases. A new `.type-section` uppercases, and is used only for panel titles and sidebar group labels.
+- Table headers, field labels and KPI labels are sentence case. Panel and page names are Title Case. Status values render sentence case ("In review") through `statusText` (`src/lib/format.ts`); stored data is unchanged.
+- One name per route across nav, top bar and page header: "Variants & Configuration", "Supplier Intelligence", "Field Quality". Also fixed: "All statuses", "ECUs", "Work instructions".
+- **Deviation from Chronus:** Chronus renders every eyebrow label in uppercase. Here only panel titles and sidebar group labels are uppercase, by decision of the reviewer.
+
+### 5. Tree view
+
+- **Was wrong (pre-existing, identical on baseline):** the open state of each EBOM row was set once from the filter at mount, so searching "Battery Management" showed the ancestors but hid the matching row; "zzz" showed an empty panel.
+- **Changed:** open state follows the filter unless the user toggled the row; a chevron button toggles while a row click only selects; rows are `treeitem`s with arrow keys, Enter and Space; a no-match empty state shows. In the sidebar, the chevron toggles and the name navigates (no double-click flicker).
+- **Regression from the redesign:** the sidebar tree was hidden in the default rail and below the fold; it is now a collapsed section.
+
+### 6. Dashes
+
+Em and en dashes are removed from user-facing text. The em dash stays only as the empty-cell placeholder. A rendered-DOM scan (text, `title`, `aria-label`, `placeholder`, `alt`, SVG text) over 16 routes, 4 programs, menus, drawer tabs and the graph finds none in sentences.
+
+Replacements:
+- `index.html` title and `og:title`: "Wayam AI · BOM Synchronization".
+- BOM Compare: "Only in A · name", "Only in B · name", "not in EBOM. Investigate."
+- EBOM: "No parents. This is the top-level vehicle."; graph reset tooltip "Reset and collapse all".
+- Changes: "not been revised yet, so there is no lineage to display."
+- Dashboard insight: comma instead of dash. Part Master: "Top-level vehicle. No parents." and "Leaf part. No children."
+- MBOM: "per vehicle, not tracked in EBOM". Field Quality: "Apr 12 to 14". Reports: "status: health, ECNs, risk, days-to-SOP".
+- Mock data (9 lines: AI briefing, ECN titles and descriptions, activity and briefing items): dash became a comma.
+- Sankey title and tooltip, supplier heatmap tooltips (`" - "` became `" · "`).
+- The arrow in flow labels is the Chronus `InlineArrow` chevron; the double arrow is "vs" ("EBOM vs MBOM Reconciliation").
+
+### 7. Line gaps
+
+Sidebar group dividers run edge to edge like the dock borders. The last table row no longer doubles the panel border (global rule in `index.css`). The EBOM tree's last row merges with the panel border. The Program Tree has its spine.
+
+### 8. Charts
+
+- **Gauges:** colour follows the value (85+ healthy, 65 to 84 watch, below 65 risk), no count-up animation, status tokens only. Direction per gauge: EBOM maturity higher is better; MBOM readiness higher is better; **Supply risk lower is better** (healthy at 15% or less, watch at 35% or less); Service scope higher is better. At the current mock data EBOM maturity (83%) and Service scope (71%) show warning, MBOM readiness (53%) and Supply risk (40%) show error.
+- **Change Velocity:** legend (Approved, Rejected, Cycle time in days), caption, cycle time on its own right axis, two bar colours, neutral legend text. The CVE Trend legend follows the same pattern.
+- **System Health Matrix:** uses the shared `Panel`; neutral system tiles instead of six rainbow icons; the header label overlap is fixed; legacy tokens removed.
+- Security Hub dashes removed; Quality Stream titles wrap to two lines.
+- The reviewer's "acknowledgment graph" has no matching name in the app; Change Velocity (approved, rejected, cycle) was the nearest candidate and is the chart that was reworked.
+
+### Scroll bug
+
+- **Was wrong:** `sr-only` health labels in the EBOM tree are absolutely positioned. With no positioned ancestor they escaped the shell's `overflow-hidden` clip and made the document 1461px tall, so scrolling moved the whole app and left an empty area below the shell.
+- **Changed:** the shell and `<main>` are `relative`; `html` and `body` are `overflow: hidden` (Chronus 2.9); Login and the 404 page scroll inside their own `h-screen` wrapper. Files: `AppShell.tsx`, `index.css`, `Login.tsx`, `NotFound.tsx`.
+- **Verified:** on all 14 routes at 1440x900, 1920x1080, 1366x768 and 390px, after wheel scrolling main and the sidebar and pressing End, `document.scrollingElement.scrollTop` stays 0 and the shell fills the window. Only `<main>` is a vertical scroll region.
+
+### Top bar search, plurals, child components
+
+- **Search:** on baseline `7e885eb` the input was decorative (no value, no handler; the Command K hint did nothing). No search logic was added; the pill is read-only and shows "Search coming soon" on focus.
+- **Plurals:** `plural()` in `src/lib/format.ts` is used for dynamic counts (Structure title, subtitles, Reports descriptions, Service BOM coverage, lifecycle strip, lead time days). CVE badges read "1 CVE" and "2 CVEs".
+- **Child components:** `getChildCount` subtracted one after counting descendants, so a leaf showed -1 and every assembly was one short. It now returns the descendant count (a leaf is 0).
+- **Toolbar report:** a reviewer saw the `/ebom` toolbar missing. The DOM and geometry are identical to `c26cd07` at four viewport sizes, and every page's tabs, selects and search inputs match it. The likely cause is that a slightly scrolled `<main>` slides the toolbar under the sticky page header. A regression test guards it; the toolbar is not pinned, by decision.
+
+### 9. Consistency
+
+Legacy colour classes (`text-muted-foreground`, `border-border`, `bg-muted`, `bg-card`, `text-primary`, `bg-primary`, `bg-critical` and relatives) became Chronus tokens; raw `text-xs`, `text-sm` and pixel sizes became `type-*` roles; row icons are 14px grey lucide; hand-sized icon buttons use the `icon` variant; KPI and card grids use `gap-3`; custom panel headers use the shared `h-11` `PanelHeader`; BOM Compare selects are `h-8`; the top bar role tag is `type-caption`. The ECN detail table is wrapped in `overflow-x-auto`, which fixes the horizontal overflow at 390px.
+
+### Development build vs production build
+
+Checked on 15 pages (login plus the 14 routes) with the dev server (`vite`, port 8080) and `npm run build && npm run preview`: identical rendered text, identical image set (none broken), identical fonts (Geist and Michroma loaded), identical font families and one `h1` per page. The only difference is that the dev server logs two React Router future-flag warnings; the production build logs none. Fonts are loaded from Google Fonts, so a deployment without network access to it falls back to system fonts.
+
+### Open questions for reviewer
+
+Left as they are, by decision:
+1. Inert buttons (no handler, same as baseline): top bar Export icon, Filter (EBOM), New variant, Compare, Add relationship, Add component, Sync from EBOM, Release to MES, Service manual, New service kit, Export CycloneDX, Run vulnerability scan, New ECN, Approve, Reject, Export diff (CSV), New part, Propose change, Predict disruptions, Scope recall (AI), the Trace buttons, Schedule report, the Generate buttons.
+2. Dead links `/lineage/:pn` (EBOM drawer) and `/compliance` (Field Quality) lead to the 404 page.
+3. The Command K hint in the top bar search does nothing.
+4. The MBOM "Work instructions" column has no data; cells show an em dash.
+5. Unused files kept: `Index.tsx`, `App.css`, `SankeyFlow`, `DistributionDonut`, `DriftIndicator`, `ActivityFeed`, and the unused shadcn `ui/*` files.
+6. "Pipeline streaming live" is static text.
+7. Overview is a single link rather than a collapsible group (a one-item group has nothing to collapse).
+8. Should the sidebar names stay in full ("Variants & Configuration") or be shortened in the narrow rail flyout?

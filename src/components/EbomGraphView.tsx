@@ -1,3 +1,4 @@
+import { plural } from "@/lib/format";
 /**
  * EbomGraphView — Progressive disclosure BOM dependency graph.
  *
@@ -122,33 +123,33 @@ const BomNode = ({ data }: { data: any }) => {
       <div className="px-4 pt-3 flex items-center gap-2">
         <span className={cn('h-2.5 w-2.5 rounded-full shrink-0', healthDot(node.health))} />
         <span>
-          <span className={cn('type-eyebrow inline-flex items-center rounded-full px-2 py-0.5 text-[10px]', cfg.badge)}>
+          <span className={cn('type-eyebrow inline-flex items-center rounded-full px-2 py-0.5 type-caption', cfg.badge)}>
             {node.type}
           </span>
         </span>
         {!!node.cves && (
-          <span className="ml-auto rounded-full bg-error-badge px-2 py-0.5 text-[10px] font-medium text-badge">{node.cves} CVE</span>
+          <span className="ml-auto rounded-full bg-error-badge px-2 py-0.5 type-caption font-medium text-badge">{plural(node.cves, "CVE")}</span>
         )}
         {!!node.warnings && !node.cves && (
-          <span className="ml-auto rounded-full bg-warning-badge px-2 py-0.5 text-[10px] font-medium text-badge">{node.warnings}⚠</span>
+          <span className="ml-auto rounded-full bg-warning-badge px-2 py-0.5 type-caption font-medium text-badge">{node.warnings}⚠</span>
         )}
       </div>
 
       {/* Name + PN */}
       <div className="px-4 pt-1.5 pb-2">
         <div className="text-[14px] font-medium text-foreground leading-snug line-clamp-1">{node.name}</div>
-        <div className="text-[11px] font-mono text-tertiary mt-0.5">{node.partNumber}</div>
+        <div className="type-caption font-mono text-tertiary mt-0.5">{node.partNumber}</div>
       </div>
 
       {/* Footer */}
       <div className="px-4 pb-2 flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-wrap">
           {node.revision && (
-            <span className="text-[10px] font-mono bg-action text-tertiary rounded-full px-2 border border-hairline">{node.revision}</span>
+            <span className="type-caption font-mono bg-action text-tertiary rounded-full px-2 border border-hairline">{node.revision}</span>
           )}
           {node.status && (
             <span className={cn(
-              'text-[10px] px-2 rounded-full font-medium text-badge',
+              'type-caption px-2 rounded-full font-medium text-badge',
               node.status === 'Released'  ? 'bg-success-badge' :
               node.status === 'In Review' ? 'bg-warning-badge' :
               node.status === 'Obsolete'  ? 'bg-neutral-badge' :
@@ -160,15 +161,15 @@ const BomNode = ({ data }: { data: any }) => {
         {/* Expand / collapse badge */}
         {hasChildren && (
           <div className={cn(
-            'flex items-center gap-0.5 text-[10px] font-bold px-2 py-0.5 rounded-full border',
+            'flex items-center gap-0.5 type-caption font-bold px-2 py-0.5 rounded-full border',
             isExpanded
               ? 'bg-action-primary text-on-color border-transparent'
               : 'bg-action text-tertiary border-hairline hover:border-strong hover:text-foreground',
             'transition-colors',
           )}>
             {isExpanded
-              ? <><ChevronDown className="h-3 w-3" />{visibleChildCount}</>
-              : <><ChevronRight className="h-3 w-3" />{totalChildCount}</>
+              ? <><ChevronDown className="size-3.5" />{visibleChildCount}</>
+              : <><ChevronRight className="size-3.5" />{totalChildCount}</>
             }
           </div>
         )}
@@ -290,13 +291,13 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           type: 'smoothstep',
           animated: edgeHighlighted,
           style: {
-            stroke: edgeHighlighted ? 'var(--text-primary)' : isDimmed ? 'var(--stroke-muted)' : 'var(--stroke-default)',
+            stroke: edgeHighlighted ? 'var(--text-foreground)' : isDimmed ? 'var(--stroke-muted)' : 'var(--stroke-default)',
             strokeWidth: edgeHighlighted ? 2.5 : isDimmed ? 0.8 : 1.5,
             opacity: isDimmed ? 0.25 : 1,
           },
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: edgeHighlighted ? 'var(--text-primary)' : 'var(--stroke-default)',
+            color: edgeHighlighted ? 'var(--text-foreground)' : 'var(--stroke-default)',
             width: 14, height: 14,
           },
         });
@@ -355,70 +356,70 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
   }, [tree.id, onSelect, fitView]);
 
   return (
-    <div className="flex flex-col h-full rounded-xl overflow-hidden border border-border bg-card shadow-card">
+    <div className="flex flex-col h-full rounded-xl overflow-hidden border border-hairline bg-container shadow-card">
 
       {/* ── Toolbar ── */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border bg-card/95 flex-wrap">
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-hairline bg-container flex-wrap">
         {/* Search */}
         <div className="relative flex-1 min-w-44 max-w-60">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-tertiary pointer-events-none" />
           <Input aria-label="Search nodes"
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search nodes"
-            className="h-7 pl-8 pr-7 text-xs bg-muted/30"
+            className="h-7 pl-8 pr-7 type-body-sm bg-raised"
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-              <X className="h-3 w-3" />
+            <button onClick={() => setSearch('')} className="absolute right-2 top-1/2 -translate-y-1/2 text-tertiary hover:text-foreground">
+              <X className="size-3.5" />
             </button>
           )}
         </div>
 
         {/* Zoom controls */}
         <div className="flex items-center gap-1">
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => zoomIn({ duration: 200 })} title="Zoom in">
-            <ZoomIn className="h-3.5 w-3.5" />
+          <Button variant="outline" size="icon" onClick={() => zoomIn({ duration: 200 })} title="Zoom in">
+            <ZoomIn  />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => zoomOut({ duration: 200 })} title="Zoom out">
-            <ZoomOut className="h-3.5 w-3.5" />
+          <Button variant="outline" size="icon" onClick={() => zoomOut({ duration: 200 })} title="Zoom out">
+            <ZoomOut  />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={() => fitView({ duration: 300, padding: 0.2, maxZoom: 1.2 })} title="Fit to screen">
-            <Maximize2 className="h-3.5 w-3.5" />
+          <Button variant="outline" size="icon" onClick={() => fitView({ duration: 300, padding: 0.2, maxZoom: 1.2 })} title="Fit to screen">
+            <Maximize2  />
           </Button>
-          <Button variant="outline" size="sm" className="h-7 w-7 p-0" onClick={handleReset} title="Reset — collapse all">
-            <RotateCcw className="h-3.5 w-3.5" />
+          <Button variant="outline" size="icon" onClick={handleReset} title="Reset and collapse all">
+            <RotateCcw  />
           </Button>
         </div>
 
         {/* Instruction hint */}
-        <span className="text-[10px] text-muted-foreground hidden md:block">
+        <span className="type-caption text-tertiary hidden md:block">
           Click a node to expand its children · Click again to collapse
         </span>
 
         {/* Clear selection */}
         {selected && (
-          <Button variant="ghost" size="sm" className="h-7 px-2 text-xs gap-1 text-primary ml-auto" onClick={() => onSelect(null)}>
-            <X className="h-3 w-3" /> Clear
+          <Button variant="ghost" size="sm" className="h-7 px-2 type-label-sm gap-1 text-foreground ml-auto" onClick={() => onSelect(null)}>
+            <X className="size-3.5" /> Clear
           </Button>
         )}
       </div>
 
       {/* ── Legend ── */}
-      <div className="flex items-center gap-3 px-3 py-1.5 border-b border-border bg-muted/20 flex-wrap">
-        <span className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground">Types:</span>
+      <div className="flex items-center gap-3 px-3 py-1.5 border-b border-hairline bg-raised flex-wrap">
+        <span className="type-caption font-bold uppercase tracking-widest text-tertiary">Types:</span>
         {(['Vehicle','System','Assembly','ECU','Part','Harness'] as const).map(t => (
-          <span key={t} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+          <span key={t} className="flex items-center gap-1 type-caption text-tertiary">
             <span className={cn('h-2 w-2 rounded-full', tc(t).dot)} />{t}
           </span>
         ))}
-        <span className="flex items-center gap-1 text-[10px] text-muted-foreground ml-2">
+        <span className="flex items-center gap-1 type-caption text-tertiary ml-2">
           <span className="h-2 w-2 rounded-full bg-error" />Critical
         </span>
-        <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+        <span className="flex items-center gap-1 type-caption text-tertiary">
           <span className="h-2 w-2 rounded-full bg-warning" />Warning
         </span>
-        <span className="ml-auto text-[10px] text-muted-foreground font-medium">
+        <span className="ml-auto type-caption text-tertiary font-medium">
           {nodes.length} visible · {lookup.size > 0 ? lookup.size : '?'} total
         </span>
       </div>
@@ -450,16 +451,16 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
 
           {/* Status bar */}
           <Panel position="bottom-left">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-container border border-hairline text-[10px]">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-container border border-hairline type-caption">
               {selected ? (
                 <>
-                  <GitBranch className="h-3 w-3 text-tertiary" />
+                  <GitBranch className="size-3.5 text-tertiary" />
                   <span className="font-medium text-foreground">{selected.name}</span>
                   <span className="text-border">·</span>
-                  <span className="text-muted-foreground">{selected.type}</span>
+                  <span className="text-tertiary">{selected.type}</span>
                 </>
               ) : (
-                <span className="text-muted-foreground">Click a node to explore its dependencies</span>
+                <span className="text-tertiary">Click a node to explore its dependencies</span>
               )}
             </div>
           </Panel>
@@ -469,7 +470,7 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
             <Panel position="top-center">
               <div className="flex flex-col items-center gap-2 mt-20 p-5 rounded-lg bg-container border border-hairline">
                 <AlertTriangle className="h-7 w-7 text-warning" />
-                <p className="text-sm font-semibold">No matching nodes</p>
+                <p className="type-body-md font-semibold">No matching nodes</p>
                 <Button variant="outline" size="sm" onClick={() => setSearch('')}>Clear search</Button>
               </div>
             </Panel>

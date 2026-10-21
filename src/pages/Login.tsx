@@ -26,7 +26,8 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-page">
+    <div className="h-screen w-full overflow-y-auto bg-page">
+    <div className="flex min-h-full w-full">
       {/* Brand panel (large screens) */}
       <div className="relative hidden flex-[1.4] overflow-hidden bg-[#0a0c0b] text-white lg:block">
         {/* Hero image: whole car, upper-right; edges fade into the panel colour */}
@@ -112,6 +113,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
