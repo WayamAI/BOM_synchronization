@@ -22,7 +22,7 @@ export const CveHeatmap = () => {
 
   return (
     <div className="h-full w-full self-start overflow-hidden rounded-lg border border-hairline bg-container p-4">
-      <PanelHeader className="-mx-4 -mt-4 mb-4" title="Supplier Risk by Region & Category" />
+      <PanelHeader className="-mx-4 -mt-4 mb-4" title="Supplier Risk by Region & Category" icon="region" />
       <p className="type-body-sm mb-4 text-tertiary">Click a cell to drill into Supplier Intelligence</p>
 
       <div className="mb-4 grid grid-cols-2 gap-2">

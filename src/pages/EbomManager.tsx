@@ -1,5 +1,6 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
+import { typeMark } from "@/components/icons/iconMap";
 import { plural, statusText } from "@/lib/format";
 import { useMemo, useState, useEffect, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
@@ -94,7 +95,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
           </button>
         ) : <span className="w-5 shrink-0" />}
         <HealthDot health={node.health} />
-        <EntityIcon id={has ? "assembly" : "part"} />
+        <EntityGlyph id={typeMark(node.type)} size={20} />
         <span title={node.name} className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
         <span className="type-body-sm tabular truncate text-tertiary" title={[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}>
           {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
@@ -166,7 +167,8 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
     <aside className="w-full lg:w-[420px] shrink-0 rounded-lg border border-strong bg-container">
       <div className="p-4 border-b border-hairline flex items-start justify-between">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <EntityGlyph id={typeMark(node.type)} size={32} />
             <h3 className="type-display-lg truncate text-foreground">{node.name}</h3>
           </div>
           <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>
@@ -374,20 +376,20 @@ const EbomManager = () => {
         {/* Completeness / quick stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { l: "Parts in view",    v: (filteredRows.length).toLocaleString("en-US") },
-            { l: "Unique assemblies", v: all.filter(n => n.type === "Assembly" || n.type === "Sub-Assembly").length },
-            { l: "ECUs",             v: all.filter(n => n.type === "ECU").length },
-            { l: "Rolled-up cost",   v: `$${Math.round(totalCost).toLocaleString("en-US")}` },
-            { l: "Parts in program", v: activeProgram.parts.length },
+            { l: "Parts in view",    v: (filteredRows.length).toLocaleString("en-US"), icon: "part" },
+            { l: "Unique assemblies", v: all.filter(n => n.type === "Assembly" || n.type === "Sub-Assembly").length, icon: "assembly" },
+            { l: "ECUs",             v: all.filter(n => n.type === "ECU").length, icon: "ecu" },
+            { l: "Rolled-up cost",   v: `$${Math.round(totalCost).toLocaleString("en-US")}`, icon: "cost" },
+            { l: "Parts in program", v: activeProgram.parts.length, icon: "part" },
           ].map(k => (
-            <KpiTile key={k.l} label={k.l} value={k.v} />
+            <KpiTile key={k.l} label={k.l} value={k.v} icon={k.icon} />
           ))}
         </div>
 
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Structure · ${plural(filteredRows.length, "Part")}`} padded={false} className="flex-1 min-h-[520px]">
+            <Panel title={`Structure · ${plural(filteredRows.length, "Part")}`} icon="ebom" padded={false} className="flex-1 min-h-[520px]">
               <div role="tree" aria-label="Engineering BOM structure" className="-mb-px">
                 <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
               </div>
@@ -398,7 +400,7 @@ const EbomManager = () => {
         </TabsContent>
         <TabsContent value="table" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} padded={false} className="flex-1 min-h-[520px]">
+            <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} icon="ebom" padded={false} className="flex-1 min-h-[520px]">
               <div className="overflow-x-auto">
                 <table className="tabular w-full type-body-sm">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
@@ -416,12 +418,12 @@ const EbomManager = () => {
                   </thead>
                   <tbody>
                     {filteredRows.length === 0 && (
-                      <tr><td colSpan={9}><EmptyState title="No components match this search" /></td></tr>
+                      <tr><td colSpan={9}><EmptyState title="No components match this search" mark="ebom" /></td></tr>
                     )}
                     {filteredRows.map(n => (
                       <tr key={n.id + Math.random()} className="border-b border-hairline hover:bg-raised cursor-pointer" onClick={() => setSelected(n)}>
                         <td className="px-3 py-2"><HealthDot health={n.health} /></td>
-                        <td className="px-3 py-2 tabular text-tertiary">{n.partNumber}</td>
+                        <td className="px-3 py-2 tabular text-tertiary"><span className="inline-flex items-center gap-2"><EntityGlyph id={typeMark(n.type)} size={20} />{n.partNumber}</span></td>
                         <td className="type-body-md px-3 py-2 font-medium text-foreground">{n.name}</td>
                         <td className="type-body-sm px-3 py-2 text-quaternary">{n.type}</td>
                         <td className="px-3 py-2 tabular text-tertiary">{n.revision}</td>

@@ -1,5 +1,5 @@
 import { plural } from "@/lib/format";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { Panel, KpiTile, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Layers, Plus, Check, X as XIcon, AlertTriangle } from "lucide-react";
+import { Plus, Check, X as XIcon, AlertTriangle } from "lucide-react";
 
 const allOptionalPNs = Array.from(new Set(bomEdges.filter(e => e.effectivity && e.effectivity.length).map(e => e.childPN)));
 
@@ -54,9 +54,9 @@ const Variants = () => {
     >
       {/* KPI */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KpiTile label="Variants" value={<>{totals.variants}</>} />
-        <KpiTile label="Planned units (yr 1)" value={<>{totalUnitsPlanned.toLocaleString("en-US")}</>} />
-        <KpiTile label="Configuration rules" value={<>{allOptionalPNs.length}</>} hint="effectivity-gated parts" />
+        <KpiTile label="Variants" icon="variant" value={<>{totals.variants}</>} />
+        <KpiTile label="Planned units (yr 1)" icon="volume" value={<>{totalUnitsPlanned.toLocaleString("en-US")}</>} />
+        <KpiTile label="Configuration rules" icon="config-rule" value={<>{allOptionalPNs.length}</>} hint="effectivity-gated parts" />
         <KpiTile
           label="Conflicts"
           value={<>{variants.reduce((s, v) => s + v.conflicts, 0)}</>}
@@ -85,7 +85,7 @@ const Variants = () => {
                   onClick={() => setSelectedVariant(v.code)}
                   className={cn("border-t border-hairline cursor-pointer hover:bg-raised",
                     selectedVariant === v.code && "bg-raised")}>
-                <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityIcon id="variant" />{v.code}</span></td>
+                <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityGlyph id="variant" size={20} />{v.code}</span></td>
                 <td className="px-3 py-2 font-semibold">{v.name}</td>
                 <td className="px-3 py-2 text-tertiary">{v.powertrain}</td>
                 <td className="px-3 py-2 text-tertiary">{v.trim}</td>
@@ -105,7 +105,7 @@ const Variants = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="rounded-lg border border-hairline bg-container p-4 lg:col-span-1">
           <div className="flex items-center gap-2">
-            <Layers aria-hidden className="size-3.5 text-tertiary shrink-0" />
+            <EntityGlyph id="variant" size={20} />
             <h3 className="type-body-md font-semibold">{variant.name}</h3>
           </div>
           <p className="type-body-sm text-tertiary font-mono mt-0.5">{variant.code}</p>

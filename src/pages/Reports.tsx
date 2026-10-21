@@ -2,7 +2,23 @@ import { plural } from "@/lib/format";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Download, Calendar } from "lucide-react";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
+
+// One entity id per report type (ICON_AUDIT section 4.3).
+const REPORT_MARK: Record<string, string> = {
+  "Executive Program Pack": "executive",
+  "EBOM Export": "ebom",
+  "MBOM Routing Sheet": "mbom",
+  "Service BOM / Spare Parts Catalog": "service-kit",
+  "UNECE R155 / R156 Audit Pack": "compliance",
+  "CycloneDX Software BOM Export": "software",
+  "EU Battery Regulation · Digital Product Passport": "system-battery",
+  "ECN Change Log": "ecn",
+  "Supplier Risk Brief": "supplier",
+  "Field Quality Trend Report": "trend",
+  "PPAP / AS9102 Package": "quality",
+  "Homologation Pack (FMVSS / UNECE)": "compliance",
+};
 import { totals, program } from "@/lib/mockData";
 
 const reports = [
@@ -115,8 +131,8 @@ const Reports = () => (
       {reports.map(r => (
         <div key={r.name} className="rounded-lg border border-hairline bg-container p-4 hover:border-strong transition-colors duration-150 cursor-pointer group">
           <div className="flex items-start justify-between">
-            <div className="grid size-9 place-items-center rounded-full bg-action transition-colors duration-150 group-hover:bg-raised-2">
-              <EntityIcon id="report" className="size-[17px]" />
+            <div className="grid size-11 place-items-center rounded-full bg-action transition-colors duration-150 group-hover:bg-raised-2">
+              <EntityGlyph id={REPORT_MARK[r.name] ?? "report"} size={28} />
             </div>
             <span className="type-caption text-quaternary">{r.schedule}</span>
           </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Bell, ChevronDown, Download, Search, Command, MapPin, Menu } from "lucide-react";
+import { ChevronDown, Search, Command, MapPin, Menu } from "lucide-react";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -123,7 +124,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="icon" aria-label="Notifications" className={`${iconBtn} relative`}>
-              <Bell className="size-4" aria-hidden />
+              <EntityGlyph id="notifications" size={20} />
               <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-error-surface type-caption font-medium leading-none text-error tabular">
                 {notifications.length}
               </span>
@@ -151,7 +152,7 @@ export const TopNav = ({ onOpenNav }: { onOpenNav: () => void }) => {
         <ThemeToggle />
 
         <Button variant="ghost" size="icon" className={`${iconBtn} hidden md:inline-flex`} aria-label="Export">
-          <Download className="size-4" aria-hidden />
+          <EntityGlyph id="export" size={20} />
         </Button>
 
         {/* User */}

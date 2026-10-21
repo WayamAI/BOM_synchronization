@@ -1,0 +1,9 @@
+[
+  {"file": "design/icons-sheet.jpg", "ids": ["part", "assembly", "variant", "ebom", "mbom", "service-kit", "fru", "software", "ecn", "supplier", "field-event", "report"]},
+  {"file": "design/icons-sheet-1.jpg", "ids": ["system-powertrain", "system-battery-old", "system-chassis", "system-body", "system-interior", "system-electrical", "system", "vehicle", "ecu", "harness", "plant", "region"], "candidates": ["system-battery-old"]},
+  {"file": "design/icons-sheet-2.jpg", "ids": ["vehicle-suv", "vehicle-sedan", "vehicle-truck", "vehicle-ev", "stage-concept", "stage-design", "stage-engineering", "stage-preproduction", "stage-sop", "command-center", "compare", "notifications"]},
+  {"file": "design/icons-sheet-3.jpg", "ids": ["add", "link", "sync", "release", "approve", "reject", "export", "generate", "schedule", "scan", "trace", "manual"]},
+  {"file": "design/icons-sheet-4.jpg", "ids": ["ai", "security", "cve", "validation", "history", "where-used", "cost", "watchlist", "disruption", "license", "quality-old", "trend"], "candidates": ["quality-old"]},
+  {"file": "design/icons-sheet-5.jpg", "ids": ["executive", "compliance", "not-found", "scope", "person", "department", "lead-time", "pinned", "config-rule", "market", "volume", "vin"]},
+  {"file": "design/icons-sheet-6.jpg", "count": 4, "ids": ["system-battery-a", "system-battery", "quality", "quality-b"], "candidates": ["system-battery-a", "quality-b"]}
+]

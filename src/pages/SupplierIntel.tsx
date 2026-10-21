@@ -1,6 +1,6 @@
 import { plural } from "@/lib/format";
 import { EmptyState } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { suppliers, parts as allParts, totals } from "@/lib/mockData";
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { cn } from "@/lib/utils";
 import { CveHeatmap } from "@/components/dashboard/CveHeatmap";
-import { Sparkles, AlertTriangle, MapPin, Search, ExternalLink } from "lucide-react";
+import { Sparkles, AlertTriangle, Search, ExternalLink } from "lucide-react";
 
 // Compute parts-per-supplier + single-source-per-supplier from the part master.
 const supplierRollup = suppliers.map(s => {
@@ -50,7 +50,7 @@ const SupplierIntel = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { l: "Active suppliers",        v: totals.suppliers,                     tone: "primary" },
+          { l: "Active suppliers",        v: totals.suppliers,                     tone: "primary", icon: "supplier" },
           { l: "Single-source suppliers", v: totals.singleSource,                  tone: "warning" },
           { l: "On watchlist",            v: watchlistCount,                       tone: "warning" },
           { l: "High-risk disruption",    v: disruptions.length,                   tone: "danger" },
@@ -58,6 +58,7 @@ const SupplierIntel = () => {
           <KpiTile
             key={k.l}
             label={k.l}
+            icon={k.icon}
             value={k.v}
             valueClassName={k.tone === "danger" ? "text-error" : k.tone === "warning" ? "text-warning" : undefined}
           />
@@ -67,7 +68,7 @@ const SupplierIntel = () => {
       {/* Heatmap + AI forecast */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2"><CveHeatmap /></div>
-        <Panel title="AI Disruption Forecast" icon="supplier" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
+        <Panel title="AI Disruption Forecast" icon="ai">
           <p className="type-body-sm text-tertiary">{plural(disruptions.length, "high-confidence signal")} · next 90 days</p>
           <ul className="mt-3 space-y-3 type-body-sm relative">
             {disruptions.map((s, i) => (
@@ -119,8 +120,8 @@ const SupplierIntel = () => {
             )}
             {filtered.map(s => (
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">
-                <td className="px-3 py-2 font-semibold"><span className="inline-flex items-center gap-1.5"><EntityIcon id="supplier" />{s.name}</span></td>
-                <td className="px-3 py-2 text-tertiary flex items-center gap-1.5"><MapPin aria-hidden className="size-3.5" />{s.country} · {s.region}</td>
+                <td className="px-3 py-2 font-semibold"><span className="inline-flex items-center gap-2"><EntityGlyph id="supplier" size={20} />{s.name}</span></td>
+                <td className="px-3 py-2 text-tertiary"><span className="inline-flex items-center gap-2"><EntityGlyph id="region" size={20} />{s.country} · {s.region}</span></td>
                 <td className="px-3 py-2 tabular text-tertiary">T{s.tier}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>
                 <td className="px-3 py-2">{s.singleSource ? <Badge variant="warning">Yes</Badge> : <span className="text-tertiary">—</span>}</td>

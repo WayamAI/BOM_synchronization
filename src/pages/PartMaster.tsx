@@ -1,5 +1,6 @@
 import { EmptyState, Panel, PanelHeader, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
+import { typeMark } from "@/components/icons/iconMap";
 import { plural, statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,7 +17,7 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Search, ArrowLeft, Boxes, ExternalLink, FileEdit } from "lucide-react";
+import { Search, ArrowLeft, Plus, ExternalLink, FileEdit } from "lucide-react";
 
 const PartList = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const PartList = () => {
       title="Part Master"
       mark="part"
       subtitle={`Canonical registry · ${plural(allParts.length, "total part")} across ${plural(products.length, "program")} · single source of truth`}
-      actions={<Button size="sm" className="gap-1.5"><Boxes aria-hidden className="size-3.5" />New part</Button>}
+      actions={<Button size="sm" className="gap-1.5"><Plus aria-hidden className="size-3.5" />New part</Button>}
     >
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative">
@@ -101,7 +102,7 @@ const PartList = () => {
               const prog = products.find(pr => pr.id === p.programId);
               return (
                 <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
-                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-1.5"><EntityIcon id="part" />{p.partNumber}</span></td>
+                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityGlyph id={typeMark(p.type)} size={20} />{p.partNumber}</span></td>
                   <td className="px-3 py-2 font-semibold">{p.name}</td>
                   <td className="px-3 py-2 text-tertiary type-body-sm">{prog?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-tertiary">{p.type}</td>
@@ -126,7 +127,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
   const part = getPart(pn);
   if (!part) {
     return (
-      <PageHeader title={`No part ${pn}`} subtitle="That part number does not exist">
+      <PageHeader title={`No part ${pn}`} mark="not-found" subtitle="That part number does not exist">
         <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
           <ArrowLeft aria-hidden className="size-3.5 mr-1" />Back to Part Master
         </Button>
@@ -199,7 +200,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
       {/* Where-used + Uses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
-          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Where-Used (Parents)" />
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Where-Used (Parents)" icon="where-used" />
           <p className="type-body-sm text-tertiary mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
           <div className="space-y-2">
             {whereUsed.length === 0 && <p className="type-body-sm italic text-tertiary">Top-level vehicle. No parents.</p>}
@@ -207,9 +208,12 @@ const PartDetail = ({ pn }: { pn: string }) => {
               const parent = getPart(e.parentPN);
               return (
                 <button key={i} onClick={() => navigate(`/parts/${e.parentPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
-                  <div className="text-left">
-                    <div className="type-body-sm font-semibold">{parent?.name}</div>
-                    <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
+                  <div className="flex items-center gap-2.5 text-left">
+                    <EntityGlyph id={typeMark(parent?.type)} size={20} />
+                    <div>
+                      <div className="type-body-sm font-semibold">{parent?.name}</div>
+                      <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
+                    </div>
                   </div>
                   <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </button>
@@ -219,7 +223,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         </div>
 
         <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
-          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Uses (Children)" />
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Uses (Children)" icon="assembly" />
           <p className="type-body-sm text-tertiary mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
           <div className="space-y-2">
             {children.length === 0 && <p className="type-body-sm italic text-tertiary">Leaf part. No children.</p>}
@@ -227,9 +231,12 @@ const PartDetail = ({ pn }: { pn: string }) => {
               const child = getPart(e.childPN);
               return (
                 <button key={i} onClick={() => navigate(`/parts/${e.childPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
-                  <div className="text-left">
-                    <div className="type-body-sm font-semibold">{child?.name}</div>
-                    <div className="type-caption font-mono text-tertiary">{e.childPN} · qty {e.qty}</div>
+                  <div className="flex items-center gap-2.5 text-left">
+                    <EntityGlyph id={typeMark(child?.type)} size={20} />
+                    <div>
+                      <div className="type-body-sm font-semibold">{child?.name}</div>
+                      <div className="type-caption font-mono text-tertiary">{e.childPN} · qty {e.qty}</div>
+                    </div>
                   </div>
                   <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </button>
@@ -300,7 +307,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {history.length > 0 && (
-          <Panel title="Revision History" className="lg:col-span-2">
+          <Panel title="Revision History" icon="history" className="lg:col-span-2">
             <div className="mt-3 relative pl-4 space-y-3 border-l border-hairline">
               {history.map((h, i) => (
                 <div key={i} className="relative">

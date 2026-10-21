@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ShieldAlert, Search, Download, Cpu } from "lucide-react";
+import { ShieldAlert, Search, Download } from "lucide-react";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
@@ -64,15 +65,16 @@ const SoftwareBom = () => {
       {/* KPI strip */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {[
-          { label: "Packages",        value: totals.softwareComponents },
-          { label: "ECUs tracked",    value: ecuParts.length },
+          { label: "Packages",        value: totals.softwareComponents, icon: "software" },
+          { label: "ECUs tracked",    value: ecuParts.length, icon: "ecu" },
           { label: "Open CVEs",       value: totals.openCves, tone: "warning" },
           { label: "Critical CVEs",   value: totals.criticalCves, tone: "critical" },
-          { label: "License clean",   value: `${softwareComponents.filter(c => !["GPL-3.0","AGPL-3.0"].includes(c.license)).length}/${softwareComponents.length}` },
+          { label: "License clean",   value: `${softwareComponents.filter(c => !["GPL-3.0","AGPL-3.0"].includes(c.license)).length}/${softwareComponents.length}`, icon: "license" },
         ].map(k => (
           <KpiTile
             key={k.label}
             label={k.label}
+            icon={k.icon}
             value={k.value}
             valueClassName={k.tone === "critical" ? "text-error" : k.tone === "warning" ? "text-warning" : undefined}
           />
@@ -81,7 +83,7 @@ const SoftwareBom = () => {
 
       {/* ECU rollup + CVE trend */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Panel title="ECU Cyber Posture" icon="software" className="lg:col-span-2">
+        <Panel title="ECU Cyber Posture" icon="ecu" className="lg:col-span-2">
           <p className="type-body-sm text-tertiary mb-3">Each ECU and its software package footprint</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             {ecuRollup.map(r => (
@@ -91,7 +93,7 @@ const SoftwareBom = () => {
                 className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <Cpu aria-hidden className="size-3.5 text-tertiary shrink-0" />
+                  <EntityGlyph id="ecu" size={20} />
                   <div className="min-w-0">
                     <div className="type-body-sm font-semibold truncate">{r.ecu.name}</div>
                     <div className="type-caption font-mono text-tertiary">{r.ecu.partNumber} · {r.ecu.revision}</div>
@@ -110,7 +112,7 @@ const SoftwareBom = () => {
           </div>
         </Panel>
 
-        <Panel title="CVE Trend · 6 Weeks">
+        <Panel title="CVE Trend · 6 Weeks" icon="cve">
           <p className="type-body-sm text-tertiary">New vulnerabilities identified per week</p>
           <div className="h-[220px] mt-2">
             <ResponsiveContainer>
