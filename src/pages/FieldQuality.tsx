@@ -35,9 +35,9 @@ const FieldQuality = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { l: "Pilot VINs built",         v: program.pilotVinsBuilt.toLocaleString("en-US"), tone: "primary", icon: "vin" },
-          { l: "Open quality events",      v: fieldEvents.filter(e => e.status !== "Resolved").length, tone: "warning", icon: "quality" },
-          { l: "VINs impacted (all events)",v: totalVinsAffected.toLocaleString("en-US"), tone: "warning", icon: "vin" },
-          { l: "Critical open",            v: criticalOpen, tone: "danger", icon: "quality" },
+          { l: "Open quality events",      v: fieldEvents.filter(e => e.status !== "Resolved").length, tone: "warning" },
+          { l: "VINs impacted (all events)",v: totalVinsAffected.toLocaleString("en-US"), tone: "warning" },
+          { l: "Critical open",            v: criticalOpen, tone: "danger" },
         ].map(k => (
           <KpiTile
             key={k.l}

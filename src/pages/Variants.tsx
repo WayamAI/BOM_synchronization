@@ -59,7 +59,6 @@ const Variants = () => {
         <KpiTile label="Configuration rules" icon="config-rule" value={<>{allOptionalPNs.length}</>} hint="effectivity-gated parts" />
         <KpiTile
           label="Conflicts"
-          icon="validation"
           value={<>{variants.reduce((s, v) => s + v.conflicts, 0)}</>}
           valueClassName={variants.some(v => v.conflicts > 0) ? "text-warning" : "text-success"}
         />

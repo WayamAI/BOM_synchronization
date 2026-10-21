@@ -51,9 +51,9 @@ const SupplierIntel = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { l: "Active suppliers",        v: totals.suppliers,                     tone: "primary", icon: "supplier" },
-          { l: "Single-source suppliers", v: totals.singleSource,                  tone: "warning", icon: "supplier" },
-          { l: "On watchlist",            v: watchlistCount,                       tone: "warning", icon: "watchlist" },
-          { l: "High-risk disruption",    v: disruptions.length,                   tone: "danger", icon: "disruption" },
+          { l: "Single-source suppliers", v: totals.singleSource,                  tone: "warning" },
+          { l: "On watchlist",            v: watchlistCount,                       tone: "warning" },
+          { l: "High-risk disruption",    v: disruptions.length,                   tone: "danger" },
         ].map(k => (
           <KpiTile
             key={k.l}

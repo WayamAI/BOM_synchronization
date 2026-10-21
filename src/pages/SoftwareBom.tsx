@@ -67,8 +67,8 @@ const SoftwareBom = () => {
         {[
           { label: "Packages",        value: totals.softwareComponents, icon: "software" },
           { label: "ECUs tracked",    value: ecuParts.length, icon: "ecu" },
-          { label: "Open CVEs",       value: totals.openCves, tone: "warning", icon: "cve" },
-          { label: "Critical CVEs",   value: totals.criticalCves, tone: "critical", icon: "cve" },
+          { label: "Open CVEs",       value: totals.openCves, tone: "warning" },
+          { label: "Critical CVEs",   value: totals.criticalCves, tone: "critical" },
           { label: "License clean",   value: `${softwareComponents.filter(c => !["GPL-3.0","AGPL-3.0"].includes(c.license)).length}/${softwareComponents.length}`, icon: "license" },
         ].map(k => (
           <KpiTile
