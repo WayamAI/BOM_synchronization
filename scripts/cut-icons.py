@@ -1,22 +1,27 @@
-"""Cut design/icons-sheet.jpg into public/icons/<id>.png (144x144, transparent).
+"""Cut every sheet listed in scripts/icon-sheets.json into transparent PNGs:
+public/icons/<id>.png (144x144, headers/cards/empty states) and
+public/icons/sm/<id>.png (96x96, 20 to 32px glyphs).
 
 Icons are located by their non-background pixels (connected components), not by
-fixed grid cells, then ordered into rows and columns. Fails if not exactly 12.
+fixed grid cells, then ordered into rows and columns. Stray marks far smaller than
+the median icon (for example a corner watermark) are ignored and reported. Fails if
+a sheet does not yield exactly 12 icon-sized components, or if an id repeats.
 
 Usage: python scripts/cut-icons.py        (needs Pillow and numpy)
 """
+import json
 import sys
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC = ROOT / "design" / "icons-sheet.jpg"
+SHEETS = json.loads((ROOT / "scripts" / "icon-sheets.json").read_text(encoding="utf-8"))
 OUT = ROOT / "public" / "icons"
-IDS = ["part", "assembly", "variant", "ebom", "mbom", "service-kit",
-       "fru", "software", "ecn", "supplier", "field-event", "report"]
 COLS = 4
-SIZE = 144
+SIZES = {OUT: 144, OUT / "sm": 96}
+FILL_HOLES = {"system-body"}   # pale glass would key out as a hole; other icons have real holes (rings, gears)
+STRAY = 0.10           # a component below this share of the median icon area is a stray mark
 MARGIN = 0.06          # equal margin on every side, as a share of the square
 FG_MAX = 225           # min(R,G,B) below this is icon; faint shadows sit above it
 SCALE = 4              # detection runs on a downscaled, dilated mask
@@ -42,8 +47,18 @@ def components(mask):
     return labels, n
 
 
-def main():
-    img = Image.open(SRC).convert("RGB")
+def fill_holes(mask):
+    """Mark every background pixel that cannot reach the crop border as foreground."""
+    outside, _ = components(~mask)
+    border = set(np.unique(np.concatenate([outside[0], outside[-1], outside[:, 0], outside[:, -1]])))
+    border.discard(0)
+    reach = np.isin(outside, list(border))
+    return mask | (~mask & ~reach)
+
+
+def cut_sheet(src, IDS):
+    print(f"== {src.name}")
+    img = Image.open(src).convert("RGB")
     rgb = np.asarray(img).astype(np.uint8)
     h, w, _ = rgb.shape
     fg = rgb.min(axis=2) < FG_MAX            # drops background, JPG noise and soft shadows
@@ -57,9 +72,14 @@ def main():
         ys, xs = np.nonzero(labels == i)
         if len(ys) < 400:                    # specks
             continue
-        boxes.append((xs.min() * SCALE, ys.min() * SCALE, (xs.max() + 1) * SCALE, (ys.max() + 1) * SCALE))
+        boxes.append((xs.min() * SCALE, ys.min() * SCALE, (xs.max() + 1) * SCALE, (ys.max() + 1) * SCALE, len(ys)))
+    if boxes:
+        median = float(np.median([b[4] for b in boxes]))
+        for b in [b for b in boxes if b[4] < STRAY * median]:
+            print(f"  ignored stray mark at x={b[0]}..{b[2]}, y={b[1]}..{b[3]} ({b[4]} px vs median {median:.0f})")
+        boxes = [b[:4] for b in boxes if b[4] >= STRAY * median]
     if len(boxes) != len(IDS):
-        sys.exit(f"FAIL: found {len(boxes)} icons, expected {len(IDS)}")
+        sys.exit(f"FAIL: {src.name}: found {len(boxes)} icons, expected {len(IDS)}")
 
     # Order: three rows by vertical centre, then left to right inside each row.
     boxes.sort(key=lambda b: (b[1] + b[3]) / 2)
@@ -69,7 +89,8 @@ def main():
             sys.exit("FAIL: rows overlap, cannot order icons")
     ordered = [b for row in rows for b in row]
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    for d in SIZES:
+        d.mkdir(parents=True, exist_ok=True)
     pad = 8
     for id_, (x0, y0, x1, y1) in zip(IDS, ordered):
         x0, y0, x1, y1 = max(x0 - pad, 0), max(y0 - pad, 0), min(x1 + pad, w), min(y1 + pad, h)
@@ -82,6 +103,9 @@ def main():
             sizes[0] = 0
             keep = sizes >= max(60, sizes.max() * 0.002)
             crop_fg = keep[lab] & (lab > 0)
+
+        if id_ in FILL_HOLES:
+            crop_fg = fill_holes(crop_fg)
 
         # Defringe: shrink the solid mask 2px, then grow its colours outward over the edge band
         # so no white/grey blends from the JPG background survive.
@@ -115,15 +139,30 @@ def main():
         canvas_c[oy:oy + a.shape[0], ox:ox + a.shape[1]] = col
 
         # Resize premultiplied so edges stay clean, then un-premultiply.
-        pm = np.dstack([canvas_c * canvas_a[..., None], canvas_a]) 
-        chans = [np.asarray(Image.fromarray(pm[..., c], "F").resize((SIZE, SIZE), Image.LANCZOS)) for c in range(4)]
-        ra = np.clip(chans[3], 0, 1)
-        rc = np.stack(chans[:3], -1) / np.maximum(ra[..., None], 1e-3)
-        out = np.dstack([np.clip(rc, 0, 255), ra * 255]).astype(np.uint8)
-        out[out[..., 3] < 3] = 0
-        Image.fromarray(out, "RGBA").save(OUT / f"{id_}.png", optimize=True)
-        print(f"{id_}.png")
-    print("OK: 12 icons")
+        pm = np.dstack([canvas_c * canvas_a[..., None], canvas_a])
+        for folder, size in SIZES.items():
+            chans = [np.asarray(Image.fromarray(pm[..., c], "F").resize((size, size), Image.LANCZOS)) for c in range(4)]
+            ra = np.clip(chans[3], 0, 1)
+            rc = np.stack(chans[:3], -1) / np.maximum(ra[..., None], 1e-3)
+            out = np.dstack([np.clip(rc, 0, 255), ra * 255]).astype(np.uint8)
+            out[out[..., 3] < 3] = 0
+            Image.fromarray(out, "RGBA").save(folder / f"{id_}.png", optimize=True)
+        print(f"  {id_}")
+
+
+def main():
+    seen = set()
+    for sheet in SHEETS:
+        ids = sheet["ids"]
+        if len(ids) != 12:
+            sys.exit(f"FAIL: {sheet['file']} lists {len(ids)} ids, expected 12")
+        dup = seen & set(ids)
+        if dup or len(set(ids)) != len(ids):
+            sys.exit(f"FAIL: duplicate ids {sorted(dup) or ids}")
+        seen |= set(ids)
+    for sheet in SHEETS:
+        cut_sheet(ROOT / sheet["file"], sheet["ids"])
+    print(f"OK: {len(seen)} icons from {len(SHEETS)} sheets")
 
 
 if __name__ == "__main__":
