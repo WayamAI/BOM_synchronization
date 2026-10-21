@@ -1,36 +1,31 @@
-import {
-  LayoutDashboard, Layers, GitBranch, Factory, Wrench, ShieldAlert, FileEdit, GitCompare,
-  Boxes, Truck, AlertOctagon, FileBarChart, type LucideIcon,
-} from "lucide-react";
-
 export interface NavItem {
   to: string;
   label: string;
-  icon: LucideIcon;
+  mark: string;   // entity id (iconMap): the 22px glyph in the sidebar puck
   end?: boolean;
 }
 
 // One array drives the sidebar and the top-bar location (group eyebrow + title).
 export const navGroups: { section: string; items: NavItem[] }[] = [
   { section: "Overview", items: [
-    { to: "/",           label: "Command Center",         icon: LayoutDashboard, end: true },
+    { to: "/",           label: "Command Center",         mark: "command-center", end: true },
   ]},
   { section: "BOM Views", items: [
-    { to: "/variants",   label: "Variants & Configuration", icon: Layers },
-    { to: "/ebom",       label: "Engineering BOM",        icon: GitBranch },
-    { to: "/mbom",       label: "Manufacturing BOM",      icon: Factory },
-    { to: "/service",    label: "Service BOM",            icon: Wrench },
-    { to: "/software",   label: "Software BOM",           icon: ShieldAlert },
+    { to: "/variants",   label: "Variants & Configuration", mark: "variant" },
+    { to: "/ebom",       label: "Engineering BOM",        mark: "ebom" },
+    { to: "/mbom",       label: "Manufacturing BOM",      mark: "mbom" },
+    { to: "/service",    label: "Service BOM",            mark: "service-kit" },
+    { to: "/software",   label: "Software BOM",           mark: "software" },
   ]},
   { section: "Change & Quality", items: [
-    { to: "/changes",    label: "Change Management",      icon: FileEdit },
-    { to: "/compare",    label: "BOM Compare",            icon: GitCompare },
-    { to: "/field",      label: "Field Quality",          icon: AlertOctagon },
+    { to: "/changes",    label: "Change Management",      mark: "ecn" },
+    { to: "/compare",    label: "BOM Compare",            mark: "compare" },
+    { to: "/field",      label: "Field Quality",          mark: "quality" },
   ]},
   { section: "Intelligence", items: [
-    { to: "/parts",      label: "Part Master",            icon: Boxes },
-    { to: "/suppliers",  label: "Supplier Intelligence",  icon: Truck },
-    { to: "/reports",    label: "Reports & Exports",      icon: FileBarChart },
+    { to: "/parts",      label: "Part Master",            mark: "part" },
+    { to: "/suppliers",  label: "Supplier Intelligence",  mark: "supplier" },
+    { to: "/reports",    label: "Reports & Exports",      mark: "report" },
   ]},
 ];
 

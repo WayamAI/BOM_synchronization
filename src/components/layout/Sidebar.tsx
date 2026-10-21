@@ -8,6 +8,7 @@ import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
 import wayamWordmarkLight from "@/assets/brand/wayam-wordmark-light.svg";
 import wayamWordmarkDark from "@/assets/brand/wayam-wordmark-dark.svg";
 import { navGroups, pinnedItems } from "./nav";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 
 const healthDot = (h?: string) => {
   if (h === "critical") return "bg-error";
@@ -168,7 +169,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
                   </button>
                 )}
                 <div className={cn("flex flex-col gap-1", hideItems)}>
-                  {group.items.map(({ to, label, icon: Icon, end }) => (
+                  {group.items.map(({ to, label, mark, end }) => (
                     <NavLink
                       key={to}
                       to={to}
@@ -190,7 +191,7 @@ export const Sidebar = ({ expanded, onToggleExpanded, mobileOpen }: SidebarProps
                                 : "bg-action text-tertiary group-hover:bg-raised-2 group-hover:text-secondary-foreground",
                             )}
                           >
-                            <Icon className="size-[17px]" aria-hidden />
+                            <EntityGlyph id={mark} size={22} className={isActive ? "text-on-color" : undefined} />
                           </span>
                           <span
                             className={cn(

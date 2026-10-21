@@ -104,6 +104,9 @@ export const entityIcons = {
 
 export type EntityId = keyof typeof entityIcons;
 
+// Marks waiting on a replacement (icons-sheet-6): EntityGlyph and EntityMark show the lucide fallback instead.
+export const PENDING_MARKS: ReadonlySet<string> = new Set(["system-battery", "quality"]);
+
 export const FALLBACK_ICON: EntityIcon = { lucide: Box, mark: "" };
 
 export const getEntityIcon = (id: string): EntityIcon =>
