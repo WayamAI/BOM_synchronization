@@ -13,7 +13,10 @@ export const EntityIcon = ({ id, className }: { id: string; className?: string }
 export const EntityMark = ({ id, size, className }: { id: string; size: 36 | 44 | 72; className?: string }) => {
   const [failed, setFailed] = useState(false);
   const src = PENDING_MARKS.has(id) ? null : markUrl(id);
-  if (!src || failed) return <EntityIcon id={id} className={cn("text-quaternary", className)} />;
+  if (!src || failed) {
+    const Icon = getEntityIcon(id).lucide;
+    return <Icon aria-hidden strokeWidth={1.5} style={{ width: size * 0.5, height: size * 0.5 }} className={cn("shrink-0 text-quaternary", className)} />;
+  }
   return (
     <img
       src={src}

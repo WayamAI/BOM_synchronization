@@ -9,11 +9,19 @@ import { SystemHealthMatrix } from "@/components/dashboard/SystemHealthMatrix";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Panel, KpiTile, EmptyState, StatusDot, QuietStatus } from "@/components/ui/primitives";
 import { cn } from "@/lib/utils";
-import { Sparkles, FileEdit, ShieldAlert, FileBarChart, AlertTriangle, ArrowRight } from "lucide-react";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
+import { FileEdit, ShieldAlert, FileBarChart, AlertTriangle, ArrowRight } from "lucide-react";
 import { Bar, Line, ComposedChart, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
 const STAGES = ["Concept", "Design", "Engineering", "Pre-Production", "SOP"] as const;
+const STAGE_MARK: Record<typeof STAGES[number], string> = {
+  "Concept": "stage-concept", "Design": "stage-design", "Engineering": "stage-engineering",
+  "Pre-Production": "stage-preproduction", "SOP": "stage-sop",
+};
+const CATEGORY_MARK: Record<string, string> = {
+  "SUV": "vehicle-suv", "Sedan": "vehicle-sedan", "Truck": "vehicle-truck", "EV Crossover": "vehicle-ev",
+};
 
 type Tone = "neutral" | "info" | "warning" | "success";
 
@@ -101,9 +109,12 @@ const Dashboard = () => {
             )}
           >
             <div className="mb-2 flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <div className="type-label-md truncate text-foreground">{prog.name}</div>
-                <div className="type-caption truncate text-quaternary">{prog.category}</div>
+              <div className="flex min-w-0 items-center gap-2.5">
+                <EntityGlyph id={CATEGORY_MARK[prog.category] ?? "vehicle"} size={32} />
+                <div className="min-w-0">
+                  <div className="type-label-md truncate text-foreground">{prog.name}</div>
+                  <div className="type-caption truncate text-quaternary">{prog.category}</div>
+                </div>
               </div>
               <span className="type-body-sm tabular shrink-0 text-quaternary">{prog.modelYear}</span>
             </div>
@@ -122,18 +133,19 @@ const Dashboard = () => {
         {/* KPI row, scoped to the active program */}
         <div className="col-span-12 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
           {[
-            { label: "Parts",         value: progParts.length,                 trend: "eBOM",   to: "/ebom" },
-            { label: "Assemblies",    value: progAssemblies.length,            trend: "Stable", to: "/ebom" },
-            { label: "Operations",    value: activeProgram.mbomOps.length,     trend: "mBOM",   to: "/mbom" },
-            { label: "Service kits",  value: activeProgram.serviceKits.length, trend: "Ready",  to: "/service" },
-            { label: "Suppliers",     value: progSuppliers.size,               trend: "Live",   to: "/suppliers" },
-            { label: "Variants",      value: activeProgram.variants.length,    trend: `${activeProgram.variants.length} active`, to: "/variants" },
+            { label: "Parts",         value: progParts.length,                 trend: "eBOM",   to: "/ebom",      icon: "part" },
+            { label: "Assemblies",    value: progAssemblies.length,            trend: "Stable", to: "/ebom",      icon: "assembly" },
+            { label: "Operations",    value: activeProgram.mbomOps.length,     trend: "mBOM",   to: "/mbom",      icon: "mbom" },
+            { label: "Service kits",  value: activeProgram.serviceKits.length, trend: "Ready",  to: "/service",   icon: "service-kit" },
+            { label: "Suppliers",     value: progSuppliers.size,               trend: "Live",   to: "/suppliers", icon: "supplier" },
+            { label: "Variants",      value: activeProgram.variants.length,    trend: `${activeProgram.variants.length} active`, to: "/variants", icon: "variant" },
           ].map(k => (
             <KpiTile
               key={k.label}
               label={k.label}
               value={k.value.toLocaleString("en-US")}
               hint={k.trend}
+              icon={k.icon}
               onClick={() => navigate(k.to)}
             />
           ))}
@@ -152,7 +164,7 @@ const Dashboard = () => {
         </div>
 
         <div className="col-span-12 flex flex-col gap-4 xl:col-span-4">
-          <Panel title="Program Stage Pipeline" icon="variant" className="flex-none">
+          <Panel title="Program Stage Pipeline" className="flex-none">
             <div className="space-y-3">
               {programs.map(prog => {
                 const idx = STAGES.indexOf(prog.stage as typeof STAGES[number]);
@@ -171,13 +183,18 @@ const Dashboard = () => {
               })}
             </div>
             <div className="type-caption mt-3 flex justify-between px-0.5 text-quaternary">
-              {STAGES.map(s => <span key={s}>{s}</span>)}
+              {STAGES.map(s => (
+                <span key={s} className="flex flex-col items-center gap-1">
+                  <EntityGlyph id={STAGE_MARK[s]} size={20} />
+                  {s}
+                </span>
+              ))}
             </div>
           </Panel>
 
           <Panel
             title="AI Assistant · Briefing"
-            action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}
+            icon="ai"
             className="min-h-[320px] flex-1"
           >
             <div className="flex h-full flex-col">
@@ -215,6 +232,7 @@ const Dashboard = () => {
 
           <Panel
             title="Security Hub"
+            icon="security"
             className="flex-none"
           >
             <p className="type-body-sm text-tertiary">No active cybersecurity threats detected in the last <span className="tabular text-foreground">240 hours</span>. SOC status: Normal.</p>
@@ -260,6 +278,7 @@ const Dashboard = () => {
         <div className="col-span-12 xl:col-span-6">
           <Panel
             title="Change Velocity"
+            icon="trend"
             className="h-full min-h-[340px]"
             action={<span className="type-caption tabular text-quaternary">{activeProgram.name}</span>}
           >
@@ -284,6 +303,7 @@ const Dashboard = () => {
         {/* Live Quality Stream, scoped to the active program */}
         <div className="col-span-12">
           <Panel
+            icon="quality"
             title={<span className="inline-flex items-center gap-2"><StatusDot tone="success" />Live Quality Stream · {activeProgram.name}</span>}
             action={
               <Button variant="ghost" size="sm" onClick={() => navigate("/field")}>
@@ -292,7 +312,7 @@ const Dashboard = () => {
             }
           >
             {activeProgram.fieldEvents.length === 0 ? (
-              <EmptyState title={`No active field events for ${activeProgram.name}`} className="min-h-[96px]" />
+              <EmptyState title={`No active field events for ${activeProgram.name}`} mark="quality" className="min-h-[96px]" />
             ) : (
               <div className="grid grid-cols-2 gap-2 md:grid-cols-4 xl:grid-cols-6">
                 {activeProgram.fieldEvents.map(e => (

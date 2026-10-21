@@ -7,25 +7,23 @@ import {
 import { useProgramContext } from "@/context/ProgramContext";
 import { cn } from "@/lib/utils";
 import { Panel, Unit } from "@/components/ui/primitives";
-import {
-  Zap, Battery, CircleDot, Box, Armchair, Cpu,
-  FileEdit,
-} from "lucide-react";
+import { FileEdit } from "lucide-react";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 
-const SYSTEM_VISUAL: Record<string, { icon: typeof Zap; color: string; short: string }> = {
-  PWT: { icon: Zap,       color: "var(--analytics-series-1)", short: "PWT" },
-  BAT: { icon: Battery,   color: "var(--analytics-series-2)", short: "BAT" },
-  CHS: { icon: CircleDot, color: "var(--analytics-series-3)", short: "CHS" },
-  BDY: { icon: Box,       color: "var(--analytics-series-4)", short: "BDY" },
-  INT: { icon: Armchair,  color: "var(--analytics-series-5)", short: "INT" },
-  ELE: { icon: Cpu,       color: "var(--analytics-series-6)", short: "ELE" },
+const SYSTEM_VISUAL: Record<string, { mark: string; color: string; short: string }> = {
+  PWT: { mark: "system-powertrain",       color: "var(--analytics-series-1)", short: "PWT" },
+  BAT: { mark: "system-battery",   color: "var(--analytics-series-2)", short: "BAT" },
+  CHS: { mark: "system-chassis", color: "var(--analytics-series-3)", short: "CHS" },
+  BDY: { mark: "system-body",       color: "var(--analytics-series-4)", short: "BDY" },
+  INT: { mark: "system-interior",  color: "var(--analytics-series-5)", short: "INT" },
+  ELE: { mark: "system-electrical",       color: "var(--analytics-series-6)", short: "ELE" },
 };
 
 const getSystemVisual = (pn: string) => {
   for (const [key, val] of Object.entries(SYSTEM_VISUAL)) {
     if (pn.toUpperCase().includes(key)) return val;
   }
-  return { icon: Box, color: "var(--analytics-series-5)", short: pn.slice(0, 3) };
+  return { mark: "system", color: "var(--analytics-series-5)", short: pn.slice(0, 3) };
 };
 
 // BFS over the BOM graph starting from a system root
@@ -68,7 +66,7 @@ export const SystemHealthMatrix = () => {
         const sysPart = parts.find(p => p.partNumber === edge.childPN);
         if (!sysPart) return null;
         const vis = getSystemVisual(sysPart.partNumber);
-        return { pn: sysPart.partNumber, name: sysPart.name, short: vis.short, icon: vis.icon, color: vis.color };
+        return { pn: sysPart.partNumber, name: sysPart.name, short: vis.short, mark: vis.mark, color: vis.color };
       })
       .filter((s): s is NonNullable<typeof s> => s !== null);
   }, [activeProgram]);
@@ -147,6 +145,7 @@ export const SystemHealthMatrix = () => {
   return (
     <Panel
       title="System Health Matrix"
+      icon="system"
       className="h-full"
       action={
         <div className="flex flex-wrap items-center gap-3">
@@ -203,7 +202,6 @@ export const SystemHealthMatrix = () => {
 
       <div className="mt-2 space-y-2">
         {rows.map(row => {
-          const Icon = row.icon;
           return (
             <div
               key={row.pn}
@@ -212,8 +210,8 @@ export const SystemHealthMatrix = () => {
               <div className="flex flex-col gap-3 lg:grid lg:grid-cols-[minmax(160px,1.7fr)_56px_repeat(4,minmax(84px,1fr))_72px] lg:items-center lg:gap-3">
                 <button onClick={() => navigate(`/parts/${row.pn}`)} className="min-w-0 text-left">
                   <div className="flex items-center gap-3">
-                    <div className="grid size-10 shrink-0 place-items-center rounded-lg border border-hairline bg-action text-tertiary">
-                      <Icon className="size-4" aria-hidden />
+                    <div className="grid size-11 shrink-0 place-items-center rounded-lg border border-hairline bg-action">
+                      <EntityGlyph id={row.mark} size={28} />
                     </div>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
