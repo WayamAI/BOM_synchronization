@@ -22,7 +22,7 @@ import Reports from "@/pages/Reports";
 const ROOT = resolve(__dirname, "../..");
 const ids = Object.keys(entityIcons);
 
-const sheetIds: string[] = (JSON.parse(readFileSync(resolve(ROOT, "scripts/icon-sheets.json"), "utf-8")) as { ids: string[]; candidate?: boolean }[]).filter(s => !s.candidate).flatMap(s => s.ids);
+const sheetIds: string[] = (JSON.parse(readFileSync(resolve(ROOT, "scripts/icon-sheets.json"), "utf-8")) as { ids: string[]; candidates?: string[] }[]).flatMap(s => s.ids.filter(id => !(s.candidates ?? []).includes(id)));
 
 describe("icon mapping", () => {
   it("has exactly the ids listed in scripts/icon-sheets.json", () => {

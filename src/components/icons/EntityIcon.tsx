@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { getEntityIcon, markUrl, PENDING_MARKS } from "./iconMap";
+import { getEntityIcon, markUrl } from "./iconMap";
 
 // Greyscale lucide icon for rows, tabs and chips. Decorative: always sits next to a text label.
 export const EntityIcon = ({ id, className }: { id: string; className?: string }) => {
@@ -12,7 +12,7 @@ export const EntityIcon = ({ id, className }: { id: string; className?: string }
 // always next to it. Falls back to the lucide icon if the PNG is missing or fails to load.
 export const EntityMark = ({ id, size, className }: { id: string; size: 36 | 44 | 72; className?: string }) => {
   const [failed, setFailed] = useState(false);
-  const src = PENDING_MARKS.has(id) ? null : markUrl(id);
+  const src = markUrl(id);
   if (!src || failed) {
     const Icon = getEntityIcon(id).lucide;
     return <Icon aria-hidden strokeWidth={1.5} style={{ width: size * 0.5, height: size * 0.5 }} className={cn("shrink-0 text-quaternary", className)} />;
@@ -38,7 +38,7 @@ export const EntityMark = ({ id, size, className }: { id: string; size: 36 | 44 
 // fails to load. Never use it for a status.
 export const EntityGlyph = ({ id, size, className }: { id: string; size: 20 | 22 | 24 | 28 | 32; className?: string }) => {
   const [failed, setFailed] = useState(false);
-  const src = PENDING_MARKS.has(id) ? null : markUrl(id, size);
+  const src = markUrl(id, size);
   if (!src || failed) {
     const Icon = getEntityIcon(id).lucide;
     return <Icon aria-hidden strokeWidth={1.75} style={{ width: size * 0.8, height: size * 0.8 }} className={cn("shrink-0 text-tertiary", className)} />;

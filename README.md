@@ -56,4 +56,6 @@ python scripts/cut-icons.py
 | `design/icons-sheet-4.jpg` | concepts and KPIs (ai, security, cve, validation, history, where-used, cost, watchlist, disruption, license, quality, trend) |
 | `design/icons-sheet-5.jpg` | executive, compliance, not-found, scope, plus spares (person, department, lead-time, pinned, config-rule, market, volume, vin) |
 
+`design/icons-sheet-6.jpg` holds 4 icons in one row: the chosen `system-battery` and `quality`, plus two unused alternates. An entry may declare `"count"` for a sheet that is not 12 icons, and `"candidates"` for ids that are cut only to `design/candidates/` (alternates and retired icons, for example `system-battery-old` and `quality-old` from sheets 1 and 4).
+
 Output is two transparent PNGs per id: `public/icons/<id>.png` (144x144, page headers, cards, empty states) and `public/icons/sm/<id>.png` (96x96, 20 to 32px glyphs). The script exits with an error if a sheet does not yield exactly 12 icon-sized components or if an id repeats. Components far smaller than the median icon (such as a corner watermark) are ignored and reported. To add icons, generate a new 12-icon sheet, add it and its ids to `icon-sheets.json`, and re-run. The id to icon mapping lives in `src/components/icons/iconMap.ts`.

@@ -6,8 +6,8 @@ Icons are located by their non-background pixels (connected components), not by
 fixed grid cells, then ordered into rows and columns. Stray marks far smaller than
 the median icon (for example a corner watermark) are ignored and reported. Fails if
 a sheet does not yield exactly its declared number of icon-sized components (12 unless the
-entry has "count"), or if an id repeats. An entry with "candidate": true is cut to
-design/candidates/<id>.png (144px only) and is not part of the registry.
+entry has "count"), or if an id repeats. Ids listed in an entry's "candidates" are cut to
+design/candidates/<id>.png (144px only) and are not part of the registry (alternates and retired icons).
 
 Usage: python scripts/cut-icons.py        (needs Pillow and numpy)
 """
@@ -59,7 +59,7 @@ def fill_holes(mask):
     return mask | (~mask & ~reach)
 
 
-def cut_sheet(src, IDS, out_sizes):
+def cut_sheet(src, IDS, cands):
     print(f"== {src.name}")
     img = Image.open(src).convert("RGB")
     rgb = np.asarray(img).astype(np.uint8)
@@ -92,7 +92,7 @@ def cut_sheet(src, IDS, out_sizes):
             sys.exit("FAIL: rows overlap, cannot order icons")
     ordered = [b for row in rows for b in row]
 
-    for d in out_sizes:
+    for d in {**SIZES, **CANDIDATE_SIZES}:
         d.mkdir(parents=True, exist_ok=True)
     pad = 8
     for id_, (x0, y0, x1, y1) in zip(IDS, ordered):
@@ -143,7 +143,7 @@ def cut_sheet(src, IDS, out_sizes):
 
         # Resize premultiplied so edges stay clean, then un-premultiply.
         pm = np.dstack([canvas_c * canvas_a[..., None], canvas_a])
-        for folder, size in out_sizes.items():
+        for folder, size in (CANDIDATE_SIZES if id_ in cands else SIZES).items():
             chans = [np.asarray(Image.fromarray(pm[..., c], "F").resize((size, size), Image.LANCZOS)) for c in range(4)]
             ra = np.clip(chans[3], 0, 1)
             rc = np.stack(chans[:3], -1) / np.maximum(ra[..., None], 1e-3)
@@ -165,7 +165,7 @@ def main():
             sys.exit(f"FAIL: duplicate ids {sorted(dup) or ids}")
         seen |= set(ids)
     for sheet in SHEETS:
-        cut_sheet(ROOT / sheet["file"], sheet["ids"], CANDIDATE_SIZES if sheet.get("candidate") else SIZES)
+        cut_sheet(ROOT / sheet["file"], sheet["ids"], set(sheet.get("candidates", [])))
     print(f"OK: {len(seen)} icons from {len(SHEETS)} sheets")
 
 

@@ -84,10 +84,9 @@ describe("marks are not used as status", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("the sheet list has 6 registered sheets; every listed sheet exists with its declared count", () => {
-    const all = JSON.parse(readFileSync(resolve(ROOT, "scripts/icon-sheets.json"), "utf-8")) as { file: string; ids: string[]; count?: number; candidate?: boolean }[];
-    const sheets = all.filter(s => !s.candidate);
-    expect(sheets).toHaveLength(6);
+  it("the sheet list has 7 sheets; every sheet exists with its declared count", () => {
+    const all = JSON.parse(readFileSync(resolve(ROOT, "scripts/icon-sheets.json"), "utf-8")) as { file: string; ids: string[]; count?: number; candidates?: string[] }[];
+    expect(all).toHaveLength(7);
     for (const s of all) {
       expect(s.ids).toHaveLength(s.count ?? 12);
       expect(existsSync(resolve(ROOT, s.file))).toBe(true);
