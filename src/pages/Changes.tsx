@@ -151,7 +151,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
   const ecn = ecns.find(e => e.id === id);
   if (!ecn) {
     return (
-      <PageHeader title={`No change ${id}`} subtitle="That ECN does not exist in this program">
+      <PageHeader title={`No change ${id}`} mark="not-found" subtitle="That ECN does not exist in this program">
         <Button variant="outline" size="sm" onClick={() => navigate("/changes")}>
           <ArrowLeft aria-hidden className="size-3.5 mr-1" />Back to ECN list
         </Button>
@@ -164,6 +164,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
   return (
     <PageHeader
       title={`${ecn.id} · ${ecn.title}`}
+      mark="ecn"
       subtitle={`Raised by ${ecn.raisedBy} on ${ecn.raisedAt}`}
       actions={
         <>

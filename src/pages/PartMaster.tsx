@@ -127,7 +127,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
   const part = getPart(pn);
   if (!part) {
     return (
-      <PageHeader title={`No part ${pn}`} subtitle="That part number does not exist">
+      <PageHeader title={`No part ${pn}`} mark="not-found" subtitle="That part number does not exist">
         <Button variant="outline" size="sm" onClick={() => navigate("/parts")}>
           <ArrowLeft aria-hidden className="size-3.5 mr-1" />Back to Part Master
         </Button>
