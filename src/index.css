@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 /* =============================================================================
-   Wayam AI BOM Synchronization on the Chronus design system.
+   Wayam AI Sama on the Chronus design system.
    Chronus tokens live in styles/tokens.css. The shadcn variables below are HSL
    triplets derived from those tokens so existing shadcn classes pick up the
    Chronus look. Strokes are opaque equivalents of the Chronus alpha strokes,

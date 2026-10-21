@@ -58,7 +58,7 @@ const Login = () => {
             <span className="type-label-md">Wayam AI</span>
           </div>
           <div className="max-w-xl">
-            <p className="type-eyebrow opacity-70">BOM Synchronization</p>
+            <p className="type-eyebrow opacity-70">Sama</p>
             <p className="type-display-2xl mt-3">One bill of materials across engineering, manufacturing, service and software.</p>
           </div>
         </div>
@@ -77,7 +77,7 @@ const Login = () => {
         <div className="flex flex-1 flex-col justify-center px-8 pb-12">
           <div className="mx-auto w-full max-w-sm">
             <h1 className="type-display-xl text-foreground">Sign in</h1>
-            <p className="type-body-md mt-1 text-tertiary">BOM Synchronization Command Center</p>
+            <p className="type-body-md mt-1 text-tertiary">Sama · Bill of materials command center</p>
 
             <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4" noValidate>
               <div className="flex flex-col gap-1.5">
