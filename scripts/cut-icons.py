@@ -5,7 +5,9 @@ public/icons/sm/<id>.png (96x96, 20 to 32px glyphs).
 Icons are located by their non-background pixels (connected components), not by
 fixed grid cells, then ordered into rows and columns. Stray marks far smaller than
 the median icon (for example a corner watermark) are ignored and reported. Fails if
-a sheet does not yield exactly 12 icon-sized components, or if an id repeats.
+a sheet does not yield exactly its declared number of icon-sized components (12 unless the
+entry has "count"), or if an id repeats. An entry with "candidate": true is cut to
+design/candidates/<id>.png (144px only) and is not part of the registry.
 
 Usage: python scripts/cut-icons.py        (needs Pillow and numpy)
 """
@@ -20,6 +22,7 @@ SHEETS = json.loads((ROOT / "scripts" / "icon-sheets.json").read_text(encoding="
 OUT = ROOT / "public" / "icons"
 COLS = 4
 SIZES = {OUT: 144, OUT / "sm": 96}
+CANDIDATE_SIZES = {ROOT / "design" / "candidates": 144}
 FILL_HOLES = {"system-body"}   # pale glass would key out as a hole; other icons have real holes (rings, gears)
 STRAY = 0.10           # a component below this share of the median icon area is a stray mark
 MARGIN = 0.06          # equal margin on every side, as a share of the square
@@ -56,7 +59,7 @@ def fill_holes(mask):
     return mask | (~mask & ~reach)
 
 
-def cut_sheet(src, IDS):
+def cut_sheet(src, IDS, out_sizes):
     print(f"== {src.name}")
     img = Image.open(src).convert("RGB")
     rgb = np.asarray(img).astype(np.uint8)
@@ -89,7 +92,7 @@ def cut_sheet(src, IDS):
             sys.exit("FAIL: rows overlap, cannot order icons")
     ordered = [b for row in rows for b in row]
 
-    for d in SIZES:
+    for d in out_sizes:
         d.mkdir(parents=True, exist_ok=True)
     pad = 8
     for id_, (x0, y0, x1, y1) in zip(IDS, ordered):
@@ -140,7 +143,7 @@ def cut_sheet(src, IDS):
 
         # Resize premultiplied so edges stay clean, then un-premultiply.
         pm = np.dstack([canvas_c * canvas_a[..., None], canvas_a])
-        for folder, size in SIZES.items():
+        for folder, size in out_sizes.items():
             chans = [np.asarray(Image.fromarray(pm[..., c], "F").resize((size, size), Image.LANCZOS)) for c in range(4)]
             ra = np.clip(chans[3], 0, 1)
             rc = np.stack(chans[:3], -1) / np.maximum(ra[..., None], 1e-3)
@@ -154,14 +157,15 @@ def main():
     seen = set()
     for sheet in SHEETS:
         ids = sheet["ids"]
-        if len(ids) != 12:
-            sys.exit(f"FAIL: {sheet['file']} lists {len(ids)} ids, expected 12")
+        want = sheet.get("count", 12)
+        if len(ids) != want:
+            sys.exit(f"FAIL: {sheet['file']} lists {len(ids)} ids, expected {want}")
         dup = seen & set(ids)
         if dup or len(set(ids)) != len(ids):
             sys.exit(f"FAIL: duplicate ids {sorted(dup) or ids}")
         seen |= set(ids)
     for sheet in SHEETS:
-        cut_sheet(ROOT / sheet["file"], sheet["ids"])
+        cut_sheet(ROOT / sheet["file"], sheet["ids"], CANDIDATE_SIZES if sheet.get("candidate") else SIZES)
     print(f"OK: {len(seen)} icons from {len(SHEETS)} sheets")
 
 
