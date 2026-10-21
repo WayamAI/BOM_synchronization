@@ -1,5 +1,6 @@
 import { EmptyState, KpiTile, LifecycleStatus, Panel, QuietStatus, StatusDot } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
+import { typeMark } from "@/components/icons/iconMap";
 import { plural, statusText } from "@/lib/format";
 import { useMemo, useState, useEffect, type KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
@@ -94,7 +95,7 @@ const TreeRow = ({ node, depth = 0, onSelect, selected, filter }: {
           </button>
         ) : <span className="w-5 shrink-0" />}
         <HealthDot health={node.health} />
-        <EntityIcon id={has ? "assembly" : "part"} />
+        <EntityGlyph id={typeMark(node.type)} size={20} />
         <span title={node.name} className={cn("type-body-md truncate text-foreground", depth === 0 ? "font-semibold" : "font-medium")}>{node.name}</span>
         <span className="type-body-sm tabular truncate text-tertiary" title={[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}>
           {[node.partNumber, node.version, node.qty && node.qty > 1 ? `×${node.qty}` : null].filter(Boolean).join(" · ")}
@@ -421,7 +422,7 @@ const EbomManager = () => {
                     {filteredRows.map(n => (
                       <tr key={n.id + Math.random()} className="border-b border-hairline hover:bg-raised cursor-pointer" onClick={() => setSelected(n)}>
                         <td className="px-3 py-2"><HealthDot health={n.health} /></td>
-                        <td className="px-3 py-2 tabular text-tertiary">{n.partNumber}</td>
+                        <td className="px-3 py-2 tabular text-tertiary"><span className="inline-flex items-center gap-2"><EntityGlyph id={typeMark(n.type)} size={20} />{n.partNumber}</span></td>
                         <td className="type-body-md px-3 py-2 font-medium text-foreground">{n.name}</td>
                         <td className="type-body-sm px-3 py-2 text-quaternary">{n.type}</td>
                         <td className="px-3 py-2 tabular text-tertiary">{n.revision}</td>

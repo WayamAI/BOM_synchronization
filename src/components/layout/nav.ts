@@ -30,9 +30,9 @@ export const navGroups: { section: string; items: NavItem[] }[] = [
 ];
 
 export const pinnedItems = [
-  { id: "ecn",  label: "ECN-2241 · cell tab",       to: "/changes/ECN-2241" },
-  { id: "pn",   label: "BAT-PCK-8500 · HV Pack",    to: "/parts/BAT-PCK-8500" },
-  { id: "sup",  label: "Anonymous PCB · Taiwan",    to: "/suppliers" },
+  { id: "ecn",  mark: "ecn",      label: "ECN-2241 · cell tab",       to: "/changes/ECN-2241" },
+  { id: "pn",   mark: "part",     label: "BAT-PCK-8500 · HV Pack",    to: "/parts/BAT-PCK-8500" },
+  { id: "sup",  mark: "supplier", label: "Anonymous PCB · Taiwan",    to: "/suppliers" },
 ];
 
 const routeLabels: Record<string, string> = Object.fromEntries(

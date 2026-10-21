@@ -13,7 +13,8 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ShieldAlert, Search, Download, Cpu } from "lucide-react";
+import { ShieldAlert, Search, Download } from "lucide-react";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { axisTick, chartTooltipLabelStyle, chartTooltipStyle } from "@/components/dashboard/chartTheme";
 
@@ -92,7 +93,7 @@ const SoftwareBom = () => {
                 className="flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised text-left"
               >
                 <div className="flex items-center gap-2 min-w-0">
-                  <Cpu aria-hidden className="size-3.5 text-tertiary shrink-0" />
+                  <EntityGlyph id="ecu" size={20} />
                   <div className="min-w-0">
                     <div className="type-body-sm font-semibold truncate">{r.ecu.name}</div>
                     <div className="type-caption font-mono text-tertiary">{r.ecu.partNumber} · {r.ecu.revision}</div>

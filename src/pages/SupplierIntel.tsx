@@ -1,6 +1,6 @@
 import { plural } from "@/lib/format";
 import { EmptyState } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { suppliers, parts as allParts, totals } from "@/lib/mockData";
@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { cn } from "@/lib/utils";
 import { CveHeatmap } from "@/components/dashboard/CveHeatmap";
-import { Sparkles, AlertTriangle, MapPin, Search, ExternalLink } from "lucide-react";
+import { Sparkles, AlertTriangle, Search, ExternalLink } from "lucide-react";
 
 // Compute parts-per-supplier + single-source-per-supplier from the part master.
 const supplierRollup = suppliers.map(s => {
@@ -120,8 +120,8 @@ const SupplierIntel = () => {
             )}
             {filtered.map(s => (
               <tr key={s.id} className="border-t border-hairline hover:bg-raised">
-                <td className="px-3 py-2 font-semibold"><span className="inline-flex items-center gap-1.5"><EntityIcon id="supplier" />{s.name}</span></td>
-                <td className="px-3 py-2 text-tertiary flex items-center gap-1.5"><MapPin aria-hidden className="size-3.5" />{s.country} · {s.region}</td>
+                <td className="px-3 py-2 font-semibold"><span className="inline-flex items-center gap-2"><EntityGlyph id="supplier" size={20} />{s.name}</span></td>
+                <td className="px-3 py-2 text-tertiary"><span className="inline-flex items-center gap-2"><EntityGlyph id="region" size={20} />{s.country} · {s.region}</span></td>
                 <td className="px-3 py-2 tabular text-tertiary">T{s.tier}</td>
                 <td className="px-3 py-2 text-right tabular-nums">{s.partsCount}</td>
                 <td className="px-3 py-2">{s.singleSource ? <Badge variant="warning">Yes</Badge> : <span className="text-tertiary">—</span>}</td>

@@ -109,6 +109,13 @@ export const FALLBACK_ICON: EntityIcon = { lucide: Box, mark: "" };
 export const getEntityIcon = (id: string): EntityIcon =>
   (entityIcons as Record<string, EntityIcon>)[id] ?? FALLBACK_ICON;
 
+// Part type (mockData PartType) -> entity id, for row and tree glyphs. Unknown types fall back to "part".
+const TYPE_MARK: Record<string, EntityId> = {
+  "Vehicle": "vehicle", "System": "system", "Assembly": "assembly", "Sub-Assembly": "assembly",
+  "ECU": "ecu", "Part": "part", "Harness": "harness",
+};
+export const typeMark = (type?: string): EntityId => (type && TYPE_MARK[type]) || "part";
+
 // 96px cut (public/icons/sm) for glyphs up to 32px, 144px cut above that.
 export const markUrl = (id: string, px?: number): string | null => {
   const m = getEntityIcon(id).mark;

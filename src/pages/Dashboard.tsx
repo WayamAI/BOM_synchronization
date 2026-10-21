@@ -262,7 +262,7 @@ const Dashboard = () => {
                     className="rounded-md border border-hairline bg-raised p-3 text-left outline-none transition-colors duration-[150ms] hover:border-strong focus-visible:ring-2 focus-visible:ring-active"
                   >
                     <div className="mb-1 flex items-start justify-between gap-2">
-                      <span className="type-caption font-mono text-quaternary">{e.id}</span>
+                      <span className="type-caption inline-flex items-center gap-1.5 font-mono text-quaternary"><EntityGlyph id="ecn" size={20} />{e.id}</span>
                       <Badge variant="warning">{statusText(e.state)}</Badge>
                     </div>
                     <p className="type-body-md line-clamp-1 text-foreground">{e.title}</p>

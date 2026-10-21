@@ -1,6 +1,6 @@
 import { plural } from "@/lib/format";
 import { EmptyState, KpiTile } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph, EntityIcon } from "@/components/icons/EntityIcon";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Wrench, Search, Plus, BookOpen, Receipt, Tag } from "lucide-react";
+import { Wrench, Search, Plus, BookOpen } from "lucide-react";
 
 const catBadge = (c: string): BadgeVariant =>
   c === "Recall"  ? "error" :
@@ -149,15 +149,15 @@ const ServiceBom = () => {
               <div className="mt-3 rounded-lg border border-hairline bg-raised p-2.5">
                 <div className="grid grid-cols-2 gap-2 type-body-sm">
                   <div className="rounded-md bg-container p-2 border border-hairline">
-                    <div className="type-eyebrow text-quaternary flex items-center gap-1">
-                      <Tag aria-hidden className="h-2.5 w-2.5" />Replacement cost
+                    <div className="type-eyebrow text-quaternary flex items-center gap-1.5">
+                      <EntityGlyph id="part" size={20} />Replacement cost
                     </div>
                     <div className="type-body-lg font-semibold tabular-nums text-success mt-0.5">{money(costs.partsSubtotal)}</div>
                     <div className="type-caption text-tertiary">parts only · DIY</div>
                   </div>
                   <div className="rounded-md bg-container p-2 border border-hairline">
-                    <div className="type-eyebrow text-quaternary flex items-center gap-1">
-                      <Receipt aria-hidden className="h-2.5 w-2.5" />Service cost
+                    <div className="type-eyebrow text-quaternary flex items-center gap-1.5">
+                      <EntityGlyph id="service-kit" size={20} />Service cost
                     </div>
                     <div className="type-body-lg font-semibold tabular-nums text-foreground mt-0.5">{money(costs.serviceCost)}</div>
                     <div className="type-caption text-tertiary">parts + labor · dealer</div>

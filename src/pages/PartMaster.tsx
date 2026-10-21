@@ -1,5 +1,6 @@
 import { EmptyState, Panel, PanelHeader, LifecycleStatus, QuietStatus } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
+import { typeMark } from "@/components/icons/iconMap";
 import { plural, statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -101,7 +102,7 @@ const PartList = () => {
               const prog = products.find(pr => pr.id === p.programId);
               return (
                 <tr key={p.partNumber} onClick={() => navigate(`/parts/${p.partNumber}`)} className="border-t border-hairline hover:bg-raised cursor-pointer">
-                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-1.5"><EntityIcon id="part" />{p.partNumber}</span></td>
+                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityGlyph id={typeMark(p.type)} size={20} />{p.partNumber}</span></td>
                   <td className="px-3 py-2 font-semibold">{p.name}</td>
                   <td className="px-3 py-2 text-tertiary type-body-sm">{prog?.name ?? "—"}</td>
                   <td className="px-3 py-2 text-tertiary">{p.type}</td>
@@ -207,9 +208,12 @@ const PartDetail = ({ pn }: { pn: string }) => {
               const parent = getPart(e.parentPN);
               return (
                 <button key={i} onClick={() => navigate(`/parts/${e.parentPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
-                  <div className="text-left">
-                    <div className="type-body-sm font-semibold">{parent?.name}</div>
-                    <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
+                  <div className="flex items-center gap-2.5 text-left">
+                    <EntityGlyph id={typeMark(parent?.type)} size={20} />
+                    <div>
+                      <div className="type-body-sm font-semibold">{parent?.name}</div>
+                      <div className="type-caption font-mono text-tertiary">{e.parentPN} · qty {e.qty}{e.refDes ? ` · ${e.refDes}` : ""}</div>
+                    </div>
                   </div>
                   <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </button>
@@ -227,9 +231,12 @@ const PartDetail = ({ pn }: { pn: string }) => {
               const child = getPart(e.childPN);
               return (
                 <button key={i} onClick={() => navigate(`/parts/${e.childPN}`)} className="w-full flex items-center justify-between rounded-md border border-hairline p-2 hover:bg-raised">
-                  <div className="text-left">
-                    <div className="type-body-sm font-semibold">{child?.name}</div>
-                    <div className="type-caption font-mono text-tertiary">{e.childPN} · qty {e.qty}</div>
+                  <div className="flex items-center gap-2.5 text-left">
+                    <EntityGlyph id={typeMark(child?.type)} size={20} />
+                    <div>
+                      <div className="type-body-sm font-semibold">{child?.name}</div>
+                      <div className="type-caption font-mono text-tertiary">{e.childPN} · qty {e.qty}</div>
+                    </div>
                   </div>
                   <ExternalLink aria-hidden className="size-3.5 opacity-50" />
                 </button>

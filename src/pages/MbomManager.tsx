@@ -1,5 +1,5 @@
 import { plural } from "@/lib/format";
-import { EntityGlyph, EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph } from "@/components/icons/EntityIcon";
 import { EmptyState, PanelHeader, QuietStatus } from "@/components/ui/primitives";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -175,7 +175,7 @@ const MbomManager = () => {
               const part = getPart(o.partNumber);
               return (
                 <tr key={o.id} className="border-t border-hairline hover:bg-raised">
-                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityIcon id="mbom" />{o.id}</span></td>
+                  <td className="px-3 py-2 font-mono"><span className="inline-flex items-center gap-2"><EntityGlyph id="mbom" size={20} />{o.id}</span></td>
                   <td className="px-3 py-2">
                     <button className="text-left hover:text-foreground" onClick={() => navigate(`/parts/${o.partNumber}`)}>
                       <div className="font-semibold">{part?.name ?? o.partNumber}</div>
