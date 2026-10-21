@@ -50,14 +50,15 @@ const SupplierIntel = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { l: "Active suppliers",        v: totals.suppliers,                     tone: "primary" },
-          { l: "Single-source suppliers", v: totals.singleSource,                  tone: "warning" },
-          { l: "On watchlist",            v: watchlistCount,                       tone: "warning" },
-          { l: "High-risk disruption",    v: disruptions.length,                   tone: "danger" },
+          { l: "Active suppliers",        v: totals.suppliers,                     tone: "primary", icon: "supplier" },
+          { l: "Single-source suppliers", v: totals.singleSource,                  tone: "warning", icon: "supplier" },
+          { l: "On watchlist",            v: watchlistCount,                       tone: "warning", icon: "watchlist" },
+          { l: "High-risk disruption",    v: disruptions.length,                   tone: "danger", icon: "disruption" },
         ].map(k => (
           <KpiTile
             key={k.l}
             label={k.l}
+            icon={k.icon}
             value={k.v}
             valueClassName={k.tone === "danger" ? "text-error" : k.tone === "warning" ? "text-warning" : undefined}
           />
@@ -67,7 +68,7 @@ const SupplierIntel = () => {
       {/* Heatmap + AI forecast */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2"><CveHeatmap /></div>
-        <Panel title="AI Disruption Forecast" icon="ai" action={<Sparkles className="size-3.5 text-quaternary" aria-hidden />}>
+        <Panel title="AI Disruption Forecast" icon="ai">
           <p className="type-body-sm text-tertiary">{plural(disruptions.length, "high-confidence signal")} · next 90 days</p>
           <ul className="mt-3 space-y-3 type-body-sm relative">
             {disruptions.map((s, i) => (

@@ -83,12 +83,12 @@ const ServiceBom = () => {
     >
       {/* KPI strip, cost-focused */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
-        <KpiTile label="Service kits" value={totals.serviceKits} />
-        <KpiTile label="FRUs" value={totals.frus} />
-        <KpiTile label="Replacement (kits)" value={money(kitTotals.parts)} hint="parts only · DIY" />
-        <KpiTile label="Labor (kits)" value={money(kitTotals.labor)} hint={`${serviceKits.reduce((s, k) => s + k.laborHours, 0).toFixed(1)} hrs total`} />
-        <KpiTile label="Service cost (kits)" value={money(kitTotals.service)} hint="parts + labor · dealer" />
-        <KpiTile label="FRU replacement" value={money(fruTotals.replacement)} hint="all FRUs at list price" />
+        <KpiTile label="Service kits" icon="service-kit" value={totals.serviceKits} />
+        <KpiTile label="FRUs" icon="fru" value={totals.frus} />
+        <KpiTile label="Replacement (kits)" icon="cost" value={money(kitTotals.parts)} hint="parts only · DIY" />
+        <KpiTile label="Labor (kits)" icon="lead-time" value={money(kitTotals.labor)} hint={`${serviceKits.reduce((s, k) => s + k.laborHours, 0).toFixed(1)} hrs total`} />
+        <KpiTile label="Service cost (kits)" icon="cost" value={money(kitTotals.service)} hint="parts + labor · dealer" />
+        <KpiTile label="FRU replacement" icon="fru" value={money(fruTotals.replacement)} hint="all FRUs at list price" />
       </div>
 
       {/* Tabs + filters */}

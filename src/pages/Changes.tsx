@@ -1,5 +1,5 @@
 import { EmptyState, Panel, PanelHeader, KpiTile } from "@/components/ui/primitives";
-import { EntityIcon } from "@/components/icons/EntityIcon";
+import { EntityGlyph, EntityIcon } from "@/components/icons/EntityIcon";
 import { statusText } from "@/lib/format";
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -220,24 +220,24 @@ const ChangesDetail = ({ id }: { id: string }) => {
 
         {/* Impact */}
         <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
-          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Impact Analysis" />
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Impact Analysis" icon="validation" />
           <div className="grid grid-cols-2 gap-3 type-body-sm">
             <div className="rounded-md border border-hairline p-2">
-              <div className="type-eyebrow text-quaternary">Affected parts</div>
+              <div className="flex items-center justify-between gap-2"><span className="type-eyebrow text-quaternary">Affected parts</span><EntityGlyph id="part" size={20} /></div>
               <div className="text-lg font-semibold">{ecn.affectedPNs.length}</div>
             </div>
             <div className="rounded-md border border-hairline p-2">
-              <div className="type-eyebrow text-quaternary">Affected variants</div>
+              <div className="flex items-center justify-between gap-2"><span className="type-eyebrow text-quaternary">Affected variants</span><EntityGlyph id="variant" size={20} /></div>
               <div className="text-lg font-semibold">{ecn.affectedVariants.length || variants.length}</div>
             </div>
             <div className="rounded-md border border-hairline p-2">
-              <div className="type-eyebrow text-quaternary">Cost per vehicle</div>
+              <div className="flex items-center justify-between gap-2"><span className="type-eyebrow text-quaternary">Cost per vehicle</span><EntityGlyph id="cost" size={20} /></div>
               <div className={cn("text-lg font-semibold tabular-nums", ecn.estCostImpactUsd > 0 ? "text-warning" : ecn.estCostImpactUsd < 0 ? "text-success" : "")}>
                 {ecn.estCostImpactUsd >= 0 ? "+" : ""}${ecn.estCostImpactUsd}
               </div>
             </div>
             <div className="rounded-md border border-hairline p-2">
-              <div className="type-eyebrow text-quaternary">VINs in field</div>
+              <div className="flex items-center justify-between gap-2"><span className="type-eyebrow text-quaternary">VINs in field</span><EntityGlyph id="vin" size={20} /></div>
               <div className="text-lg font-semibold tabular-nums">{ecn.estVinsAffected.toLocaleString("en-US")}</div>
             </div>
           </div>
@@ -249,6 +249,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
         <PanelHeader
           className="-mx-4 -mt-4 mb-4"
           title="Timeline · People & Rationale"
+          icon="history"
           action={<Badge variant="secondary" className="type-caption">{ecn.timeline.length} event{ecn.timeline.length === 1 ? "" : "s"}</Badge>}
         />
         <div className="relative pl-6 space-y-5 border-l-2 border-hairline">
@@ -306,6 +307,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
       <div className="overflow-hidden rounded-lg border border-hairline bg-container">
         <PanelHeader
           title={`Affected Parts (${ecn.affectedPNs.length})`}
+          icon="part"
           action={ecn.affectedVariants.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {ecn.affectedVariants.map(v => <Badge key={v} variant="outline" className="type-caption font-mono">{v}</Badge>)}
@@ -348,6 +350,7 @@ const ChangesDetail = ({ id }: { id: string }) => {
       <div className="overflow-hidden rounded-lg border border-hairline bg-container">
         <PanelHeader
           title="Revision Lineage"
+          icon="history"
           action={<span className="type-caption hidden text-tertiary sm:inline">History of each affected part across prior ECNs</span>}
         />
         <div className="divide-y divide-hairline">

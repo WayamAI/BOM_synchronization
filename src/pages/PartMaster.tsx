@@ -199,7 +199,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
       {/* Where-used + Uses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
-          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Where-Used (Parents)" />
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Where-Used (Parents)" icon="where-used" />
           <p className="type-body-sm text-tertiary mb-3">This part is used as a child of {whereUsed.length} parent assembl{whereUsed.length === 1 ? "y" : "ies"}.</p>
           <div className="space-y-2">
             {whereUsed.length === 0 && <p className="type-body-sm italic text-tertiary">Top-level vehicle. No parents.</p>}
@@ -219,7 +219,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         </div>
 
         <div className="overflow-hidden rounded-lg border border-hairline bg-container p-4">
-          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Uses (Children)" />
+          <PanelHeader className="-mx-4 -mt-4 mb-4" title="Uses (Children)" icon="assembly" />
           <p className="type-body-sm text-tertiary mb-3">This part is built from {children.length} direct child part{children.length === 1 ? "" : "s"}.</p>
           <div className="space-y-2">
             {children.length === 0 && <p className="type-body-sm italic text-tertiary">Leaf part. No children.</p>}
@@ -300,7 +300,7 @@ const PartDetail = ({ pn }: { pn: string }) => {
         )}
 
         {history.length > 0 && (
-          <Panel title="Revision History" className="lg:col-span-2">
+          <Panel title="Revision History" icon="history" className="lg:col-span-2">
             <div className="mt-3 relative pl-4 space-y-3 border-l border-hairline">
               {history.map((h, i) => (
                 <div key={i} className="relative">

@@ -374,20 +374,20 @@ const EbomManager = () => {
         {/* Completeness / quick stats */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { l: "Parts in view",    v: (filteredRows.length).toLocaleString("en-US") },
-            { l: "Unique assemblies", v: all.filter(n => n.type === "Assembly" || n.type === "Sub-Assembly").length },
-            { l: "ECUs",             v: all.filter(n => n.type === "ECU").length },
-            { l: "Rolled-up cost",   v: `$${Math.round(totalCost).toLocaleString("en-US")}` },
-            { l: "Parts in program", v: activeProgram.parts.length },
+            { l: "Parts in view",    v: (filteredRows.length).toLocaleString("en-US"), icon: "part" },
+            { l: "Unique assemblies", v: all.filter(n => n.type === "Assembly" || n.type === "Sub-Assembly").length, icon: "assembly" },
+            { l: "ECUs",             v: all.filter(n => n.type === "ECU").length, icon: "ecu" },
+            { l: "Rolled-up cost",   v: `$${Math.round(totalCost).toLocaleString("en-US")}`, icon: "cost" },
+            { l: "Parts in program", v: activeProgram.parts.length, icon: "part" },
           ].map(k => (
-            <KpiTile key={k.l} label={k.l} value={k.v} />
+            <KpiTile key={k.l} label={k.l} value={k.v} icon={k.icon} />
           ))}
         </div>
 
         {/* Main split */}
         <TabsContent value="tree" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Structure · ${plural(filteredRows.length, "Part")}`} padded={false} className="flex-1 min-h-[520px]">
+            <Panel title={`Structure · ${plural(filteredRows.length, "Part")}`} icon="ebom" padded={false} className="flex-1 min-h-[520px]">
               <div role="tree" aria-label="Engineering BOM structure" className="-mb-px">
                 <TreeRow node={tree} onSelect={setSelected} selected={selected?.id} filter={filter} />
               </div>
@@ -398,7 +398,7 @@ const EbomManager = () => {
         </TabsContent>
         <TabsContent value="table" className="mt-0">
           <div className="flex flex-col lg:flex-row gap-4">
-            <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} padded={false} className="flex-1 min-h-[520px]">
+            <Panel title={`Parts · ${filteredRows.length.toLocaleString("en-US")}`} icon="ebom" padded={false} className="flex-1 min-h-[520px]">
               <div className="overflow-x-auto">
                 <table className="tabular w-full type-body-sm">
                   <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
@@ -416,7 +416,7 @@ const EbomManager = () => {
                   </thead>
                   <tbody>
                     {filteredRows.length === 0 && (
-                      <tr><td colSpan={9}><EmptyState title="No components match this search" /></td></tr>
+                      <tr><td colSpan={9}><EmptyState title="No components match this search" mark="ebom" /></td></tr>
                     )}
                     {filteredRows.map(n => (
                       <tr key={n.id + Math.random()} className="border-b border-hairline hover:bg-raised cursor-pointer" onClick={() => setSelected(n)}>

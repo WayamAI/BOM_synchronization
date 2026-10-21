@@ -34,14 +34,15 @@ const FieldQuality = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { l: "Pilot VINs built",         v: program.pilotVinsBuilt.toLocaleString("en-US"), tone: "primary" },
-          { l: "Open quality events",      v: fieldEvents.filter(e => e.status !== "Resolved").length, tone: "warning" },
-          { l: "VINs impacted (all events)",v: totalVinsAffected.toLocaleString("en-US"), tone: "warning" },
-          { l: "Critical open",            v: criticalOpen, tone: "danger" },
+          { l: "Pilot VINs built",         v: program.pilotVinsBuilt.toLocaleString("en-US"), tone: "primary", icon: "vin" },
+          { l: "Open quality events",      v: fieldEvents.filter(e => e.status !== "Resolved").length, tone: "warning", icon: "quality" },
+          { l: "VINs impacted (all events)",v: totalVinsAffected.toLocaleString("en-US"), tone: "warning", icon: "vin" },
+          { l: "Critical open",            v: criticalOpen, tone: "danger", icon: "quality" },
         ].map(k => (
           <KpiTile
             key={k.l}
             label={k.l}
+            icon={k.icon}
             value={k.v}
             valueClassName={k.tone === "danger" ? "text-error" : k.tone === "warning" ? "text-warning" : undefined}
           />
@@ -53,6 +54,7 @@ const FieldQuality = () => {
         <PanelHeader
           className="-mx-4 -mt-4 mb-4"
           title="AI Root-Cause · Power Liftgate Actuator Cluster"
+          icon="ai"
           action={<Badge variant="warning">81% confidence</Badge>}
         />
         <p className="type-caption mb-3 text-tertiary">14 VINs · last 72h · Premium / Signature trims · BDY-LFT-7701</p>
@@ -72,7 +74,7 @@ const FieldQuality = () => {
 
       {/* Events table */}
       <div className="rounded-lg border border-hairline bg-container overflow-hidden">
-        <PanelHeader title="Field Quality Events" action={<Badge variant="outline" className="type-caption">{fieldEvents.length} tracked</Badge>} />
+        <PanelHeader title="Field Quality Events" icon="quality" action={<Badge variant="outline" className="type-caption">{fieldEvents.length} tracked</Badge>} />
         <div className="overflow-x-auto">
           <table className="tabular w-full type-body-sm">
             <thead className="type-eyebrow text-quaternary border-b border-hairline bg-container">
