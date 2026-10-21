@@ -167,7 +167,8 @@ const SidePanel = ({ node, onClose, tree }: { node: EbomNode; onClose: () => voi
     <aside className="w-full lg:w-[420px] shrink-0 rounded-lg border border-strong bg-container">
       <div className="p-4 border-b border-hairline flex items-start justify-between">
         <div className="min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <EntityGlyph id={typeMark(node.type)} size={32} />
             <h3 className="type-display-lg truncate text-foreground">{node.name}</h3>
           </div>
           <p className="type-body-sm tabular mt-1 text-tertiary">{[node.partNumber, node.version].filter(Boolean).join(" · ")}</p>

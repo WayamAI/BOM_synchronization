@@ -28,11 +28,13 @@ import {
   Panel,
 } from '@xyflow/react';
 import dagre from 'dagre';
+import { EntityGlyph, EntityMark } from '@/components/icons/EntityIcon';
+import { typeMark } from '@/components/icons/iconMap';
 import { EbomNode } from '@/lib/mockData';
 import { cn } from '@/lib/utils';
 import {
   Search, ZoomIn, ZoomOut, Maximize2, RotateCcw,
-  ChevronRight, ChevronDown, X, GitBranch, AlertTriangle,
+  ChevronRight, ChevronDown, X, GitBranch,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -122,6 +124,7 @@ const BomNode = ({ data }: { data: any }) => {
       {/* Type bar + health dot */}
       <div className="px-4 pt-3 flex items-center gap-2">
         <span className={cn('h-2.5 w-2.5 rounded-full shrink-0', healthDot(node.health))} />
+        <EntityGlyph id={typeMark(node.type)} size={20} />
         <span>
           <span className={cn('type-eyebrow inline-flex items-center rounded-full px-2 py-0.5 type-caption', cfg.badge)}>
             {node.type}
@@ -410,7 +413,7 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
         <span className="type-caption font-bold uppercase tracking-widest text-tertiary">Types:</span>
         {(['Vehicle','System','Assembly','ECU','Part','Harness'] as const).map(t => (
           <span key={t} className="flex items-center gap-1 type-caption text-tertiary">
-            <span className={cn('h-2 w-2 rounded-full', tc(t).dot)} />{t}
+            <EntityGlyph id={typeMark(t)} size={20} />{t}
           </span>
         ))}
         <span className="flex items-center gap-1 type-caption text-tertiary ml-2">
@@ -469,7 +472,7 @@ const InnerGraph = ({ tree, selected, onSelect, filter: extFilter }: GraphViewPr
           {nodes.length === 0 && (
             <Panel position="top-center">
               <div className="flex flex-col items-center gap-2 mt-20 p-5 rounded-lg bg-container border border-hairline">
-                <AlertTriangle className="h-7 w-7 text-warning" />
+                <EntityMark id="ebom" size={72} />
                 <p className="type-body-md font-semibold">No matching nodes</p>
                 <Button variant="outline" size="sm" onClick={() => setSearch('')}>Clear search</Button>
               </div>
