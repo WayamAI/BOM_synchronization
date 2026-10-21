@@ -53,8 +53,8 @@ const Login = () => {
         {/* Content */}
         <div className="relative z-10 flex h-full min-h-screen flex-col justify-between p-10">
           <div className="flex items-center gap-2.5">
-            <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
-            <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
+            <img src={wayamLogoLight} alt="" className="size-10 shrink-0 dark:hidden" />
+            <img src={wayamLogoDark} alt="" className="hidden size-10 shrink-0 dark:block" />
             <span className="text-base font-medium leading-none">Wayam AI</span>
           </div>
           <div className="max-w-xl">
