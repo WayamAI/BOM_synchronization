@@ -55,11 +55,11 @@ const Login = () => {
           <div className="flex items-center gap-2.5">
             <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
             <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
-            <span className="type-label-md">Wayam AI</span>
+            <span className="text-base font-medium leading-none">Wayam AI</span>
           </div>
           <div className="max-w-xl">
-            <p className="type-eyebrow opacity-70">Sama</p>
-            <p className="type-display-2xl mt-3">One bill of materials across engineering, manufacturing, service and software.</p>
+            <h2 className="font-display text-[56px] font-normal leading-none tracking-[-0.02em] text-white xl:text-[72px]">Sama</h2>
+            <p className="mt-4 max-w-[34rem] text-[20px] leading-[1.4] text-white/70 xl:text-[22px]">One bill of materials across engineering, manufacturing, service and software.</p>
           </div>
         </div>
       </div>
