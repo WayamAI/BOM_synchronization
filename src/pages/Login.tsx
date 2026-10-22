@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import wayamLogoLight from "@/assets/brand/wayam-logo-light.svg";
 import wayamLogoDark from "@/assets/brand/wayam-logo-dark.svg";
+import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
 import loginHeroWebp from "@/assets/brand/login-hero.webp";
 import loginHeroJpg from "@/assets/brand/login-hero.jpg";
 import { Input } from "@/components/ui/input";
@@ -53,13 +54,12 @@ const Login = () => {
         {/* Content */}
         <div className="relative z-10 flex h-full min-h-screen flex-col justify-between p-10">
           <div className="flex items-center gap-2.5">
-            <img src={wayamLogoLight} alt="" className="size-8 shrink-0 dark:hidden" />
-            <img src={wayamLogoDark} alt="" className="hidden size-8 shrink-0 dark:block" />
-            <span className="type-label-md">Wayam AI</span>
+            <img src={wayamMarkDark} alt="" className="h-8 w-auto shrink-0" />
+            <span className="text-base font-medium leading-none">Wayam AI</span>
           </div>
           <div className="max-w-xl">
-            <p className="type-eyebrow opacity-70">BOM Synchronization</p>
-            <p className="type-display-2xl mt-3">One bill of materials across engineering, manufacturing, service and software.</p>
+            <h2 className="font-display text-4xl font-normal leading-[1.1] tracking-[-0.02em] text-white">Sama</h2>
+            <p className="mt-2 max-w-sm text-sm leading-5 text-white/70">One bill of materials across engineering, manufacturing, service and software.</p>
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@ const Login = () => {
         <div className="flex flex-1 flex-col justify-center px-8 pb-12">
           <div className="mx-auto w-full max-w-sm">
             <h1 className="type-display-xl text-foreground">Sign in</h1>
-            <p className="type-body-md mt-1 text-tertiary">BOM Synchronization Command Center</p>
+            <p className="type-body-md mt-1 text-tertiary">Sama · Bill of materials command center</p>
 
             <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4" noValidate>
               <div className="flex flex-col gap-1.5">

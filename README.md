@@ -1,6 +1,6 @@
-# Wayam AI — BOM Synchronization
+# Wayam AI · Sama
 
-End-to-end BOM (Bill of Materials) synchronization for automotive programs — Engineering, Manufacturing, Service, and Software BOMs in one command center, by [Wayam AI](https://wayam.ai).
+Sama is an end-to-end bill of materials (BOM) synchronization command center for automotive programs, covering Engineering, Manufacturing, Service, and Software BOMs, by [Wayam AI](https://wayam.ai).
 
 ## Stack
 

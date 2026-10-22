@@ -2,6 +2,8 @@
 
 Chronus-style UI redesign of the BOM Synchronization app (Wayam AI). Baseline: `7e885eb`. Head: `bfda617`.
 
+> Note: the product display name was changed from "BOM Synchronization" to "Sama" after this report was written. Earlier sections keep the old name as a historical record. The repo name, URLs and storage keys are unchanged.
+
 Claims were checked against git (`git diff 7e885eb HEAD`) where possible. Corrections to the original notes are marked **Corrected**.
 
 ## Commits (7e885eb..HEAD, oldest first)
