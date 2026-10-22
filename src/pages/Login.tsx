@@ -58,8 +58,8 @@ const Login = () => {
             <span className="text-base font-medium leading-none">Wayam AI</span>
           </div>
           <div className="max-w-xl">
-            <h2 className="font-display text-[56px] font-normal leading-none tracking-[-0.02em] text-white xl:text-[72px]">Sama</h2>
-            <p className="mt-4 max-w-[34rem] text-[20px] leading-[1.4] text-white/70 xl:text-[22px]">One bill of materials across engineering, manufacturing, service and software.</p>
+            <h2 className="font-display text-4xl font-normal leading-[1.1] tracking-[-0.02em] text-white">Sama</h2>
+            <p className="mt-2 max-w-sm text-sm leading-5 text-white/70">One bill of materials across engineering, manufacturing, service and software.</p>
           </div>
         </div>
       </div>
